@@ -31,8 +31,8 @@ window.addEventListener("load",function() {
   });
 
   // 6. Load and start the level
-  Q.load("sprites.png, sprites.json, level.json", function() {
-    Q.compileSheets("sprites.png","sprites.json");
+  Q.load("../images/sprites.png, ../data/sprites.json, ../data/level.json", function() {
+    Q.compileSheets("../images/sprites.png","../data/sprites.json");
     Q.stageScene("level1");
   });
 
