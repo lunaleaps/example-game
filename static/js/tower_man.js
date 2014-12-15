@@ -47,9 +47,12 @@ App.controller('towerman', function(page) {
   function paint() {
     var i = 0;
     var j = 0;
+    var cellSize = grid.squareSize;
     var topLeftX = 0;
     var topLeftY = 0;
     var cell;
+    var drawn = 0;
+    var smallRadius = Math.round(0.25*cellSize);
 
     for (i=0; i<21; i++) {
       topLeftX = 0;
@@ -58,22 +61,27 @@ App.controller('towerman', function(page) {
 
         if (cell === 1) {
           context.fillStyle = 'blue';
-        } else if (cell === 0){
+        } else if (cell === 0 || cell === 2){
           context.fillStyle = "black";
-        } else if (cell === 2){
-          context.fillStyle = "red";
         } else if (cell === 3){
           context.fillStyle = "green";
         } else if (cell === 4){
           context.fillStyle = "grey";
         }
 
-       console.log(cell);
+        context.fillRect(topLeftX, topLeftY, cellSize, cellSize);
+        
+        if (cell ===2 && drawn < 10){
+          drawn += 1;
+          context.arc(topLeftX + Math.round(cellSize/2), topLeftY + Math.round(cellSize/2), smallRadius, 0, 2*Math.PI);
+          context.fillStyle = "white";
+          context.fill();
+        }
 
-        context.fillRect(topLeftX, topLeftY, grid.squareSize, grid.squareSize);
-        topLeftX += grid.squareSize;
+        topLeftX += cellSize;
+        
       }
-      topLeftY += grid.squareSize;
+      topLeftY += cellSize;
     }
   }
 });
