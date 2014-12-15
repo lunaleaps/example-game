@@ -15,20 +15,57 @@
     </style>
   </head>
   <body>
+    <div class="app-page" data-page="home">
+      <div class="app-topbar">
+        <div class="app-title">KP-Arcade</div>
+      </div>
+      <div class="app-content">
+        <div class="app-button towerman">Towerman</div>
+        <div class="app-button towerman2">Towerman2</div>
+      </div>
+    </div>
+
+    <div class="app-page" data-page="towerman2">
+      <div class="app-topbar">
+        <div class="app-button left" data-back>Back</div>
+        <div class="app-title">Towerman2</div>
+      </div>
+      <div class="app-content">
+        <canvas id="game2" width="640"></canvas>
+      </div>
+    </div>
+
     <div class="app-page" data-page="towerman">
       <div class="app-topbar">
+        <div class="app-button left" data-back>Back</div>
         <div class="app-title">Towerman</div>
       </div>
       <div class="app-content">
-        <canvas id="game" width="640"></canvas>
+        <canvas class="game"></canvas>
       </div>
     </div>
     <script src="//zeptojs.com/zepto.min.js"></script>
     <script src="//cdn.kik.com/app/2.0.1/app.min.js"></script>
-    <script src='js/quintus-all.js'></script>
+    <!--<script src='js/quintus-all-src.js'></script>-->
     <script src='js/tower_man.js'></script>
+    <script src='js/tower_man2.js'></script>
     <script>
-    App.load('towerman');
+      App.controller('home', function (page) {
+        // this runs whenever a 'home' page is loaded
+        // 'page' is the HTML app-page element
+        var $page = $(page),
+            towerman = $page.find('.app-button.towerman'),
+            towerman2 = $page.find('.app-button.towerman2');
+
+        towerman.on('click', function() {
+          App.load('towerman');
+        });
+        towerman2.on('click', function() {
+          App.load('towerman2');
+        });
+
+      });
+      App.load('home');
     </script>
   </body>
 </html>

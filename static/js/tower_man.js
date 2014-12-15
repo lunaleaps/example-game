@@ -1,39 +1,79 @@
-// 1. Wait for the onload event
-App.controller('towerman', function() {
-  window.addEventListener("load",function() {
-    // 2. Set up a basic Quintus object
-    //    with the necessary modules and controls
-    //    to make things easy, we're going to fix this game at 640x480
-    var Q = Quintus({ development: true })
-            .include("Sprites, Scenes, Input, 2D")
-            .setup('game');
+App.controller('towerman', function(page) {
+  var canvas = page.querySelector('.game');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerWidth;
+  var context = canvas.getContext('2d');
 
-    // 3. Add in the default keyboard controls
-    //    along with joypad controls for touch
-    Q.input.keyboardControls();
-    Q.input.joypadControls();
 
-    // 4. Add in a basic sprite to get started
-    Q.Sprite.extend("Player", {
-      init: function(p) {
+  var levelLayout = [ [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                      [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
+                      [0, 1, 3, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 3, 1, 0],
+                      [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
+                      [0, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 0],
+                      [0, 1, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 1, 0],
+                      [0, 1, 1, 1, 1, 2, 1, 1, 1, 0, 1, 0, 1, 1, 1, 2, 1, 1, 1, 1, 0],
+                      [0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0],
+                      [1, 1, 1, 1, 1, 2, 1, 0, 1, 1, 4, 1, 1, 0, 1, 2, 1, 1, 1, 1, 1],
+                      [0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0],
+                      [1, 1, 1, 1, 1, 2, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 1, 1, 1],
+                      [0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0],
+                      [0, 1, 1, 1, 1, 2, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 1, 1, 0],
+                      [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
+                      [0, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 0],
+                      [0, 1, 3, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 3, 1, 0],
+                      [0, 1, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 1, 1, 0],
+                      [0, 1, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 1, 0],
+                      [0, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 0],
+                      [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
+                      [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]];
 
-        this._super(p,{
-          sheet:"player"
-        });
+  var grid = initGrid();
+  paint();
 
-        this.add("2d");
+  function initGrid() {
+    var width, height, squareSize;
+    width = height = window.innerWidth;
+    squareSize = Math.round(width/21);
+    //TODO hardcode pacman grid
+
+    return {
+      width: width,
+      height: height,
+      squareSize: squareSize,
+      layout: levelLayout
+    };
+  }
+
+  function paint() {
+    var i = 0;
+    var j = 0;
+    var topLeftX = 0;
+    var topLeftY = 0;
+    var cell;
+
+    for (i=0; i<21; i++) {
+      topLeftX = 0;
+      for (j=0; j<21; j++){
+        cell = grid.layout[i][j];
+
+        if (cell === 1) {
+          context.fillStyle = 'blue';
+        } else if (cell === 0){
+          context.fillStyle = "black";
+        } else if (cell === 2){
+          context.fillStyle = "red";
+        } else if (cell === 3){
+          context.fillStyle = "green";
+        } else if (cell === 4){
+          context.fillStyle = "grey";
+        }
+
+       console.log(cell);
+
+        context.fillRect(topLeftX, topLeftY, grid.squareSize, grid.squareSize);
+        topLeftX += grid.squareSize;
       }
-    });
-
-    // 5. Put together a minimal level
-    Q.scene("level1",function(stage) {
-      var player = stage.insert(new Q.Player({ x: 0, y: 0}));
-    });
-
-    // 6. Load and start the level
-    Q.load("sprites.png, sprites.json, level.json", function() {
-      Q.compileSheets("sprites.png","sprites.json");
-      Q.stageScene("level1");
-    });
-  });
+      topLeftY += grid.squareSize;
+    }
+  }
 });
