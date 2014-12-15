@@ -29,7 +29,7 @@ App.controller('towerman', function(page) {
 
   var grid = initGrid();
   paint();
-
+  console.log("sweg");
   function initGrid() {
     var width, height, squareSize;
     width = height = window.innerWidth;
