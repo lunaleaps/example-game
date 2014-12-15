@@ -7,8 +7,7 @@ window.addEventListener("load",function() {
   // TODO make this for mobile
   var Q = window.Q = Quintus({ development: true })
           .include("Sprites, Scenes, Input, 2D")
-          .setup({maximize: 'touch',
-                scaleToFit: true });
+          .setup({width:640});
 
   // 3. Add in the default keyboard controls
   //    along with joypad controls for touch
