@@ -51,7 +51,6 @@ App.controller('towerman', function(page) {
     var topLeftX = 0;
     var topLeftY = 0;
     var cell;
-    var drawn = 0;
     var smallRadius = Math.round(0.25*cellSize);
 
     for (i=0; i<21; i++) {
@@ -70,16 +69,16 @@ App.controller('towerman', function(page) {
         }
 
         context.fillRect(topLeftX, topLeftY, cellSize, cellSize);
-        
-        if (cell ===2 && drawn < 10){
-          drawn += 1;
+
+        if (cell === 2){
+          context.beginPath();
           context.arc(topLeftX + Math.round(cellSize/2), topLeftY + Math.round(cellSize/2), smallRadius, 0, 2*Math.PI);
           context.fillStyle = "white";
           context.fill();
         }
 
         topLeftX += cellSize;
-        
+
       }
       topLeftY += cellSize;
     }
