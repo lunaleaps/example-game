@@ -19,6 +19,7 @@ App.controller('pacman', function(page) {
 
       score = 0,
       pacman,
+      collisionType,
       width = window.innerWidth,
       height = window.innerWidth,
       cellSize = Math.round(width/21);
@@ -174,5 +175,17 @@ App.controller('pacman', function(page) {
       }
       topLeftY += cellSize;
     }
+  }
+});
+
+function updateScore(collisionType) {
+  var nextScore;
+
+  if (collisionType === SMALLDOT) {
+    score += 10;
+  } else if (collisionType === BIGDOT) {
+    score += 100;
+  } else if (collisionType === ghost) {
+    score += 200;
   }
 });
