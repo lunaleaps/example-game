@@ -1,7 +1,6 @@
 App.controller('towerman', function(page) {
-  var canvas = page.querySelector('.game'),
-      context = canvas.getContext('2d'),
-      UP = 1,
+  var game = page.querySelector('.game'),
+      context = game.getContext('2d'), UP = 1,
       DOWN = -1,
       LEFT = -2,
       RIGHT = 2,
@@ -68,8 +67,8 @@ App.controller('towerman', function(page) {
   }
 
   function initialize(posI, posJ) {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerWidth;
+    game.width = window.innerWidth;
+    game.height = window.innerWidth;
     pacman = initPacman(posI, posJ);
 
     /*(initPacman(posI, posJ)).done(function(pacman) {*/
