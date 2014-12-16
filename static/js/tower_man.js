@@ -3,8 +3,6 @@ App.controller('towerman', function(page) {
   canvas.width = window.innerWidth;
   canvas.height = window.innerWidth;
   var context = canvas.getContext('2d');
-
-
   var levelLayout = [ [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
                       [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
                       [0, 1, 3, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 3, 1, 0],
@@ -88,3 +86,5 @@ App.controller('towerman', function(page) {
     }
   }
 });
+
+
