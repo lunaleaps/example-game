@@ -125,7 +125,8 @@ App.controller('pacman', function(page) {
     var topLeftX = 0;
     var topLeftY = 0;
     var cell, collision;
-    var smallRadius = Math.round(0.25*cellSize);
+    var largeRadius = Math.round(0.30*cellSize);
+    var smallRadius = Math.round(0.10*cellSize);
 
     //updates the board according to every player
     collision = update();
@@ -156,11 +157,14 @@ App.controller('pacman', function(page) {
           context.arc(topLeftX + Math.round(cellSize/2), topLeftY + Math.round(cellSize/2), smallRadius, 0, 2*Math.PI);
           context.fillStyle = "white";
           context.fill();
-        } else if (cell === WALL | cell === BIGDOT | cell === DOOR) {
+        } else if (cell === BIGDOT){
+          context.beginPath();
+          context.arc(topLeftX + Math.round(cellSize/2), topLeftY + Math.round(cellSize/2), largeRadius, 0, 2*Math.PI);
+          context.fillStyle = "white";
+          context.fill();
+        } else if (cell === WALL | cell === DOOR) {
           if (cell === WALL) {
             context.fillStyle = 'blue';
-          } else if (cell === BIGDOT) {
-            context.fillStyle = "green";
           } else if (cell === DOOR){
             context.fillStyle = "grey";
           }
