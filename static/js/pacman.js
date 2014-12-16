@@ -232,16 +232,16 @@ App.controller('pacman', function(page) {
     topLeftY = (pacman.i -1) * unit;
     context.drawImage(pacman.image, topLeftX, topLeftY, cellSize, cellSize);
   }
-});
 
-function updateScore(collisionType) {
-  var nextScore;
+  function updateScore(collisionType) {
+    var nextScore;
 
-  if (collisionType === C_SMALLDOT) {
-    score += 10;
-  } else if (collisionType === C_BIGDOT) {
-    score += 100;
-  } else if (collisionType === C_EAT) {
-    score += 200;
+    if (collisionType === C_SMALLDOT) {
+      score += 10;
+    } else if (collisionType === C_BIGDOT) {
+      score += 100;
+    } else if (collisionType === C_EAT) {
+      score += 200;
+    }
   }
 });
