@@ -1,5 +1,6 @@
-App.controller('towerman', function(page) {
+App.controller('pacman', function(page) {
   var game = page.querySelector('.game'),
+      joystick = page.querySelector('.joystick'),
       context = game.getContext('2d'), UP = 1,
       DOWN = -1,
       LEFT = -2,
@@ -124,8 +125,7 @@ App.controller('towerman', function(page) {
     var topLeftX = 0;
     var topLeftY = 0;
     var cell, collision;
-    var largeRadius = Math.round(0.30*cellSize);
-    var smallRadius = Math.round(0.10*cellSize);
+    var smallRadius = Math.round(0.25*cellSize);
 
     //updates the board according to every player
     collision = update();
@@ -156,14 +156,11 @@ App.controller('towerman', function(page) {
           context.arc(topLeftX + Math.round(cellSize/2), topLeftY + Math.round(cellSize/2), smallRadius, 0, 2*Math.PI);
           context.fillStyle = "white";
           context.fill();
-        } else if (cell === BIGDOT){
-          context.beginPath();
-          context.arc(topLeftX + Math.round(cellSize/2), topLeftY + Math.round(cellSize/2), largeRadius, 0, 2*Math.PI);
-          context.fillStyle = "white";
-          context.fill(); 
-        } else if (cell === WALL | cell === DOOR) {
+        } else if (cell === WALL | cell === BIGDOT | cell === DOOR) {
           if (cell === WALL) {
-            context.fillStyle = 'blue';  
+            context.fillStyle = 'blue';
+          } else if (cell === BIGDOT) {
+            context.fillStyle = "green";
           } else if (cell === DOOR){
             context.fillStyle = "grey";
           }
@@ -175,5 +172,3 @@ App.controller('towerman', function(page) {
     }
   }
 });
-
-

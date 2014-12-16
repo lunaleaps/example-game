@@ -20,14 +20,14 @@
         <div class="app-title">KP-Arcade</div>
       </div>
       <div class="app-content">
-        <div class="app-button towerman">Towerman</div>
+        <div class="app-button pacman">Pacman</div>
       </div>
     </div>
 
-    <div class="app-page" data-page="towerman">
+    <div class="app-page" data-page="pacman">
       <div class="app-topbar">
         <div class="app-button left" data-back>Back</div>
-        <div class="app-title">Towerman</div>
+        <div class="app-title">Pacman</div>
       </div>
       <div class="app-content">
         <canvas class="game"></canvas>
@@ -36,14 +36,14 @@
     </div>
     <script src="js/zepto.min.js"></script>
     <script src="//cdn.kik.com/app/2.0.1/app.min.js"></script>
-    <script src='js/tower_man.js'></script>
+    <script src='js/pacman.js'></script>
     <script>
       App.controller('home', function (page) {
         var $page = $(page),
-            towerman = $page.find('.app-button.towerman');
+            pacman= $page.find('.app-button.pacman');
 
-        towerman.on('click', function() {
-          App.load('towerman');
+        pacman.on('click', function() {
+          App.load('pacman');
         });
       });
       App.load('home');
