@@ -10,18 +10,19 @@ App.controller('pacman', function(page) {
       SMALLDOT = 2,
       BIGDOT = 3,
       DOOR = 4,
-      PACMAN = 5,
       C_BIGDOT = 0,
       C_SMALLDOT = 1,
       C_DIE = 2,
+      C_WALL = 3,
       C_NONE = -1,
       MAX_SCORE = 146,
-
+      SMALL_DOT_SCORE = 1,
       score = 0,
       pacman,
       width = window.innerWidth,
       height = window.innerWidth,
-      cellSize = Math.round(width/21);
+      unit = Math.floor(width/63),
+      cellSize = unit * 3;
 
   var layout = [ [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
                  [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
@@ -38,14 +39,14 @@ App.controller('pacman', function(page) {
                  [0, 1, 1, 1, 1, 2, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 1, 1, 0],
                  [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
                  [0, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 0],
-                 [0, 1, 3, 2, 1, 2, 2, 2, 2, 2, 5, 2, 2, 2, 2, 2, 1, 2, 3, 1, 0],
+                 [0, 1, 3, 2, 1, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 1, 2, 3, 1, 0],
                  [0, 1, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 1, 1, 0],
                  [0, 1, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 1, 0],
                  [0, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 0],
                  [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
                  [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]];
 
-  initialize(15, 10);
+  initialize(15 * 3 + 1, 10 * 3 + 1);
 
   function initPacman(i, j) {
     var promise = $.Deferred(),
@@ -57,6 +58,7 @@ App.controller('pacman', function(page) {
           direction: RIGHT
         };
 
+    console.log('i: ' + i + ' j: ' + j);
     img.src = '/images/kp_grey_logo.png';
     img.addEventListener('load', function() {
       promise.resolve(data);
@@ -75,15 +77,14 @@ App.controller('pacman', function(page) {
     /*(initPacman(posI, posJ)).done(function(pacman) {*/
       //// TODO
     /*});*/
-    setInterval(paint, 500);
+    setInterval(paint, 100);
 
   }
 
   function update() {
     var copy = $.extend(true, [], layout),
-        collision = {
-          type: C_NONE
-        };
+        cell,
+        changeDirection = false,
     // need list of characters that are moving -- ghosts, pacman
     // updated both -- need to track
     // update pacman
@@ -92,75 +93,126 @@ App.controller('pacman', function(page) {
     next_pacman = {};
     next_pacman.i = pacman.i;
     next_pacman.j = pacman.j;
+    next_pacman.direction = pacman.direction;
 
-    if (pacman.direction === UP) {
-      next_pacman.i -=1;
-    } else if (pacman.direction === LEFT) {
-      next_pacman.j -= 1;
-    } else if (pacman.direction === RIGHT) {
-      next_pacman.j += 1;
-    } else {
-      next_pacman.i += 1;
+    // TODO hsn't been impl yet
+    //new_direction = getDirection();
+    // solution for now
+    new_direction = pacman.direction;
+
+    if (pacman.direction !== new_direction) {
+      updateDirection(next_pacman, new_direction);
+      if (getCollisionType(copy, next_pacman) === C_WALL) {
+        changeDirection = false;
+      } else {
+        next_pacman.i = pacman.i;
+        next_pacman.j = pacman.j;
+        next_pacman.direction = new_direction;
+        changeDirection = true;
+      }
     }
 
-    if (copy[next_pacman.i][next_pacman.j] === SMALLDOT) {
-      collision.type = C_SMALLDOT;
-    } else if (copy[next_pacman.i][next_pacman.j] === BIGDOT) {
-      collision.type = C_BIGDOT;
-    } else if (copy[next_pacman.i][next_pacman.j] === WALL) {
+    if (!changeDirection) {
+      updateDirection(next_pacman, pacman.direction);
+    }
+
+    var collision = getCollisionType(copy, next_pacman);
+    if (collision === C_WALL) {
       next_pacman.i = pacman.i;
       next_pacman.j = pacman.j;
+    } else if (collision === C_SMALLDOT) {
+      console.log(score);
+      score += SMALL_DOT_SCORE;
+      cellCoords = getCellCoords(next_pacman.i, next_pacman.j);
+      copy[cellCoords[0]][cellCoords[1]] = PATH;
+    } else if (collision === C_BIGDOT) {
+      // TODO handle bigdot eating
+      cellCoords = getCellCoords(next_pacman.i, next_pacman.j);
+      copy[cellCoords[0]][cellCoords[1]] = PATH;
     }
-    copy[pacman.i][pacman.j] = PATH;
-    copy[next_pacman.i][next_pacman.j] = PACMAN;
-    collision.layout = copy;
-    pacman.i = next_pacman.i
-    pacman.j = next_pacman.j
-    return collision;
+
+    layout = copy;
+    pacman.i = next_pacman.i;
+    pacman.j = next_pacman.j;
+    pacman.direction = next_pacman.direction;
+
+    function getCellCoords(i, j) {
+      var I = Math.floor(i / 3);
+      var J = Math.floor(j / 3);
+      return [I, J];
+    }
+
+    function getCell(grid, pacman) {
+      coords = getCellCoords(pacman.i, pacman.j);
+      return grid[coords[0]][coords[1]];
+    }
+
+    function getCollisionType(grid, pacman) {
+      var fake = JSON.parse(JSON.stringify(pacman)),
+          cell = getCell(grid, pacman),
+          C_TYPE = C_NONE;
+
+      updateDirection(fake, pacman.direction);
+      var cellPrime = getCell(grid, fake);
+      if (cellPrime === WALL) {
+        C_TYPE = C_WALL;
+      } else if (cell === SMALLDOT && (pacman.i % 3) == 1 && (pacman.j % 3) == 1) {
+        C_TYPE = C_SMALLDOT;
+      } else if (cell === BIGDOT && (pacman.i % 3) == 1 && (pacman.j % 3) == 1) {
+        C_TYPE = C_BIGDOT;
+      }
+
+      return C_TYPE;
+    }
+
+    function updateDirection(pacman, direction) {
+      if (direction === UP) {
+        pacman.i -=1;
+      } else if (direction === LEFT) {
+        pacman.j -= 1;
+      } else if (direction === RIGHT) {
+        pacman.j += 1;
+      } else {
+        pacman.i += 1;
+      }
+    }
   }
 
   function paint() {
-    var i = 0;
-    var j = 0;
+    var I = 0;
+    var J = 0;
     var topLeftX = 0;
     var topLeftY = 0;
     var cell, collision;
-    var smallRadius = Math.round(0.25*cellSize);
+    var largeRadius = Math.round(0.25*cellSize);
+    var smallRadius = Math.round(0.1*cellSize);
 
-    //updates the board according to every player
+    // updates layout
     collision = update();
-    if (collision.type === C_SMALLDOT) {
-      score += 1;
-      // TODO handle win case
-    } else if (collision.type === C_BIGDOT) {
-      // TODO swap around
-    } else if (collision.type === C_DIE) {
-      // TODO how to die?
-    }
-
-    layout = collision.layout;
 
     //clear everytime
     context.fillStyle = 'black';
     context.fillRect(0, 0, width, height);
 
-    for (i=0; i<21; i++) {
+    // paint full background
+    for (I=0; I<21; I++) {
       topLeftX = 0;
-      for (j=0; j<21; j++){
-        cell = layout[i][j];
+      for (J=0; J<21; J++){
+        cell = layout[I][J];
 
-        if (cell === PACMAN) {
-          context.drawImage(pacman.image, topLeftX, topLeftY, cellSize, cellSize);
-        } else if (cell === SMALLDOT) {
+        if (cell === SMALLDOT) {
           context.beginPath();
           context.arc(topLeftX + Math.round(cellSize/2), topLeftY + Math.round(cellSize/2), smallRadius, 0, 2*Math.PI);
           context.fillStyle = "white";
           context.fill();
-        } else if (cell === WALL | cell === BIGDOT | cell === DOOR) {
+        } else if (cell === BIGDOT) {
+          context.beginPath();
+          context.arc(topLeftX + Math.round(cellSize/2), topLeftY + Math.round(cellSize/2), largeRadius, 0, 2*Math.PI);
+          context.fillStyle = "white";
+          context.fill();
+        } else if (cell === WALL | cell === DOOR) {
           if (cell === WALL) {
             context.fillStyle = 'blue';
-          } else if (cell === BIGDOT) {
-            context.fillStyle = "green";
           } else if (cell === DOOR){
             context.fillStyle = "grey";
           }
@@ -170,5 +222,10 @@ App.controller('pacman', function(page) {
       }
       topLeftY += cellSize;
     }
+
+    // paint pacman
+    topLeftX = (pacman.j -1) * unit;
+    topLeftY = (pacman.i -1) * unit;
+    context.drawImage(pacman.image, topLeftX, topLeftY, cellSize, cellSize);
   }
 });
