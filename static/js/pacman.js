@@ -184,8 +184,8 @@ App.controller('pacman', function(page) {
     var topLeftX = 0;
     var topLeftY = 0;
     var cell, collision;
-    var largeRadius = Math.round(0.25*cellSize);
-    var smallRadius = Math.round(0.1*cellSize);
+    var largeRadius = Math.round(0.30*cellSize);
+    var smallRadius = Math.round(0.10*cellSize);
 
     // updates layout
     collision = update();
