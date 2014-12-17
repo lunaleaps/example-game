@@ -14,6 +14,7 @@ App.controller('pacman', function(page) {
       C_SMALLDOT = 1,
       C_DIE = 2,
       C_WALL = 3,
+      C_EAT = 4,
       C_NONE = -1,
       MAX_SCORE = 146,
       SMALL_DOT_SCORE = 1,
@@ -139,14 +140,18 @@ App.controller('pacman', function(page) {
       next_pacman.i = pacman.i;
       next_pacman.j = pacman.j;
     } else if (collision === C_SMALLDOT) {
+      updateScore(C_SMALLDOT);
       score += SMALL_DOT_SCORE;
       cellCoords = getCellCoords(next_pacman.i, next_pacman.j);
       copy[cellCoords[0]][cellCoords[1]] = PATH;
     } else if (collision === C_BIGDOT) {
       // TODO handle bigdot eating
       console.log('Big dot collected');
+      updateScore(C_BIGDOT);
       cellCoords = getCellCoords(next_pacman.i, next_pacman.j);
       copy[cellCoords[0]][cellCoords[1]] = PATH;
+    } else if (collision === C_EAT) {
+      updateScore(C_EAT);
     }
 
     layout = copy;
@@ -244,5 +249,17 @@ App.controller('pacman', function(page) {
     // paint pacman
     pacman.draw(context);
     //context.drawImage(pacman.image, topLeftX, topLeftY, cellSize, cellSize);
+  }
+
+  function updateScore(collisionType) {
+    var nextScore;
+
+    if (collisionType === C_SMALLDOT) {
+      score += 10;
+    } else if (collisionType === C_BIGDOT) {
+      score += 100;
+    } else if (collisionType === C_EAT) {
+      score += 200;
+    }
   }
 });
