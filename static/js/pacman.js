@@ -1,8 +1,9 @@
-App.controller('pacman', function(page) {
-  var game = page.querySelector('.game'),
-      joystick = page.querySelector('.joystick'),
-      context = game.getContext('2d'), UP = 1,
-      scoreElement = page.querySelector('.scoreText'),
+App.controller('pacman', function($page) {
+  var $game = $page.querySelector('.game'),
+      $joystick = $page.querySelector('.joystick'),
+      context = $game.getContext('2d'),
+      $scoreElement = $page.querySelector('.scoreText'),
+      UP = 1,
       DOWN = -1,
       LEFT = -2,
       RIGHT = 2,
@@ -20,10 +21,12 @@ App.controller('pacman', function(page) {
       MAX_SCORE = 146,
       score = 0,
       pacman,
-      width = window.innerWidth,
-      height = window.innerWidth,
-      unit = Math.floor(width/63),
+      unit = Math.floor(window.innerWidth/63),
+      width = unit * 63,
+      height = width,
       cellSize = unit * 3;
+
+      console.log(width);
 
   var layout = [ [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
                  [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
@@ -102,8 +105,8 @@ App.controller('pacman', function(page) {
   }
 
   function initialize(posI, posJ) {
-    game.width = window.innerWidth;
-    game.height = window.innerWidth;
+    $game.width = width;
+    $game.height = height;
     pacman = initPacman(posI, posJ);
 
     /*(initPacman(posI, posJ)).done(function(pacman) {*/
@@ -266,13 +269,13 @@ App.controller('pacman', function(page) {
   function updateScore(collisionType) {
     if (collisionType === C_SMALLDOT) {
       score += 10;
-      scoreElement.textContent = score;
+      $scoreElement.textContent = score;
     } else if (collisionType === C_BIGDOT) {
       score += 100;
-      scoreElement.textContent = score;
+      $scoreElement.textContent = score;
     } else if (collisionType === C_EAT) {
       score += 200;
-      scoreElement.textContent = score;
+      $scoreElement.textContent = score;
     }
   }
 });
