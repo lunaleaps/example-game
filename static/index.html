@@ -8,6 +8,7 @@
                                    user-scalable=no,
                                    minimal-ui">
     <link rel="stylesheet" href="//cdn.kik.com/app/2.0.1/app.min.css">
+    <link rel="stylesheet" href="css/asteroids.css"/>
     <style>
       canvas {
         border: 1px solid black;
@@ -34,6 +35,7 @@
       </div>
       <div class="app-content">
         <div class="app-button pacman">Pacman</div>
+        <div class="app-button asteroids">Asteroids</div>
       </div>
     </div>
 
@@ -50,16 +52,30 @@
         <canvas class="joystick"></canvas>
       </div>
     </div>
+    <div class="app-page" data-page="asteroids">
+      <div class="app-topbar">
+        <div class="app-button left" data-back data-autotitle></div>
+        <div class="app-title">Page 2</div>
+      </div>
+      <div class="app-content">
+        <div id="si-main-div"></div>
+      </div>
+    </div>
     <script src="js/zepto.min.js"></script>
     <script src="//cdn.kik.com/app/2.0.1/app.min.js"></script>
     <script src='js/pacman.js'></script>
+    <script src='js/asteroids.js'></script>
     <script>
       App.controller('home', function (page) {
         var $page = $(page),
-            pacman= $page.find('.app-button.pacman');
+            pacman= $page.find('.app-button.pacman'),
+            asteroids=$page.find('.app-button.asteroids');
 
         pacman.on('click', function() {
           App.load('pacman');
+        });
+        asteroids.on('click', function() {
+          App.load('asteroids');
         });
       });
       App.load('home');
