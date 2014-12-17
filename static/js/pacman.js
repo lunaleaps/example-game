@@ -103,7 +103,7 @@ App.controller('pacman', function($page) {
     pacman = initPacman(posI, posJ);
 
     // paint
-    setInterval(paint, 100);
+    setInterval(paint, 75);
 
     $($controls).append(joystickDiv);
     joystick = new Joystick(joystickDiv);
@@ -140,19 +140,17 @@ App.controller('pacman', function($page) {
     next_pacman.direction = pacman.direction;
 
     if (pacman.direction !== new_direction) {
-      updateDirection(next_pacman, new_direction);
+      move(next_pacman, new_direction);
       if (getCollisionType(copy, next_pacman) === C_WALL) {
         changeDirection = false;
+        next_pacman.direction = pacman.direction;
       } else {
-        next_pacman.i = pacman.i;
-        next_pacman.j = pacman.j;
-        next_pacman.direction = new_direction;
         changeDirection = true;
       }
     }
 
     if (!changeDirection) {
-      updateDirection(next_pacman, pacman.direction);
+      move(next_pacman, pacman.direction);
     }
 
     var collision = getCollisionType(copy, next_pacman);
@@ -194,7 +192,7 @@ App.controller('pacman', function($page) {
           cell = getCell(grid, pacman),
           C_TYPE = C_NONE;
 
-      updateDirection(fake, pacman.direction);
+      move(fake, pacman.direction);
       var cellPrime = getCell(grid, fake);
       if (cellPrime === WALL || cellPrime === DOOR) {
         C_TYPE = C_WALL;
@@ -207,7 +205,8 @@ App.controller('pacman', function($page) {
       return C_TYPE;
     }
 
-    function updateDirection(pacman, direction) {
+    function move(pacman, direction) {
+      pacman.direction = direction;
       if (direction === UP) {
         pacman.i -=1;
       } else if (direction === LEFT) {
@@ -282,4 +281,11 @@ App.controller('pacman', function($page) {
       $scoreElement.textContent = score;
     }
   }
+  $(document).keydown(function(e){
+    var key = e.which;
+    if(key == "37") new_direction = LEFT;
+    else if(key == "38" ) new_direction = UP;
+    else if(key == "39") new_direction = RIGHT;
+    else if(key == "40") new_direction = DOWN;
+  })
 });
