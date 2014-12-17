@@ -139,7 +139,7 @@ App.controller('pacman', function($page) {
     next_pacman.j = pacman.j;
     next_pacman.direction = pacman.direction;
 
-    if (pacman.direction !== new_direction) {
+    if (pacman.direction !== new_direction && pacman.i % 3 == 1 && pacman.j % 3 == 1) {
       // see if next_pacman can work in this new direction
       move(next_pacman, new_direction);
       if (getCollisionType(copy, next_pacman) === C_WALL) {
