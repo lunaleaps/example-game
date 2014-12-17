@@ -27,6 +27,7 @@ App.controller('pacman', function($page) {
       width = unit * 63,
       height = width,
       cellSize = unit * 3,
+      new_direction = UP,
       layout = [ [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
                  [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
                  [0, 1, 3, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 3, 1, 0],
@@ -49,16 +50,13 @@ App.controller('pacman', function($page) {
                  [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
                  [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]];
 
-  //initialize(15 * 3 + 1, 10 * 3 + 1);
-  //initialize(15 * 3 + 1, 15 * 3 + 1);
-  initialize(1 * 3 + 1, 15 * 3 +1);
-  //initialize(5 * 3 + 1, 18 * 3 + 1);
+  initialize(15 * 3 + 1, 10 * 3 + 1);
 
   function initPacman(i, j) {
     return {
             i: i,
             j: j,
-            direction: DOWN,
+            direction: UP,
             mouthOpenValue: 40,
             mouthPos: -1,
             draw : function(context) {
@@ -111,7 +109,19 @@ App.controller('pacman', function($page) {
     joystick = new Joystick(joystickDiv);
     $(joystick)
       .on('done', function(non, pos) {
-        console.log(pos);
+        if (Math.abs(pos.x) > Math.abs(pos.y)) {
+          if (pos.x > 0) {
+            new_direction = RIGHT;
+          } else {
+            new_direction = LEFT;
+          }
+        } else {
+          if (pos.y > 0) {
+            new_direction = DOWN;
+          } else {
+            new_direction = UP;
+          }
+        }
       });
   }
 
@@ -128,11 +138,6 @@ App.controller('pacman', function($page) {
     next_pacman.i = pacman.i;
     next_pacman.j = pacman.j;
     next_pacman.direction = pacman.direction;
-
-    // TODO hsn't been impl yet
-    //new_direction = getDirection();
-    // solution for now
-    new_direction = pacman.direction;
 
     if (pacman.direction !== new_direction) {
       updateDirection(next_pacman, new_direction);
