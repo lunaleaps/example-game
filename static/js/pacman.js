@@ -1,6 +1,6 @@
 App.controller('pacman', function($page) {
   var $game = $page.querySelector('.game'),
-      $joystick = $page.querySelector('.joystick'),
+      $controls = $('.pacman .joystick'),
       context = $game.getContext('2d'),
       $scoreElement = $page.querySelector('.scoreText'),
       UP = 1,
@@ -109,11 +109,22 @@ App.controller('pacman', function($page) {
     $game.height = height;
     pacman = initPacman(posI, posJ);
 
-    /*(initPacman(posI, posJ)).done(function(pacman) {*/
-      //// TODO
-    /*});*/
+    // paint
     setInterval(paint, 100);
 
+    var joystick = new Joystick($controls);
+    $(joystick)
+      .on('start', function() {
+        console.log('start');
+      })
+      .on('move', function(non, pos) {
+        console.log(non);
+        console.log(pos);
+      })
+      .on('done', function(non, pos) {
+        console.log(non);
+        console.log(pos);
+      });
   }
 
   function update() {
@@ -192,7 +203,7 @@ App.controller('pacman', function($page) {
 
       updateDirection(fake, pacman.direction);
       var cellPrime = getCell(grid, fake);
-      if (cellPrime === WALL) {
+      if (cellPrime === WALL || cellPrime === DOOR) {
         C_TYPE = C_WALL;
       } else if (cell === SMALLDOT && (pacman.i % 3) == 1 && (pacman.j % 3) == 1) {
         C_TYPE = C_SMALLDOT;

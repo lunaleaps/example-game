@@ -57,7 +57,7 @@ var Joystick = function(elm) {
         var touch = evt.changedTouches[0];
         if(touch.identifier == thiz.currentTouch) {
             evt.preventDefault();
-            
+
             thiz.currPosX = touch.clientX;
             thiz.currPosY = touch.clientY;
 
@@ -71,6 +71,7 @@ var Joystick = function(elm) {
         };
     }
 }
+
 function createNewJoystickDiv() {
     return $("<div>")
         .append($("<div>")
