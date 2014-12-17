@@ -35,8 +35,9 @@ function Asteroids(div) {
             thiz.joystickDown = true;
             console.log("start");
         })
-        .on("end", function() {
+        .on("done", function() {
             thiz.joystickDown = false;
+            thiz.player.rotating = 0;
             console.log("done");
         });
     this.div.addClass("si-main");
@@ -256,9 +257,18 @@ function Asteroids(div) {
                 if(thiz.joystickDown) {
                     var joystickOffset = thiz.joystick.getOffset();
                     if(joystickOffset.x > 0) {
-                        this.rotating = 1 - 1 / (joystickOffset.x / 10) * deltaTime;
+                        // this.rotating = 1 - 1 / (joystickOffset.x / 10);
+                        this.rotating = joystickOffset.x / 500;
                     } else if(joystickOffset.x < 0) {
-                        this.rotating = 1 - 1 / (joystickOffset.x / 10) * deltaTime;
+                        // this.rotating = -(1 - 1 / (joystickOffset.x / 10));
+                        this.rotating = joystickOffset.x / 500;
+                    }
+                    if(joystickOffset.y > 0) {
+                        this.velY += Math.cos(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * joystickOffset.y / 2000;
+                        this.velX += Math.sin(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * joystickOffset.y / 2000;
+                    } else if(joystickOffset.y < 0) {
+                        this.velY += Math.cos(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * joystickOffset.y / 2000;
+                        this.velX += Math.sin(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * joystickOffset.y / 2000;
                     }
                 }
                 if(thiz.firing) {
@@ -285,6 +295,10 @@ function Asteroids(div) {
         sprite.rotate = function(amt) {
             this.rotation += amt;
             this.div.css("transform", "rotate(" + this.rotation + "deg)")
+                .css("-webkit-transform", "rotate(" + this.rotation + "deg)")
+                .css("-moz-transform", "rotate(" + this.rotation + "deg)")
+                .css("-ms-transform", "rotate(" + this.rotation + "deg)")
+                .css("-o-transform", "rotate(" + this.rotation + "deg)");
         }
         sprite.attemptTurn = function(direction) {
             //Attempt to turn in direction if there is no wall obstructing our path.
