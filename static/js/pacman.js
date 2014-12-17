@@ -52,6 +52,31 @@ App.controller('pacman', function($page) {
 
   initialize(15 * 3 + 1, 10 * 3 + 1);
 
+  function initGhost(imageSrc, leaveCondition, i, j) {
+    var img = new Image();
+    img.src = imageSrc;
+
+    return {
+      i: i,
+      j: j,
+      image: img,
+      direction: LEFT,
+      leave: false,
+      chasing: true,
+      previousCell: PATH,
+      leaveCondition: leaveCondition,
+      draw: function(context) {
+        if (!this.leave) {
+          this.leave = leaveCondition();
+          return;
+        }
+        if (leave) {
+
+        }
+      },
+    };
+  }
+
   function initPacman(i, j) {
     return {
             i: i,
@@ -267,7 +292,6 @@ App.controller('pacman', function($page) {
 
     // paint pacman
     pacman.draw(context);
-    //context.drawImage(pacman.image, topLeftX, topLeftY, cellSize, cellSize);
   }
 
   function updateScore(collisionType) {
