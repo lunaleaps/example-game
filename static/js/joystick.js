@@ -44,21 +44,25 @@ var Joystick = function(elm) {
         $(thiz).trigger("start");
     });
     thiz.div.on("touchmove", function(evt) {
-        evt.preventDefault();
-
         var touch = evt.changedTouches[0];
-        thiz.currPosX = touch.clientX;
-        thiz.currPosY = touch.clientY;
-        $(thiz).trigger("move", thiz.getOffset());
+        if(touch.identifier == thiz.currentTouch) {
+            evt.preventDefault();
+
+            thiz.currPosX = touch.clientX;
+            thiz.currPosY = touch.clientY;
+            $(thiz).trigger("move", thiz.getOffset());
+        }
     });
     thiz.div.on("touchend", function(evt) {
-        evt.preventDefault();
-
         var touch = evt.changedTouches[0];
-        thiz.currPosX = touch.clientX;
-        thiz.currPosY = touch.clientY;
+        if(touch.identifier == thiz.currentTouch) {
+            evt.preventDefault();
+            
+            thiz.currPosX = touch.clientX;
+            thiz.currPosY = touch.clientY;
 
-        $(thiz).trigger("done", thiz.getOffset());
+            $(thiz).trigger("done", thiz.getOffset());
+        }
     })
     thiz.getOffset = function() {
         return {
