@@ -35,7 +35,7 @@ $( document ).ready(function() {
         var paddleHit;
 
         canvas.addEventListener("touchstart", touchHandler, false);
-        canvas.addEventListener("touchmove", moveHandler, true);
+        canvas.addEventListener("touchmove", moveHandler, false);
         canvas.addEventListener("touchend", touchHandler, false);
 
         $(canvas).on('vmousedown', function(e){
@@ -118,12 +118,6 @@ $( document ).ready(function() {
                         direction = "right";
                     }
                 }
-            }
-        }
-
-        function moveHandler(e) {
-            if ($(e.target).closest('.scrollable').length == 0) { 
-                e.preventDefault(); 
             }
         }
 
