@@ -220,7 +220,7 @@ function Asteroids(div) {
                 }
             }, position, speed);
         sprite.hide = function() {
-            this.div.animate({
+            /*this.div.animate({
                 opacity: 0,
                 width: 0,
                 height: 0,
@@ -228,7 +228,10 @@ function Asteroids(div) {
             }, 400, "linear", function() {
                 sprite.div.hide();
                 sprite.hidden = true;
-            });
+            });*/
+            //Since .animate() doesn't work (a Zepto problem?):
+            sprite.div.hide();
+            sprite.hidden = true;
         }
         thiz.asteroids.push(sprite);
         return sprite;
