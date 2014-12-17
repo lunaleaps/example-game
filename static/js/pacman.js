@@ -140,10 +140,15 @@ App.controller('pacman', function($page) {
     next_pacman.direction = pacman.direction;
 
     if (pacman.direction !== new_direction) {
+      // see if next_pacman can work in this new direction
       move(next_pacman, new_direction);
       if (getCollisionType(copy, next_pacman) === C_WALL) {
         changeDirection = false;
+        // reset the values
+        new_direction = pacman.direction; // should we do this?
         next_pacman.direction = pacman.direction;
+        next_pacman.i = pacman.i;
+        next_pacman.j = pacman.j;
       } else {
         changeDirection = true;
       }
@@ -201,7 +206,6 @@ App.controller('pacman', function($page) {
       } else if (cell === BIGDOT && (pacman.i % 3) == 1 && (pacman.j % 3) == 1) {
         C_TYPE = C_BIGDOT;
       }
-
       return C_TYPE;
     }
 
