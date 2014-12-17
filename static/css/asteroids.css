@@ -11,7 +11,7 @@
     position: absolute;
 }
 .si-player {
-    background-image: url(spacecraft.png);
+    background-image: url(../images/spacecraft.png);
 }
 .si-pellet {
     width: 8px;
