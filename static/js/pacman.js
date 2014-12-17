@@ -1,34 +1,33 @@
+// constants
+var UP = 1,
+    DOWN = -1,
+    LEFT = -2,
+    RIGHT = 2,
+    PATH = 0,
+    WALL = 1,
+    SMALLDOT = 2,
+    BIGDOT = 3,
+    DOOR = 4,
+    C_BIGDOT = 0,
+    C_SMALLDOT = 1,
+    C_DIE = 2,
+    C_WALL = 3,
+    C_EAT = 4,
+    C_NONE = -1,
+    MAX_SCORE = 146;
+
 App.controller('pacman', function($page) {
   var $game = $page.querySelector('.game'),
-      $joystick = $page.querySelector('.joystick'),
+      $controls = $page.querySelector('.joystick'),
       context = $game.getContext('2d'),
       $scoreElement = $page.querySelector('.scoreText'),
-      UP = 1,
-      DOWN = -1,
-      LEFT = -2,
-      RIGHT = 2,
-      PATH = 0,
-      WALL = 1,
-      SMALLDOT = 2,
-      BIGDOT = 3,
-      DOOR = 4,
-      C_BIGDOT = 0,
-      C_SMALLDOT = 1,
-      C_DIE = 2,
-      C_WALL = 3,
-      C_EAT = 4,
-      C_NONE = -1,
-      MAX_SCORE = 146,
       score = 0,
       pacman,
       unit = Math.floor(window.innerWidth/63),
       width = unit * 63,
       height = width,
-      cellSize = unit * 3;
-
-      console.log(width);
-
-  var layout = [ [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+      cellSize = unit * 3,
+      layout = [ [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
                  [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
                  [0, 1, 3, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 3, 1, 0],
                  [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
@@ -56,64 +55,64 @@ App.controller('pacman', function($page) {
   //initialize(5 * 3 + 1, 18 * 3 + 1);
 
   function initPacman(i, j) {
-    var data = {
-          i: i,
-          j: j,
-          direction: DOWN,
-          mouthOpenValue: 40,
-          mouthPos: -1
-        };
+    return {
+            i: i,
+            j: j,
+            direction: DOWN,
+            mouthOpenValue: 40,
+            mouthPos: -1,
+            draw : function(context) {
+              var startAngle, endAngle,
+                  radius = Math.round(0.5 * cellSize),
+                  x = this.j * unit + (unit/2),
+                  y = this.i * unit + (unit/2);
 
-    console.log('i: ' + i + ' j: ' + j);
+              if (this.mouthOpenValue <= 0) {
+                this.mouthPosition = 1;
+              } else if (this.mouthOpenValue >= 40) {
+                this.mouthPosition = -1;
+              }
+              this.mouthOpenValue +=  10 * this.mouthPosition;
 
-    // TODO set failure handle
-    //return promise;
-    data.draw = function(context) {
-      var startAngle, endAngle,
-          radius = Math.round(0.5 * cellSize),
-          x = this.j * unit + (unit/2),
-          y = this.i * unit + (unit/2);
+              if (this.direction === RIGHT) {
+                startAngle = (Math.PI / 180) * this.mouthOpenValue;
+                endAngle =  (Math.PI / 180) * (360 -this.mouthOpenValue);
+              } else if (this.direction === LEFT) {
+                startAngle = (Math.PI / 180) * (180 + this.mouthOpenValue);
+                endAngle =  (Math.PI / 180) * (179 - this.mouthOpenValue);
+              } else if (this.direction === UP) {
+                startAngle = (Math.PI / 180) * (270 + this.mouthOpenValue);
+                endAngle =  (Math.PI / 180) * (269 - this.mouthOpenValue);
+              } else {
+                startAngle = (Math.PI / 180) * (90 + this.mouthOpenValue);
+                endAngle =  (Math.PI / 180) * (89 - this.mouthOpenValue);
+              }
 
-      if (this.mouthOpenValue <= 0) {
-        this.mouthPosition = 1;
-      } else if (this.mouthOpenValue >= 40) {
-        this.mouthPosition = -1;
-      }
-      this.mouthOpenValue +=  10 * this.mouthPosition;
-
-      if (this.direction === RIGHT) {
-        startAngle = (Math.PI / 180) * this.mouthOpenValue;
-        endAngle =  (Math.PI / 180) * (360 -this.mouthOpenValue);
-      } else if (this.direction === LEFT) {
-        startAngle = (Math.PI / 180) * (180 + this.mouthOpenValue);
-        endAngle =  (Math.PI / 180) * (179 - this.mouthOpenValue);
-      } else if (this.direction === UP) {
-        startAngle = (Math.PI / 180) * (270 + this.mouthOpenValue);
-        endAngle =  (Math.PI / 180) * (269 - this.mouthOpenValue);
-      } else {
-        startAngle = (Math.PI / 180) * (90 + this.mouthOpenValue);
-        endAngle =  (Math.PI / 180) * (89 - this.mouthOpenValue);
-      }
-
-      context.beginPath();
-      context.arc(x, y, radius, startAngle, endAngle);
-      context.lineTo(x, y);
-      context.fillStyle = '#FF0';
-      context.fill();
-    }
-    return data;
+              context.beginPath();
+              context.arc(x, y, radius, startAngle, endAngle);
+              context.lineTo(x, y);
+              context.fillStyle = '#FF0';
+              context.fill();
+            }
+    };
   }
 
   function initialize(posI, posJ) {
+    var joystickDiv = createNewJoystickDiv(),
+        joystick;
     $game.width = width;
     $game.height = height;
     pacman = initPacman(posI, posJ);
 
-    /*(initPacman(posI, posJ)).done(function(pacman) {*/
-      //// TODO
-    /*});*/
+    // paint
     setInterval(paint, 100);
 
+    $($controls).append(joystickDiv);
+    joystick = new Joystick(joystickDiv);
+    $(joystick)
+      .on('done', function(non, pos) {
+        console.log(pos);
+      });
   }
 
   function update() {
@@ -192,7 +191,7 @@ App.controller('pacman', function($page) {
 
       updateDirection(fake, pacman.direction);
       var cellPrime = getCell(grid, fake);
-      if (cellPrime === WALL) {
+      if (cellPrime === WALL || cellPrime === DOOR) {
         C_TYPE = C_WALL;
       } else if (cell === SMALLDOT && (pacman.i % 3) == 1 && (pacman.j % 3) == 1) {
         C_TYPE = C_SMALLDOT;
