@@ -18,31 +18,31 @@ App.controller('asteroids', function(page) {
         $(window).off("keyup", asteroids.handleKeydown);
     });
 });
-try {
-    App.restore();
-} catch (err) {
-    App.load('home');
-    console.log(err);
-}
 function filterIsNot(obj) {
     return function(o) {
         return o != obj;
     };
 }
 function Asteroids(div) {
+    var thiz = this;
     this.div = div;
-    div.append($("<div>")
-        .addClass("si-trackpad-container")
-        .append($("<div>")
-            .addClass("si-trackpad"))
-        .on("touchstart", function(evt) {
-            console.log(evt);
-        }));
+    thiz.joystickDiv = createNewJoystickDiv();
+    div.append(thiz.joystickDiv);
+    thiz.joystick = new Joystick(thiz.joystickDiv);
+    thiz.joystickDown = false;
+    $(thiz.joystick)
+        .on("start", function() {
+            thiz.joystickDown = true;
+            console.log("start");
+        })
+        .on("end", function() {
+            thiz.joystickDown = false;
+            console.log("done");
+        });
     this.div.addClass("si-main");
     this.sprites = [];
     this.prevPhysicsTime = new Date();
     this.stopped = false;
-    var thiz = this;
     thiz.directions = {
         left: [-1, 0],
         right: [1, 0],
@@ -252,6 +252,14 @@ function Asteroids(div) {
                 } else if(thiz.downDown) {
                     this.velY -= Math.cos(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * this.acceleration;
                     this.velX -= Math.sin(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * this.acceleration;
+                }
+                if(thiz.joystickDown) {
+                    var joystickOffset = thiz.joystick.getOffset();
+                    if(joystickOffset.x > 0) {
+                        this.rotating = 1 - 1 / (joystickOffset.x / 10) * deltaTime;
+                    } else if(joystickOffset.x < 0) {
+                        this.rotating = 1 - 1 / (joystickOffset.x / 10) * deltaTime;
+                    }
                 }
                 if(thiz.firing) {
                     this.firingDelay += deltaTime;

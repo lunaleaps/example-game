@@ -3,6 +3,7 @@
  Append the div structure created by createNewJoystickDiv() to your div. Create a new Joystick on that div structure.
  The joystick will trigger three events: start, move, done.
  The first parameter of any event is nonsense; it's the second you care about.
+ THERE IS ALSO AN API TO GET PARAMETERS AT THE CURRENT TIME -- SEE BELOW
  For example:
  var div = $("#mydiv");
  div.append(createNewJoystickDiv());
@@ -21,6 +22,12 @@
         console.log("finished at x: " + pos.x + ", y: " + pos.y);
         //x and y are offset from the start position.
     });
+ To get the offset at the current time:
+ joystick.getOffset()
+ Returns an object with x and y properties.
+
+ To get whether or not there is a currently active touch:
+ joystick.isTouchActive
 */
 var Joystick = function(elm) {
     var thiz = this;
@@ -41,6 +48,8 @@ var Joystick = function(elm) {
         thiz.currPosX = touch.clientX;
         thiz.currPosY = touch.clientY;
 
+        thiz.isTouchActive = true;
+
         $(thiz).trigger("start");
     });
     thiz.div.on("touchmove", function(evt) {
@@ -60,6 +69,8 @@ var Joystick = function(elm) {
             
             thiz.currPosX = touch.clientX;
             thiz.currPosY = touch.clientY;
+
+            thiz.isTouchActive = false;
 
             $(thiz).trigger("done", thiz.getOffset());
         }
