@@ -846,6 +846,45 @@ $( document ).ready(function() {
                 }
             }
         }, false);
+
+
+        game.gameCanvas.addEventListener("touchmove", function moveHandler(event) {
+            if (event.targetTouches.length >= 1) { //one finger touche
+                var touch = event.targetTouches[event.targetTouches.length -1];
+
+                if (event.type == "touchstart"){
+                    if ((game.currentStateName() == "WelcomeState") || (game.currentStateName() == "GameOverState")) {
+                        game.level = 1;
+                        game.score = 0;
+                        game.lives = 3;
+                        game.moveToState(new LevelIntroState(game.level), "LevelIntroState");
+                        //alert("touch " + touch.pageX + ", " + touch.pageY + " " + this.currentState());
+                    } 
+                    else if (game.currentStateName() == "PlayState") {
+                        if(touch.pageX > game.dx && touch.pageX < (game.dx + game.down_arrow.width) && touch.pageY > (game.dy + titlebar_height) && touch.pageY < (game.dy + titlebar_height + game.down_arrow.height)){
+                            //alert("touch " + touch.pageX + ", " + touch.pageY + " down_arrow " + down_arrow.x + ", " + down_arrow.y + ", " + down_arrow.r + " bar height " + titlebar_height);
+                            game.direction = "down";
+                        }
+                        else if(touch.pageX > game.ux && touch.pageX < (game.ux + game.up_arrow.width) && touch.pageY > (game.uy + titlebar_height) && touch.pageY < (game.uy + titlebar_height + game.up_arrow.height)){
+                            //alert("touch " + touch.pageX + ", " + touch.pageY + " up_arrow " + up_arrow.x + ", " + up_arrow.y + ", " + up_arrow.r + " bar height " + titlebar_height);
+                            game.direction = "up";
+                        }
+                        else if (touch.pageX > game.lx && touch.pageX < (game.lx + game.left_arrow.width) && touch.pageY > (game.ly + titlebar_height) && touch.pageY < (game.ly + titlebar_height + game.left_arrow.height)){
+                            //alert("touch " + touch.pageX + ", " + touch.pageY + " left_arrow " + left_arrow.x + ", " + left_arrow.y + ", " + left_arrow.r + " bar height " + titlebar_height);
+                            game.direction = "left";
+                        }
+                        else if (touch.pageX > game.rx && touch.pageX < (game.rx + game.right_arrow.width) && touch.pageY > (game.ry + titlebar_height) && touch.pageY < (game.ry + titlebar_height + game.right_arrow.height)){
+                            //alert("touch " + touch.pageX + ", " + touch.pageY + " right_arrow " + right_arrow.x + ", " + right_arrow.y + ", " + right_arrow.r + " bar height " + titlebar_height);
+                            game.direction = "right";
+                        }
+                        else if (touch.pageX > game.fx && touch.pageX < (game.fx + game.fire_button.width) && touch.pageY > (game.fy + titlebar_height) && touch.pageY < (game.fy + titlebar_height + game.fire_button.height)){
+                            //alert("touch " + touch.pageX + ", " + touch.pageY + " right_arrow " + right_arrow.x + ", " + right_arrow.y + ", " + right_arrow.r + " bar height " + titlebar_height);
+                            game.currentState().fireRocket();
+                        }
+                    }
+                }
+            }
+        }, true);
          
         //  Start the game.
         game.start();

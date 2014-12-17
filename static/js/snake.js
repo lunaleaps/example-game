@@ -42,6 +42,7 @@ $( document ).ready(function() {
         //create the snake
         var snake_array; //an array of cells to make up the snake
         canvas.addEventListener("touchstart", touchHandler, true);
+        canvas.addEventListener("touchmove", moveHandler, true);
 
         function touchHandler(event) {
             if (event.targetTouches.length >= 1) { //one finger touche
@@ -70,6 +71,12 @@ $( document ).ready(function() {
                         }
                     }
                 }
+            }
+        }
+
+        function moveHandler(e) {
+            if ($(e.target).closest('.scrollable').length == 0) { 
+                e.preventDefault(); 
             }
         }
         
