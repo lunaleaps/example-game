@@ -8,7 +8,7 @@ function contains(a, obj) {
     return false;
 }
 var asteroids;
-App.controller('spaceinvaders', function(page) {
+App.controller('asteroids', function(page) {
     asteroids = new Asteroids($(page).find("#si-main-div"));
     asteroids.start();
     $(window).on("keypress", asteroids.handleKeydown);
