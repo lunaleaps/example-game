@@ -811,7 +811,7 @@ $( document ).ready(function() {
 
         game.gameCanvas.addEventListener("touchstart", function touchHandler(event) {
             if (event.targetTouches.length >= 1) { //one finger touche
-                var touch = event.targetTouches[0];
+                var touch = event.targetTouches[event.targetTouches.length -1];
 
                 if (event.type == "touchstart"){
                     if ((game.currentStateName() == "WelcomeState") || (game.currentStateName() == "GameOverState")) {

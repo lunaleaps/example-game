@@ -107,7 +107,7 @@ $( document ).ready(function() {
 
         function touchHandler(event) {
             if (event.targetTouches.length >= 1) { //one finger touch
-                var touch = event.targetTouches[0];
+                var touch = event.targetTouches[event.targetTouches.length -1];
                 if (event.type == "touchstart") {
                     if(touch.pageX > dx && touch.pageX < (dx + down_arrow.width) && touch.pageY > (dy + titlebar_height) && touch.pageY < (dy + titlebar_height + down_arrow.height)){
                         //alert("touch " + touch.pageX + ", " + touch.pageY + " down_arrow " + down_arrow.x + ", " + down_arrow.y + ", " + down_arrow.r + " bar height " + titlebar_height);
