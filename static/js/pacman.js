@@ -2,6 +2,7 @@ App.controller('pacman', function(page) {
   var game = page.querySelector('.game'),
       joystick = page.querySelector('.joystick'),
       context = game.getContext('2d'), UP = 1,
+      scoreElement = page.querySelector('.scoreText'),
       DOWN = -1,
       LEFT = -2,
       RIGHT = 2,
@@ -17,7 +18,6 @@ App.controller('pacman', function(page) {
       C_EAT = 4,
       C_NONE = -1,
       MAX_SCORE = 146,
-      SMALL_DOT_SCORE = 1,
       score = 0,
       pacman,
       width = window.innerWidth,
@@ -141,7 +141,6 @@ App.controller('pacman', function(page) {
       next_pacman.j = pacman.j;
     } else if (collision === C_SMALLDOT) {
       updateScore(C_SMALLDOT);
-      score += SMALL_DOT_SCORE;
       cellCoords = getCellCoords(next_pacman.i, next_pacman.j);
       copy[cellCoords[0]][cellCoords[1]] = PATH;
     } else if (collision === C_BIGDOT) {
@@ -252,14 +251,15 @@ App.controller('pacman', function(page) {
   }
 
   function updateScore(collisionType) {
-    var nextScore;
-
     if (collisionType === C_SMALLDOT) {
       score += 10;
+      scoreElement.textContent = score;
     } else if (collisionType === C_BIGDOT) {
       score += 100;
+      scoreElement.textContent = score;
     } else if (collisionType === C_EAT) {
       score += 200;
+      scoreElement.textContent = score;
     }
   }
 });
