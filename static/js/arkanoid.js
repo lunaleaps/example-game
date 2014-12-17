@@ -199,19 +199,19 @@ $( document ).ready(function() {
 
         // Directional Controls
         var up_arrow = new Image();
-        up_arrow.src = "../img/up_green.png";
+        up_arrow.src = "../images/up_green.png";
         var ux = W/2 - up_arrow.width/2;
         var uy = 6*(H/5);
         var down_arrow = new Image();
-        down_arrow.src = "../img/down_green.png";
+        down_arrow.src = "../images/down_green.png";
         var dx = W/2 - down_arrow.width/2;
         var dy = 8*(H/5);
         var left_arrow = new Image();
-        left_arrow.src = "../img/left_green.png";
+        left_arrow.src = "../images/left_green.png";
         var lx = W/4 - left_arrow.width/2;
         var ly = 7*(H/5);
         var right_arrow = new Image();
-        right_arrow.src = "../img/right_green.png";
+        right_arrow.src = "../images/right_green.png";
         var rx = 3*W/4 - right_arrow.width/2;
         var ry = 7*(H/5);
 
