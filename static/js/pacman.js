@@ -48,25 +48,43 @@ App.controller('pacman', function(page) {
                  [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]];
 
   initialize(15 * 3 + 1, 10 * 3 + 1);
+  //initialize(15 * 3 + 1, 15 * 3 + 1);
+  //initialize(5 * 3 + 1, 18 * 3 + 1);
 
   function initPacman(i, j) {
-    var promise = $.Deferred(),
-        img = new Image,
-        data = {
+    var data = {
           i: i,
           j: j,
-          image: img,
-          direction: RIGHT
+          direction: RIGHT,
+          mouthOpenValue: 40,
+          mouthPos: -1
         };
 
     console.log('i: ' + i + ' j: ' + j);
-    img.src = '/images/kp_grey_logo.png';
-    img.addEventListener('load', function() {
-      promise.resolve(data);
-    });
 
     // TODO set failure handle
     //return promise;
+    data.draw = function(context) {
+      var startAngle, endAngle,
+          radius = Math.round(0.5 * cellSize),
+          x = this.j * unit + (unit/2),
+          y = this.i * unit + (unit/2);
+
+      if (this.mouthOpenValue <= 0) {
+        this.mouthPosition = 1;
+      } else if (this.mouthOpenValue >= 40) {
+        this.mouthPosition = -1;
+      }
+      this.mouthOpenValue +=  5 * this.mouthPosition;
+
+      context.beginPath();
+      context.arc(x, y, radius,
+          (Math.PI / 180) * this.mouthOpenValue,
+          (Math.PI / 180) * (360 -this.mouthOpenValue));
+      context.lineTo(x, y);
+      context.fillStyle = '#FF0';
+      context.fill();
+    }
     return data;
   }
 
@@ -127,6 +145,7 @@ App.controller('pacman', function(page) {
       copy[cellCoords[0]][cellCoords[1]] = PATH;
     } else if (collision === C_BIGDOT) {
       // TODO handle bigdot eating
+      console.log('Big dot collected');
       updateScore(C_BIGDOT);
       cellCoords = getCellCoords(next_pacman.i, next_pacman.j);
       copy[cellCoords[0]][cellCoords[1]] = PATH;
@@ -227,9 +246,8 @@ App.controller('pacman', function(page) {
     }
 
     // paint pacman
-    topLeftX = (pacman.j -1) * unit;
-    topLeftY = (pacman.i -1) * unit;
-    context.drawImage(pacman.image, topLeftX, topLeftY, cellSize, cellSize);
+    pacman.draw(context);
+    //context.drawImage(pacman.image, topLeftX, topLeftY, cellSize, cellSize);
   }
 
   function updateScore(collisionType) {
