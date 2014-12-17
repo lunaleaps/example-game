@@ -1,8 +1,9 @@
-App.controller('pacman', function(page) {
-  var game = page.querySelector('.game'),
-      joystick = page.querySelector('.joystick'),
-      context = game.getContext('2d'), UP = 1,
-      scoreElement = page.querySelector('.scoreText'),
+App.controller('pacman', function($page) {
+  var $game = $page.querySelector('.game'),
+      $joystick = $page.querySelector('.joystick'),
+      context = $game.getContext('2d'),
+      $scoreElement = $page.querySelector('.scoreText'),
+      UP = 1,
       DOWN = -1,
       LEFT = -2,
       RIGHT = 2,
@@ -20,10 +21,12 @@ App.controller('pacman', function(page) {
       MAX_SCORE = 146,
       score = 0,
       pacman,
-      width = window.innerWidth,
-      height = window.innerWidth,
-      unit = Math.floor(width/63),
+      unit = Math.floor(window.innerWidth/63),
+      width = unit * 63,
+      height = width,
       cellSize = unit * 3;
+
+      console.log(width);
 
   var layout = [ [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
                  [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
@@ -47,15 +50,16 @@ App.controller('pacman', function(page) {
                  [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
                  [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]];
 
-  initialize(15 * 3 + 1, 10 * 3 + 1);
+  //initialize(15 * 3 + 1, 10 * 3 + 1);
   //initialize(15 * 3 + 1, 15 * 3 + 1);
+  initialize(1 * 3 + 1, 15 * 3 +1);
   //initialize(5 * 3 + 1, 18 * 3 + 1);
 
   function initPacman(i, j) {
     var data = {
           i: i,
           j: j,
-          direction: RIGHT,
+          direction: DOWN,
           mouthOpenValue: 40,
           mouthPos: -1
         };
@@ -75,12 +79,24 @@ App.controller('pacman', function(page) {
       } else if (this.mouthOpenValue >= 40) {
         this.mouthPosition = -1;
       }
-      this.mouthOpenValue +=  5 * this.mouthPosition;
+      this.mouthOpenValue +=  10 * this.mouthPosition;
+
+      if (this.direction === RIGHT) {
+        startAngle = (Math.PI / 180) * this.mouthOpenValue;
+        endAngle =  (Math.PI / 180) * (360 -this.mouthOpenValue);
+      } else if (this.direction === LEFT) {
+        startAngle = (Math.PI / 180) * (180 + this.mouthOpenValue);
+        endAngle =  (Math.PI / 180) * (179 - this.mouthOpenValue);
+      } else if (this.direction === UP) {
+        startAngle = (Math.PI / 180) * (270 + this.mouthOpenValue);
+        endAngle =  (Math.PI / 180) * (269 - this.mouthOpenValue);
+      } else {
+        startAngle = (Math.PI / 180) * (90 + this.mouthOpenValue);
+        endAngle =  (Math.PI / 180) * (89 - this.mouthOpenValue);
+      }
 
       context.beginPath();
-      context.arc(x, y, radius,
-          (Math.PI / 180) * this.mouthOpenValue,
-          (Math.PI / 180) * (360 -this.mouthOpenValue));
+      context.arc(x, y, radius, startAngle, endAngle);
       context.lineTo(x, y);
       context.fillStyle = '#FF0';
       context.fill();
@@ -89,8 +105,8 @@ App.controller('pacman', function(page) {
   }
 
   function initialize(posI, posJ) {
-    game.width = window.innerWidth;
-    game.height = window.innerWidth;
+    $game.width = width;
+    $game.height = height;
     pacman = initPacman(posI, posJ);
 
     /*(initPacman(posI, posJ)).done(function(pacman) {*/
@@ -253,13 +269,13 @@ App.controller('pacman', function(page) {
   function updateScore(collisionType) {
     if (collisionType === C_SMALLDOT) {
       score += 10;
-      scoreElement.textContent = score;
+      $scoreElement.textContent = score;
     } else if (collisionType === C_BIGDOT) {
       score += 100;
-      scoreElement.textContent = score;
+      $scoreElement.textContent = score;
     } else if (collisionType === C_EAT) {
       score += 200;
-      scoreElement.textContent = score;
+      $scoreElement.textContent = score;
     }
   }
 });
