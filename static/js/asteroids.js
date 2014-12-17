@@ -257,18 +257,24 @@ function Asteroids(div) {
         var amtAlong = edge == 0 || edge == 2 ? Math.floor(Math.random() * window.innerHeight)
             : Math.floor(Math.random() * window.innerWidth);
         var coords;
+        var vel;
         if(edge == 0) {
             coords = [-80, amtAlong];
+            vel = [20, 0];
         } else if(edge == 2) {
             coords = [window.innerWidth + 80, amtAlong];
+            vel = [-20, 0];
         } else if(edge == 1) {
-            coords = [amtAlong, 0];
+            coords = [amtAlong, -80];
+            vel = [0, 20];
         } else if(edge == 3) {
-            coords = [amtAlong, window.innerWidth + 80];
+            coords = [amtAlong, window.innerHeight + 80];
+            vel = [0, -20];
         } else {
             throw "Basic arithmetic failed...?";
         }
-        return thiz.createAsteroid([0, 0], [20, 20]);
+        // console.log(coords);
+        return thiz.createAsteroid(coords, vel);
     }
     thiz.createPlayer = function() {
         var sprite = thiz.createSprite($("<div>")
@@ -363,7 +369,7 @@ function Asteroids(div) {
         var delta = millis / 1000;
         thiz.asteroidTime -= delta;
         if(thiz.asteroidTime <= 0) {
-            thiz.asteroidTime = 5;
+            thiz.asteroidTime = 3;
             thiz.createRandomAsteroid();
         }
         for(key in thiz.sprites) {
