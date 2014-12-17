@@ -18,7 +18,7 @@ var UP = 1,
 
 App.controller('pacman', function($page) {
   var $game = $page.querySelector('.game'),
-      $controls = $page.querySelector('.joystick'),
+      $controls = $($page.querySelector('.joystick')),
       context = $game.getContext('2d'),
       $scoreElement = $page.querySelector('.scoreText'),
       score = 0,
@@ -96,8 +96,6 @@ App.controller('pacman', function($page) {
   }
 
   function initialize(posI, posJ) {
-    var joystickDiv = createNewJoystickDiv(),
-        joystick;
     $game.width = width;
     $game.height = height;
     pacman = initPacman(posI, posJ);
@@ -105,10 +103,9 @@ App.controller('pacman', function($page) {
     // paint
     setInterval(paint, 75);
 
-    $($controls).append(joystickDiv);
-    joystick = new Joystick(joystickDiv);
+    var joystick = new Joystick($controls);
     $(joystick)
-      .on('done', function(non, pos) {
+      .on('move', function(non, pos) {
         if (Math.abs(pos.x) > Math.abs(pos.y)) {
           if (pos.x > 0) {
             new_direction = RIGHT;

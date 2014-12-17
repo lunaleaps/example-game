@@ -8,6 +8,15 @@
   display: block;
 }
 
+.trackpad {
+  border: 1px solid #303030;
+  background-color: #101010;
+  margin: auto;
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+}
+
 .scoreTitle {
   background-color: #000000;
   font-style: courier;
