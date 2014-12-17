@@ -35,7 +35,7 @@ $( document ).ready(function() {
         var paddleHit;
 
         canvas.addEventListener("touchstart", touchHandler, false);
-        canvas.addEventListener("touchmove", touchHandler, false);
+        canvas.addEventListener("touchmove", moveHandler, false);
         canvas.addEventListener("touchend", touchHandler, false);
 
         $(canvas).on('vmousedown', function(e){
@@ -119,6 +119,10 @@ $( document ).ready(function() {
                     }
                 }
             }
+        }
+
+        function moveHandler(e) {
+            e.preventDefault();
         }
 
         // Function to paint canvas
