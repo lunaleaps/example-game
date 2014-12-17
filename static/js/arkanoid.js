@@ -87,15 +87,15 @@ $( document ).ready(function() {
         // Initialise the collision sound
         collision = document.getElementById("collide");
 
-        //var ratio = window.devicePixelRatio || 1;
+        var ratio = window.devicePixelRatio || 1;
         //var w = screen.width * ratio;
         //var h = screen.height * ratio;
 
         var titlebar_height = $( "div.app-title" ).height();
 
         // Set the canvas's height and width
-        canvas.width = screen.width;
-        canvas.height = screen.height - titlebar_height;
+        canvas.width = screen.width * ratio;
+        canvas.height = (screen.height * ratio)- titlebar_height;
 
         var W = canvas.width; // Window's width
         var H = canvas.height/2; // Window's height
