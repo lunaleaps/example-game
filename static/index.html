@@ -68,11 +68,13 @@
       </div>
     </div>
     <script src="js/zepto.min.js"></script>
+    <script src='js/joystick.js'></script>
     <script src="//cdn.kik.com/app/2.0.1/app.min.js"></script>
     <script src='js/pacman.js'></script>
     <script src='js/asteroids.js'></script>
     <script>
       App.controller('home', function (page) {
+
         var $page = $(page),
             pacman= $page.find('.app-button.pacman'),
             asteroids=$page.find('.app-button.asteroids');
