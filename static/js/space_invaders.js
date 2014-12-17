@@ -846,6 +846,11 @@ $( document ).ready(function() {
                 }
             }
         }, false);
+
+
+        game.gameCanvas.addEventListener("touchmove", function moveHandler(e) {
+            e.preventDefault();
+        }, false);
          
         //  Start the game.
         game.start();
