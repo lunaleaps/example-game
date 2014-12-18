@@ -1,6 +1,7 @@
 $(document).ready(function() {
-	//1. set ul width 
-	//2. image when click prev/next button
+	points.debug = true;
+
+	var paid = false;
 	var ul;
 	var liItems;
 	var imageNumber;
@@ -16,8 +17,8 @@ $(document).ready(function() {
 		imageNumber = liItems.length;
 		imageWidth = liItems[0].children[0].clientWidth;
 		ul.style.width = parseInt(imageWidth * imageNumber) + 'px';
-		prev = document.getElementById("prev");
-		next = document.getElementById("next");
+		prev = document.getElementById("previous-button");
+		next = document.getElementById("next-button");
 		generatePager(imageNumber);
 		//.onclike = slide(-1) will be fired when onload;
 		/*
@@ -103,5 +104,63 @@ $(document).ready(function() {
 		pagerDiv.style.width = parseInt((liWidth + liMargin * 2) * imageNumber) + 'px';
 	}
 	window.onload = init;
+
+	function kikPoints(){
+		var id = kik.utils.random.uuid();
+        var pointsValue = 2;
+        var sku = 'com.herokuapp.kp-aracde.play';
+
+		points.redeem(id, pointsValue, sku, function spend(transaction){
+			if (transaction) {
+				paid = true;
+			} else {
+				paid = false;
+			}
+		});
+		return paid;
+	}
+	
+	var start_button = document.getElementById("play-button");
+	$(start_button).on('vmousedown', function(e){
+		var game_button;
+		switch (currentImage) {
+		    case 0:
+		    	if (kikPoints()){
+		    		$(".pacman").click();
+		    		paid = false;
+		    	}
+		        break;
+		    case 1:
+		    	if (kikPoints()){
+		        	$(".asteroids").click();
+		        	paid = false;
+		    	}
+		        break;
+		    case 2:
+		    	if (kikPoints()){
+			        $(".pong").click();
+			        paid = false;
+			    }
+		        break;
+		    case 3:
+		    	if (kikPoints()){
+		        	$(".snake").click();
+		        	paid = false;
+		    	}
+		        break;
+		    case 4:
+		    	if (kikPoints()){
+		        	$(".spaceInvaders").click();
+		        	paid = false;
+		        }
+		        break;
+		    case 5:
+		    	if (kikPoints()){
+		        	$(".arkanoid").click();
+		        	paid = false;
+		        }
+		        break;
+		}
+	});
 	
 });

@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+$(document).on('pageinit', function() {
     $("#space-invaders-game-button").click(function(event){
         // STARFIELD ============================================================================================
         //  Define the starfield class.

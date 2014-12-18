@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+$(document).on('pageinit', function() {
     $("#snake-game-button").click(function(event){
         //Canvas
         var canvas = document.getElementById("canvas");

@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+$(document).on('pageinit', function() {
     $("#pong-game-button").click(function(event){
         // RequestAnimFrame: a browser API for getting smooth animations
         window.requestAnimFrame = (function(){
