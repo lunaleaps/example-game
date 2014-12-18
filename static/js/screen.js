@@ -1,6 +1,4 @@
 $(document).ready(function() {
-	points.debug = true;
-
 	var paid = false;
 	var ul;
 	var liItems;
