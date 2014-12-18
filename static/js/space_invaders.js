@@ -166,6 +166,9 @@ $(document).on('pageinit', function() {
             this.fire_button.src = "../images/fire_red.png";
             this.fx = W/2 - this.fire_button.width/2;
             this.fy = 9*(H/7);
+
+            this.invader_img = new Image();
+            this.invader_img.src = "../images/spaceInvaderVillain.png";
         }
 
         //  Initialis the Game with a canvas.
@@ -307,7 +310,7 @@ $(document).on('pageinit', function() {
             //  Clear the background.
             ctx.clearRect(0, 0, game.width, game.height);
 
-            ctx.fillStyle = "#000080";
+            ctx.fillStyle = "#360a57";
             ctx.fillRect(0, H, W, H*2);
 
             ctx.drawImage(game.controller, game.cx, game.cy, W, H);
@@ -341,7 +344,7 @@ $(document).on('pageinit', function() {
             //  Clear the background.
             ctx.clearRect(0, 0, game.width, game.height);
 
-            ctx.fillStyle = "#000080";
+            ctx.fillStyle = "#360a57";
             ctx.fillRect(0, H, W, H*2);
 
             ctx.drawImage(game.controller, game.cx, game.cy, W, H);
@@ -597,7 +600,7 @@ $(document).on('pageinit', function() {
             //  Clear the background.
             ctx.clearRect(0, 0, game.width, game.height);
 
-            ctx.fillStyle = "#000080";
+            ctx.fillStyle = "#360a57";
             ctx.fillRect(0, H, W, H*2);
 
             ctx.drawImage(game.controller, game.cx, game.cy, W, H);
@@ -616,7 +619,7 @@ $(document).on('pageinit', function() {
             ctx.fillStyle = '#006600';
             for(var i=0; i<this.invaders.length; i++) {
                 var invader = this.invaders[i];
-                ctx.fillRect(invader.x - invader.width/2, invader.y - invader.height/2, invader.width, invader.height);
+                ctx.drawImage(game.invader_img, invader.x - invader.width/2, invader.y - invader.height/2, invader.width, invader.height);
             }
 
             //  Draw bombs.
@@ -702,7 +705,7 @@ $(document).on('pageinit', function() {
             //  Clear the background.
             ctx.clearRect(0, 0, game.width, game.height);
 
-            ctx.fillStyle = "#000080";
+            ctx.fillStyle = "#360a57";
             ctx.fillRect(0, H, W, H*2);
 
             ctx.drawImage(game.controller, game.cx, game.cy, W, H);

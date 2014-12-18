@@ -12,13 +12,12 @@
 .slider_wrapper{
   overflow: hidden;
   position:relative;
-  height:200px;
+  height:100%;
   top:auto;
 }
 #image_slider{
-
   position: relative;
-  height: auto;
+  height: 100%;
   list-style: none;
   overflow: hidden;
   float: left;
@@ -31,14 +30,6 @@
   float: left;
 }
 
-#prev{
-  background: #000 url('https://dl.dropboxusercontent.com/u/65639888/image/prev.png') no-repeat center;
-  left: 0px;
-}
-#next{
-  background: #000 url('https://dl.dropboxusercontent.com/u/65639888/image/next.png') no-repeat center;
-  right: 0px;
-}
 #pager{
   /* firefox has different center method. this doesn't work for fire fox */
   /* not in the center*/
@@ -69,7 +60,6 @@
   display: none;
 }
 
-/*
-.app-button {
-   content:url(http://placehold.it/822x600);
-}​*/
+#asteroids-game-button, #pacman-game-button, #pong-game-button, #snake-game-button, #space-invaders-game-button, #arkanoid-game-button {
+   height: 200px;
+}​

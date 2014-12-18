@@ -202,7 +202,7 @@ $(document).on('pageinit', function() {
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, w, h);
 
-            ctx.fillStyle = "#000080";
+            ctx.fillStyle = "#360a57";
             ctx.fillRect(0, h, w, h*2);
 
             ctx.strokeStyle = "black";

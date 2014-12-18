@@ -111,15 +111,15 @@ $(document).ready(function() {
         var sku = 'com.herokuapp.kp-aracde.play';
 
 		points.redeem(id, pointsValue, sku, function spend(transaction){
-			/*if (transaction) {
+			if (transaction) {
 				paid = true;
 			} else {
 				paid = false;
-			}*/
+			}
 		});
 		paid = true;
 	}
-	
+	paid = true;
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
 		var game_button;
@@ -153,7 +153,7 @@ $(document).ready(function() {
 		    	}
 		        break;
 		    case 4:
-		    	kikPoints();
+		    	//kikPoints();
 		    	if (paid){
 		        	$(".spaceInvaders").click();
 		        	paid = false;

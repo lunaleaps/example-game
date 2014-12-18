@@ -27,12 +27,17 @@
         <div class="carousel">
           <div class="slider_wrapper">
             <ul id="image_slider">
-              <li><div class="app-button pacman">Pacman</div></li>
-              <li><div class="app-button asteroids">Asteroids</div></li>
-              <li><div id="pong-game-button" class="app-button pong" data-target="pong-game">Pong</div></li>
-              <li><div id="snake-game-button" class="app-button snake" data-target="snake-game">Snake</div></li>
-              <li><div id="space-invaders-game-button" class="app-button spaceInvaders" data-target="space-invaders-game">Space Invaders</div></li>
-              <li><div id="arkanoid-game-button" class="app-button arkanoid" data-target="arkanoid-game">Arkanoid</div></li>
+              <li><img id="pacman-game-button" class="app-button pacman" src="./images/pacmanImage.png"></li>
+
+              <li><img id="asteroids-game-button" class="app-button asteroids" src="./images/asteroidImage.png"></li>
+
+              <li><img id="pong-game-button" class="app-button pong" src="./images/pongImage.png"></li>
+
+              <li><img id="snake-game-button" class="app-button snake" data-target="snake-game" src="./images/snakeImage.png"></li>
+
+              <li><img id="space-invaders-game-button" class="app-button spaceInvaders" data-target="space-invaders-game" src="./images/spaceinvadersImage.png"></li>
+              
+              <li><img id="arkanoid-game-button" class="app-button arkanoid" data-target="arkanoid-game" src="./images/arkanoidImage.png"></li>
             </ul>
           </div>
           <ul id="pager">
@@ -129,7 +134,6 @@
     <script src='js/arkanoid.js'></script>
     <script src='js/space_invaders.js'></script>
     <script src='js/snake.js'></script>
-    <!--<script src='js/kikPoints.js'></script>-->
     <script src='js/screen.js'></script>
     <script>
       App.controller('home', function (page) {
