@@ -791,8 +791,8 @@ $( document ).ready(function() {
 
         //  Setup the canvas.
         var canvas = document.getElementById("canvas");
-        canvas.width = screen.width;
-        canvas.height = screen.height - titlebar_height;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight - titlebar_height;
 
         var W = canvas.width; // Window's width
         var H = canvas.height/2; // Window's height

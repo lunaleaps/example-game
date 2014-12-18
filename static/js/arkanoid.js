@@ -94,8 +94,8 @@ $( document ).ready(function() {
         var titlebar_height = $( "div.app-title" ).height();
 
         // Set the canvas's height and width
-        canvas.width = screen.width;
-        canvas.height = screen.height - titlebar_height;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight - titlebar_height;
 
         var W = canvas.width; // Window's width
         var H = canvas.height/2; // Window's height
