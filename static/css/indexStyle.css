@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'ArcadeClassic';
-  src: satic/fonts/ArcadeClassic.ttf format ('ttf');
+  src: url(satic/fonts/ArcadeClassic.ttf format) ('ttf');
 }
 
 .app-content {
@@ -36,10 +36,10 @@
 }
 
 /* arcade homescreen */
-.aStartButton{
+.aStartButton {
   width: 50%;
   margin: auto;
-  height: 8%;
+  height: 7%;
   background-color: #202020;
   background-size: 100%;
   border-radius: 600px;
@@ -48,5 +48,10 @@
   padding-top:12px;
   text-align: center;
   font-style: ArcadeClassic;
+}
+
+.aBottom {
+  background-image: url("kp-arcade/static/images/arcadeBottomBG.png");
+  background-width: 100%;
 }
 
