@@ -117,7 +117,6 @@ $(document).ready(function() {
 				paid = false;
 			}
 		});
-		return paid;
 	}
 	
 	var start_button = document.getElementById("play-button");
@@ -125,37 +124,43 @@ $(document).ready(function() {
 		var game_button;
 		switch (currentImage) {
 		    case 0:
-		    	if (kikPoints()){
+		    	kikPoints();
+		    	if (paid){
 		    		$(".pacman").click();
 		    		paid = false;
 		    	}
 		        break;
 		    case 1:
-		    	if (kikPoints()){
+		    	kikPoints();
+		    	if (paid){
 		        	$(".asteroids").click();
 		        	paid = false;
 		    	}
 		        break;
 		    case 2:
-		    	if (kikPoints()){
+		    	kikPoints();
+		    	if (paid){
 			        $(".pong").click();
 			        paid = false;
 			    }
 		        break;
 		    case 3:
-		    	if (kikPoints()){
+		    	kikPoints();
+		    	if (paid){
 		        	$(".snake").click();
 		        	paid = false;
 		    	}
 		        break;
 		    case 4:
-		    	if (kikPoints()){
+		    	kikPoints();
+		    	if (paid){
 		        	$(".spaceInvaders").click();
 		        	paid = false;
 		        }
 		        break;
 		    case 5:
-		    	if (kikPoints()){
+		    	kikPoints();
+		    	if (paid){
 		        	$(".arkanoid").click();
 		        	paid = false;
 		        }
