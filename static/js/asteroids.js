@@ -225,7 +225,7 @@ function Asteroids(div) {
                     var distX = Math.abs(sprite.x - thiz.player.x);
                     var distY = Math.abs(sprite.y - thiz.player.y);
                     var dist = Math.sqrt(distX * distX + distY * distY);
-                    if(dist < 96) {
+                    if(dist < 40) {
                         thiz.stop();
                         App.dialog({
                             title: "You died",
@@ -235,18 +235,13 @@ function Asteroids(div) {
                         });
                     }
                 }
+                if(sprite.x < -1000 || sprite.x > window.innerWidth + 1000 || sprite.y < -1000 ||
+                    sprite.y > window.innerHeight + 1000) {
+                    thiz.removeSprite(sprite);
+                    delete thiz.asteroids[thiz.asteroids.indexOf(sprite)];
+                }
             }, position, speed);
         sprite.hide = function() {
-            /*this.div.animate({
-                opacity: 0,
-                width: 0,
-                height: 0,
-                transform: "translate(40px, 40px)"
-            }, 400, "linear", function() {
-                sprite.div.hide();
-                sprite.hidden = true;
-            });*/
-            //Since .animate() doesn't work (a Zepto problem?):
             sprite.div.hide();
             sprite.hidden = true;
         }
@@ -254,6 +249,23 @@ function Asteroids(div) {
         return sprite;
     }
     thiz.createRandomAsteroid = function() {
+        //We need to create an asteroid around the edges of the screen. Figure out what edge and how far along.
+        //What edge?
+        var edge = Math.floor(Math.random() * 4);
+        var amtAlong = edge == 0 || edge == 2 ? Math.floor(Math.random() * window.innerHeight)
+            : Math.floor(Math.random() * window.innerWidth);
+        var coords;
+        if(edge == 0) {
+            coords = [-80, amtAlong];
+        } else if(edge == 2) {
+            coords = [window.innerWidth() + 80, amtAlong];
+        } else if(edge == 1) {
+            coords = [amtAlong, 0];
+        } else if(edge == 3) {
+            coords = [amtAlong, window.innerWidth + 80];
+        } else {
+            throw "Basic arithmetic failed...?";
+        }
         return thiz.createAsteroid([0, 0], [20, 20]);
     }
     thiz.createPlayer = function() {
