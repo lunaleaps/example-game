@@ -119,7 +119,7 @@ $(document).ready(function() {
 		});
 		paid = true;
 	}
-	paid = true;
+
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
 		var game_button;
@@ -153,7 +153,7 @@ $(document).ready(function() {
 		    	}
 		        break;
 		    case 4:
-		    	//kikPoints();
+		    	kikPoints();
 		    	if (paid){
 		        	$(".spaceInvaders").click();
 		        	paid = false;
