@@ -1,6 +1,10 @@
 @font-face {
-  font-family: 'ArcadeClassic';
-  src: satic/fonts/ArcadeClassic.ttf format ('ttf');
+  font-family: ArcadeClassic;
+  src: url('../fonts/ArcadeClassic.ttf');
+}
+
+.ui-loader {
+  display: none;
 }
 
 .app-content {
@@ -36,10 +40,10 @@
 }
 
 /* arcade homescreen */
-.aStartButton{
+.aStartButton {
   width: 50%;
   margin: auto;
-  height: 8%;
+  height: 7%;
   background-color: #202020;
   background-size: 100%;
   border-radius: 600px;
@@ -47,7 +51,14 @@
   color: #F0B73E;
   padding-top:12px;
   text-align: center;
-  font-style: ArcadeClassic;
+  font-family: ArcadeClassic;
+}
+
+.aBottom {
+  background-image: url("../images/arcadeBottomBG.png");
+  width: 100%;
+  height: 100%;
+  border: 2px solid red;
 }
 
 .arcade-button {
@@ -67,9 +78,5 @@
 .arcade-button:active {
   box-shadow: 0 2px 0 #006599;
   transform: translateY(3px);
-}
-
-.ui-loader{
-  display: none;
 }
 
