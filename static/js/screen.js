@@ -115,7 +115,6 @@ $(document).ready(function() {
 				paid = false;
 			}
 		});
-		paid = true;
 	}
 
 	var start_button = document.getElementById("play-button");
