@@ -98,7 +98,12 @@ App.controller('pacman', function($page) {
     this.isMoving =  false;
     this.radius = GHOST_RADIUS;
     this.ROOM_UP  = i -1;
-    this.ROOM_DOWN = i + 1;
+    this.ROOM_DOWN = i;
+  }
+
+  Ghost.prototype.clear = function(context) {
+    context.fillStyle = 'black';
+    context.fillRect((this.j-1) *unit, (this.i-1)*unit, cellSize+unit, cellSize+unit);
   }
 
   Ghost.prototype.chooseDirection = function (grid, pacman) {
@@ -166,6 +171,8 @@ App.controller('pacman', function($page) {
   Ghost.prototype.draw = function(context) {
     var x = this.j * unit + unit
         y = this.i * unit + unit;
+
+    this.clear(context);
     context.fillStyle = this.color;
     context.beginPath();
 
@@ -266,7 +273,7 @@ App.controller('pacman', function($page) {
             clear: function(context) {
               context.fillStyle = 'black';
               context.fillRect((this.j-2) *unit, (this.i -2)*unit, cellSize + 2*unit, cellSize+2*unit);
-            }
+            },
             draw : function(context) {
               var startAngle, endAngle,
                   radius = Math.round(0.7 * cellSize),
@@ -307,6 +314,8 @@ App.controller('pacman', function($page) {
   }
 
   function paintGhosts() {
+    ghost.clear(context);
+    ghost.move(layout, pacman);
     ghost.draw(context);
   }
 
@@ -315,7 +324,7 @@ App.controller('pacman', function($page) {
     $game.width = width;
     $game.height = height;
     pacman = initPacman(posI, posJ);
-    ghost = new Ghost('red', 9 * 3, 9 * 3);
+    ghost = new Ghost('red', 9 * 3 + 1, 9 * 3);
     // paint
     paintBackground();
     setInterval(paint, 75);
@@ -397,9 +406,6 @@ App.controller('pacman', function($page) {
     pacman.i = next_pacman.i;
     pacman.j = next_pacman.j;
     pacman.direction = next_pacman.direction;
-    ghost.move(copy, pacman);
-
-
     // go through ghosts and update
     // ghost
 
@@ -446,10 +452,9 @@ App.controller('pacman', function($page) {
   }
 
   function paint() {
+    pacman.clear(context);
     // updates layout
     collision = update();
-
-
     // clear bg of pacman
 
     // paint pacman
