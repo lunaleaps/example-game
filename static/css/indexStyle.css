@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'ArcadeClassic';
+  src: satic/fonts/ArcadeClassic.ttf format ('ttf');
+}
+
 .app-content {
   background-color: #000;
 }
@@ -29,4 +34,19 @@
   padding-bottom: 4px;
   margin-top: -10px;
 }
-\
+
+/* arcade homescreen */
+.aStartButton{
+  width: 50%;
+  margin: auto;
+  height: 8%;
+  background-color: #202020;
+  background-size: 100%;
+  border-radius: 600px;
+  border: 6px solid #F0B73E;
+  color: #F0B73E;
+  padding-top:12px;
+  text-align: center;
+  font-style: ArcadeClassic;
+}
+
