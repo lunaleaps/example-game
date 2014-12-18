@@ -25,6 +25,7 @@ function filterIsNot(obj) {
 }
 function Asteroids(div) {
     var thiz = this;
+    div.attr("isDiv", "yes");
     this.div = div;
     thiz.joystickDiv = createNewJoystickDiv();
     div.append(thiz.joystickDiv);
@@ -39,6 +40,23 @@ function Asteroids(div) {
             thiz.joystickDown = false;
             thiz.player.rotating = 0;
             console.log("done");
+        });
+    $(thiz.div)
+        .on("touchstart", function(evt) {
+            evt = getOriginalEvent(evt);
+            var touch = evt.changedTouches[0];
+            if($(touch.target).attr("isDiv") == "yes") {
+                evt.preventDefault();
+                thiz.firing = true;
+            }
+        })
+        .on("touchend", function(evt) {
+            evt = getOriginalEvent(evt);
+            var touch = evt.changedTouches[0];
+            if($(touch.target).attr("isDiv") == "yes") {
+                evt.preventDefault();
+                thiz.firing = false;
+            }
         });
     this.div.addClass("si-main");
     this.sprites = [];
@@ -209,7 +227,7 @@ function Asteroids(div) {
                     var distX = Math.abs(sprite.x - thiz.player.x);
                     var distY = Math.abs(sprite.y - thiz.player.y);
                     var dist = Math.sqrt(distX * distX + distY * distY);
-                    if(dist < 96) {
+                    if(dist < 40) {
                         thiz.stop();
                         App.dialog({
                             title: "You died",
@@ -219,18 +237,13 @@ function Asteroids(div) {
                         });
                     }
                 }
+                if(sprite.x < -1000 || sprite.x > window.innerWidth + 1000 || sprite.y < -1000 ||
+                    sprite.y > window.innerHeight + 1000) {
+                    thiz.removeSprite(sprite);
+                    delete thiz.asteroids[thiz.asteroids.indexOf(sprite)];
+                }
             }, position, speed);
         sprite.hide = function() {
-            /*this.div.animate({
-                opacity: 0,
-                width: 0,
-                height: 0,
-                transform: "translate(40px, 40px)"
-            }, 400, "linear", function() {
-                sprite.div.hide();
-                sprite.hidden = true;
-            });*/
-            //Since .animate() doesn't work (a Zepto problem?):
             sprite.div.hide();
             sprite.hidden = true;
         }
@@ -238,7 +251,30 @@ function Asteroids(div) {
         return sprite;
     }
     thiz.createRandomAsteroid = function() {
-        return thiz.createAsteroid([0, 0], [20, 20]);
+        //We need to create an asteroid around the edges of the screen. Figure out what edge and how far along.
+        //What edge?
+        var edge = Math.floor(Math.random() * 4);
+        var amtAlong = edge == 0 || edge == 2 ? Math.floor(Math.random() * window.innerHeight)
+            : Math.floor(Math.random() * window.innerWidth);
+        var coords;
+        var vel;
+        if(edge == 0) {
+            coords = [-80, amtAlong];
+            vel = [20, 0];
+        } else if(edge == 2) {
+            coords = [window.innerWidth + 80, amtAlong];
+            vel = [-20, 0];
+        } else if(edge == 1) {
+            coords = [amtAlong, -80];
+            vel = [0, 20];
+        } else if(edge == 3) {
+            coords = [amtAlong, window.innerHeight + 80];
+            vel = [0, -20];
+        } else {
+            throw "Basic arithmetic failed...?";
+        }
+        // console.log(coords);
+        return thiz.createAsteroid(coords, vel);
     }
     thiz.createPlayer = function() {
         var sprite = thiz.createSprite($("<div>")
@@ -333,7 +369,7 @@ function Asteroids(div) {
         var delta = millis / 1000;
         thiz.asteroidTime -= delta;
         if(thiz.asteroidTime <= 0) {
-            thiz.asteroidTime = 5;
+            thiz.asteroidTime = 3;
             thiz.createRandomAsteroid();
         }
         for(key in thiz.sprites) {

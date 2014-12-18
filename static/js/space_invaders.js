@@ -142,23 +142,23 @@ $( document ).ready(function() {
             this.gameCanvas =  null;
 
             this.up_arrow = new Image();
-            this.up_arrow.src = "../img/up_green.png";
+            this.up_arrow.src = "../images/up_green.png";
             this.ux = W/2 - this.up_arrow.width/2;
             this.uy = 6*(H/5);
             this.down_arrow = new Image();
-            this.down_arrow.src = "../img/down_green.png";
+            this.down_arrow.src = "../images/down_green.png";
             this.dx = W/2 - this.down_arrow.width/2;
             this.dy = 8*(H/5);
             this.left_arrow = new Image();
-            this.left_arrow.src = "../img/left_green.png";
+            this.left_arrow.src = "../images/left_green.png";
             this.lx = W/4 - this.left_arrow.width/2;
             this.ly = 7*(H/5);
             this.right_arrow = new Image();
-            this.right_arrow.src = "../img/right_green.png";
+            this.right_arrow.src = "../images/right_green.png";
             this.rx = 3*W/4 - this.right_arrow.width/2;
             this.ry = 7*(H/5);
             this.fire_button = new Image();
-            this.fire_button.src = "../img/fire_red.png";
+            this.fire_button.src = "../images/fire_red.png";
             this.fx = W/2 - this.fire_button.width/2;
             this.fy = 7*(H/5);
         }
@@ -791,8 +791,8 @@ $( document ).ready(function() {
 
         //  Setup the canvas.
         var canvas = document.getElementById("canvas");
-        canvas.width = screen.width;
-        canvas.height = screen.height - titlebar_height;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight - titlebar_height;
 
         var W = canvas.width; // Window's width
         var H = canvas.height/2; // Window's height
@@ -811,7 +811,7 @@ $( document ).ready(function() {
 
         game.gameCanvas.addEventListener("touchstart", function touchHandler(event) {
             if (event.targetTouches.length >= 1) { //one finger touche
-                var touch = event.targetTouches[0];
+                var touch = event.targetTouches[event.targetTouches.length -1];
 
                 if (event.type == "touchstart"){
                     if ((game.currentStateName() == "WelcomeState") || (game.currentStateName() == "GameOverState")) {
@@ -845,6 +845,11 @@ $( document ).ready(function() {
                     }
                 }
             }
+        }, false);
+
+
+        game.gameCanvas.addEventListener("touchmove", function moveHandler(e) {
+            e.preventDefault();
         }, false);
          
         //  Start the game.

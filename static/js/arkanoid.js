@@ -35,7 +35,7 @@ $( document ).ready(function() {
         var paddleHit;
 
         canvas.addEventListener("touchstart", touchHandler, false);
-        canvas.addEventListener("touchmove", touchHandler, false);
+        canvas.addEventListener("touchmove", moveHandler, false);
         canvas.addEventListener("touchend", touchHandler, false);
 
         $(canvas).on('vmousedown', function(e){
@@ -94,8 +94,8 @@ $( document ).ready(function() {
         var titlebar_height = $( "div.app-title" ).height();
 
         // Set the canvas's height and width
-        canvas.width = screen.width;
-        canvas.height = screen.height - titlebar_height;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight - titlebar_height;
 
         var W = canvas.width; // Window's width
         var H = canvas.height/2; // Window's height
@@ -107,7 +107,7 @@ $( document ).ready(function() {
 
         function touchHandler(event) {
             if (event.targetTouches.length >= 1) { //one finger touch
-                var touch = event.targetTouches[0];
+                var touch = event.targetTouches[event.targetTouches.length -1];
                 if (event.type == "touchstart") {
                     if(touch.pageX > dx && touch.pageX < (dx + down_arrow.width) && touch.pageY > (dy + titlebar_height) && touch.pageY < (dy + titlebar_height + down_arrow.height)){
                         //alert("touch " + touch.pageX + ", " + touch.pageY + " down_arrow " + down_arrow.x + ", " + down_arrow.y + ", " + down_arrow.r + " bar height " + titlebar_height);
@@ -127,6 +127,10 @@ $( document ).ready(function() {
                     }
                 }
             }
+        }
+
+        function moveHandler(e) {
+            e.preventDefault();
         }
 
         // Function to paint canvas
@@ -199,19 +203,19 @@ $( document ).ready(function() {
 
         // Directional Controls
         var up_arrow = new Image();
-        up_arrow.src = "../img/up_green.png";
+        up_arrow.src = "../images/up_green.png";
         var ux = W/2 - up_arrow.width/2;
         var uy = 6*(H/5);
         var down_arrow = new Image();
-        down_arrow.src = "../img/down_green.png";
+        down_arrow.src = "../images/down_green.png";
         var dx = W/2 - down_arrow.width/2;
         var dy = 8*(H/5);
         var left_arrow = new Image();
-        left_arrow.src = "../img/left_green.png";
+        left_arrow.src = "../images/left_green.png";
         var lx = W/4 - left_arrow.width/2;
         var ly = 7*(H/5);
         var right_arrow = new Image();
-        right_arrow.src = "../img/right_green.png";
+        right_arrow.src = "../images/right_green.png";
         var rx = 3*W/4 - right_arrow.width/2;
         var ry = 7*(H/5);
 

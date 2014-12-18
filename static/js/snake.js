@@ -9,8 +9,8 @@ $( document ).ready(function() {
         var titlebar_height = $( "div.app-title" ).height();
 
         // Set the canvas's height and width
-        canvas.width = screen.width;
-        canvas.height = screen.height - titlebar_height;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight - titlebar_height;
 
         var w = canvas.width; // Window's width
         var h = canvas.height/2; // Window's height
@@ -22,19 +22,19 @@ $( document ).ready(function() {
         var score;
 
         var up_arrow = new Image();
-        up_arrow.src = "../img/up_green.png";
+        up_arrow.src = "../images/up_green.png";
         var ux = w/2 - up_arrow.width/2;
         var uy = 6*(h/5);
         var down_arrow = new Image();
-        down_arrow.src = "../img/down_green.png";
+        down_arrow.src = "../images/down_green.png";
         var dx = w/2 - down_arrow.width/2;
         var dy = 8*(h/5);
         var left_arrow = new Image();
-        left_arrow.src = "../img/left_green.png";
+        left_arrow.src = "../images/left_green.png";
         var lx = w/4 - left_arrow.width/2;
         var ly = 7*(h/5);
         var right_arrow = new Image();
-        right_arrow.src = "../img/right_green.png";
+        right_arrow.src = "../images/right_green.png";
         var rx = 3*w/4 - right_arrow.width/2;
         var ry = 7*(h/5);
 
@@ -42,10 +42,11 @@ $( document ).ready(function() {
         //create the snake
         var snake_array; //an array of cells to make up the snake
         canvas.addEventListener("touchstart", touchHandler, true);
+        canvas.addEventListener("touchmove", moveHandler, true);
 
         function touchHandler(event) {
             if (event.targetTouches.length >= 1) { //one finger touche
-                var touch = event.targetTouches[0];
+                var touch = event.targetTouches[event.targetTouches.length -1];
 
                 if (event.type == "touchstart") {
                     
@@ -71,6 +72,10 @@ $( document ).ready(function() {
                     }
                 }
             }
+        }
+
+        function moveHandler(e) {
+            e.preventDefault();
         }
         
         function init()
