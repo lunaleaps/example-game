@@ -10,7 +10,7 @@ $( document ).ready(function() {
 
         // Set the canvas's height and width
         canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight - titlebar_height;
+        canvas.height = window.innerHeight - 10*titlebar_height/9;
 
         var w = canvas.width; // Window's width
         var h = canvas.height/2; // Window's height
@@ -18,25 +18,32 @@ $( document ).ready(function() {
         //save the cell width in a variable for easy control
         var cw = 10;
         var d;
-        var food;
+        var food = {};
         var score;
+        var over = 0;
+        var restartBtn = {};
+
+        var controller = new Image();
+        controller.src = "../images/controller4.png";
+        var cx = 0; //W/2 - controller.width/2;
+        var cy = h;
 
         var up_arrow = new Image();
         up_arrow.src = "../images/up_green.png";
         var ux = w/2 - up_arrow.width/2;
-        var uy = 6*(h/5);
+        var uy = 10*(h/9);
         var down_arrow = new Image();
         down_arrow.src = "../images/down_green.png";
         var dx = w/2 - down_arrow.width/2;
-        var dy = 8*(h/5);
+        var dy = 9*(h/6);
         var left_arrow = new Image();
         left_arrow.src = "../images/left_green.png";
         var lx = w/4 - left_arrow.width/2;
-        var ly = 7*(h/5);
+        var ly = 9*(h/7);
         var right_arrow = new Image();
         right_arrow.src = "../images/right_green.png";
         var rx = 3*w/4 - right_arrow.width/2;
-        var ry = 7*(h/5);
+        var ry = 9*(h/7);
 
         
         //create the snake
@@ -44,11 +51,33 @@ $( document ).ready(function() {
         canvas.addEventListener("touchstart", touchHandler, true);
         canvas.addEventListener("touchmove", moveHandler, true);
 
+        $(canvas).on('vmousedown', function(e){
+            // Variables for storing mouse position on click
+            var mx = e.pageX;
+            var my = e.pageY;
+            
+            // Click start button
+            if(mx >= startBtn.x && mx <= startBtn.x + startBtn.w && my >= startBtn.y + titlebar_height && my <= startBtn.y + titlebar_height + startBtn.h) {
+                // Delete the start button after clicking it
+                startBtn = {};
+                init();
+            }
+            
+            // If the game is over, and the restart button is clicked
+            if(over == 1) {
+                if(mx >= restartBtn.x && mx <= restartBtn.x + restartBtn.w && my >= restartBtn.y + titlebar_height && my <= restartBtn.y + titlebar_height + restartBtn.h) {
+                    over = 0;
+                    restartBtn = {};
+                    init();
+                }
+            }
+        });
+
         function touchHandler(event) {
             if (event.targetTouches.length >= 1) { //one finger touche
                 var touch = event.targetTouches[event.targetTouches.length -1];
 
-                if (event.type == "touchstart") {
+                if (event.type == "touchstart" && over != 1) {
                     
                     if (d == "left" || d == "right"){
                         if(event.type == "touchstart" && touch.pageX > dx && touch.pageX < (dx + down_arrow.width) && touch.pageY > (dy + titlebar_height) && touch.pageY < (dy + titlebar_height + down_arrow.height)){
@@ -74,23 +103,75 @@ $( document ).ready(function() {
             }
         }
 
-        function moveHandler(e) {
-            e.preventDefault();
+        function moveHandler(event) {
+            if (event.targetTouches.length >= 1) { //one finger touche
+                var touch = event.targetTouches[event.targetTouches.length -1];
+
+                if (event.type == "touchmove" && over != 1) {
+                    
+                    if (d == "left" || d == "right"){
+                        if(event.type == "touchstart" && touch.pageX > dx && touch.pageX < (dx + down_arrow.width) && touch.pageY > (dy + titlebar_height) && touch.pageY < (dy + titlebar_height + down_arrow.height)){
+                            //alert("touch " + touch.pageX + ", " + touch.pageY + " down_arrow " + down_arrow.x + ", " + down_arrow.y + ", " + down_arrow.r + " bar height " + titlebar_height);
+                            d = "down";
+                        }
+                        else if(event.type == "touchstart" && touch.pageX > ux && touch.pageX < (ux + up_arrow.width) && touch.pageY > (uy + titlebar_height) && touch.pageY < (uy + titlebar_height + up_arrow.height)){
+                            //alert("touch " + touch.pageX + ", " + touch.pageY + " up_arrow " + up_arrow.x + ", " + up_arrow.y + ", " + up_arrow.r + " bar height " + titlebar_height);
+                            d = "up";
+                        }
+                    } 
+                    else if(d == "up" || d == "down"){
+                        if (event.type == "touchstart" && touch.pageX > lx && touch.pageX < (lx + left_arrow.width) && touch.pageY > (ly + titlebar_height) && touch.pageY < (ly + titlebar_height + left_arrow.height)){
+                            //alert("touch " + touch.pageX + ", " + touch.pageY + " left_arrow " + left_arrow.x + ", " + left_arrow.y + ", " + left_arrow.r + " bar height " + titlebar_height);
+                            d = "left";
+                        }
+                        else if (event.type == "touchstart" && touch.pageX > rx && touch.pageX < (rx + right_arrow.width) && touch.pageY > (ry + titlebar_height) && touch.pageY < (ry + titlebar_height + right_arrow.height)){
+                            //alert("touch " + touch.pageX + ", " + touch.pageY + " right_arrow " + right_arrow.x + ", " + right_arrow.y + ", " + right_arrow.r + " bar height " + titlebar_height);
+                            d = "right";
+                        }
+                    }
+                }
+            }
         }
         
         function init()
         {
             d = "right"; //default direction
             create_snake();
-            create_food(); //draw food
+            
             //display the score
             score = 0;
-            
-            //move the snake using a timer which will trigger the paint function
-            //every 60ms
-            if(typeof game_loop != "undefined") clearInterval(game_loop);
-            game_loop = setInterval(paint, 60);
+            if (!jQuery.isEmptyObject(startBtn)){
+                paint();
+                startBtn.draw();
+            } else {
+                create_food(); //draw food
+                //move the snake using a timer which will trigger the paint function
+                //every 60ms
+                if(typeof game_loop != "undefined") clearInterval(game_loop);
+                game_loop = setInterval(paint, 60);
+            }
         }
+
+        // Start Button object
+        startBtn = {
+            w: 100,
+            h: 50,
+            x: w/2 - 50,
+            y: h/2 + 25,
+            
+            draw: function() {
+                ctx.strokeStyle = "white";
+                ctx.lineWidth = "2";
+                ctx.strokeRect(this.x, this.y, this.w, this.h);
+                
+                ctx.font = "18px Arial, sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillStlye = "white";
+                ctx.fillText("Start", w/2, h/2 + 50);
+            }
+        };
+
         init();
         
         function create_snake()
@@ -127,6 +208,7 @@ $( document ).ready(function() {
             ctx.strokeStyle = "black";
             ctx.strokeRect(0, 0, w, h);
 
+            ctx.drawImage(controller, cx, cy, w, h);
             ctx.drawImage(up_arrow, ux, uy);
             ctx.drawImage(down_arrow, dx, dy);
             ctx.drawImage(right_arrow,rx, ry);
@@ -144,10 +226,31 @@ $( document ).ready(function() {
             else if(d == "down") ny++;
             
             //This will restart the game if the snake hits the wall or if the head of the snake bumps into its body, the game will restart
-            if(nx < 0 || nx >= w/cw || ny < 0 || ny >= h/cw || check_collision(nx, ny, snake_array))
+            if(nx < 0 || nx >= Math.floor(w/cw) || ny < 0 || ny >= Math.floor(h/cw) || check_collision(nx, ny, snake_array))
             {
                 //restart game
-                init();
+                over = 1;
+                ctx.fillStyle = "white";
+                ctx.fillText("Game Over - You scored "+ score +" points!", w/2, h/2 + 25 );
+                restartBtn = {
+                    w: 100,
+                    h: 50,
+                    x: w/2 - 50,
+                    y: h/2 + 50,
+                    
+                    draw: function() {
+                        ctx.strokeStyle = "white";
+                        ctx.lineWidth = "2";
+                        ctx.strokeRect(this.x, this.y, this.w, this.h);
+                        
+                        ctx.font = "18px Arial, sans-serif";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillStlye = "white";
+                        ctx.fillText("Restart", w/2, h/2 + 75);
+                    }
+                };
+                restartBtn.draw();
                 return;
             }
             
@@ -176,10 +279,15 @@ $( document ).ready(function() {
                 paint_cell(c.x, c.y);
             }
             
-            //paint the food
-            paint_cell(food.x, food.y);
+            if (jQuery.isEmptyObject(startBtn)){
+                //paint the food
+                paint_cell(food.x, food.y);
+            }
             //paint the score
             var score_text = "Score: " + score;
+            ctx.font = "10px Arial, sans-serif";
+            ctx.textAlign = "start";
+            ctx.textBaseline = "alphabetical";
             ctx.fillText(score_text, 5, h-5);
         }
         
