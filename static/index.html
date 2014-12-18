@@ -16,21 +16,12 @@
   </head>
   <body>
 
-    <div class="app-page" data-page="kik-points">
-      <div class="app-topbar">
-        <div class="app-button left" data-back data-autotitle></div>
-        <div class="app-title">Kik Points</div>
-      </div>
-      <div class="app-button play-button">Play Arcade</div>
-    </div>
-
     <!--arcade home-->
     <div class="app-page" data-page="home">
       <div class="app-topbar">
         <div class="app-title">KP-Arcade</div>
       </div>
       <div class="app-content">
-        <div class="app-button kikPoints">Kik Points Test</div>
         <div class="app-button pacman">Pacman</div>
         <div class="app-button asteroids">Asteroids</div>
         <div id="pong-game-button" class="app-button" data-target="pong-game">Play Pong</div>
@@ -135,9 +126,6 @@
             asteroids= $page.find('.app-button.asteroids');
             kikPoints = $page.find('.app-button.kikPoints'); 
 
-        kikPoints.on('click', function() {
-          App.load('kik-points');
-        });
         pacman.on('click', function() {
           App.load('pacman');
         });

@@ -1,34 +1,19 @@
-/*App.controller('kik-points', function($page) {
-	points.debug = true;
-
-	var $button = $page.querySelector('.play-button');
-
-	$button.onclick(function clicking() {
-		var id = kik.utils.random.uuid();
-		var amount = 2;
-		sku = 'com.herokuapp.kp-aracde.play';
-		points.redeem(id, amount, sku, function (transaction){
-			if (transaction) {
-				alert("Redeemed points!");
-			} else {
-				alert("No points redeemed!");
-			}
-		});
-	});
-
-	//points.getTransactions(function (transactions) {
-	//	if (transactions) {
-	//		alert("There are transactions");
-	//	}
-	//});
-
-});*/
-
-
 $(document).ready(function() {
 	Shop = {};
 	points.debug = true;
 	var button = document.getElementById("play-button");
+
+	var paid = false;
+
+	$(document).on('tap', '.app-button', function() {
+		if (!paid){
+			$(this).off('touchstart', this);
+	    	$(this).off('touchmove', this);
+		} else {
+			$(this).on('touchstart', this);
+	    	$(this).on('touchmove', this);
+		}
+	});
 
 	//button.addEventListener("touchstart", touchHandler, false);
 	$(button).on('vmousedown', function(e){
@@ -41,9 +26,9 @@ $(document).ready(function() {
 
 		points.redeem(id, pointsValue, sku, function spend(transaction){
 			if (transaction) {
-				alert("Redeemed points!");
+				paid = true;
 			} else {
-				alert("No points redeemed!");
+				paid = false;
 			}
 		});
 	});
