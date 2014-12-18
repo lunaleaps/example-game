@@ -122,6 +122,56 @@ App.controller('pacman', function($page) {
         context.beginPath();
         context.arc(x+this.radius/2.5, y-this.radius/5, this.radius/3, 0, Math.PI*2, true); // white
         context.fill();
+        switch(this.direction) {
+          case UP:
+            context.fillStyle="black"; //left eyeball
+            context.beginPath();
+            context.arc(x-this.radius/3, y-this.radius/5-this.radius/6, this.radius/6, 0, Math.PI*2, true); //black
+            context.fill();
+
+            context.fillStyle="black"; //right eyeball
+            context.beginPath();
+            context.arc(x+this.radius/3, y-this.radius/5-this.radius/6, this.radius/6, 0, Math.PI*2, true); //black
+            context.fill();
+          break;
+
+          case DOWN:
+            context.fillStyle="black"; //left eyeball
+            context.beginPath();
+            context.arc(x-this.radius/3, y-this.radius/5+this.radius/6, this.radius/6, 0, Math.PI*2, true); //black
+            context.fill();
+
+            context.fillStyle="black"; //right eyeball
+            context.beginPath();
+            context.arc(x+this.radius/3, y-this.radius/5+this.radius/6, this.radius/6, 0, Math.PI*2, true); //black
+            context.fill();
+          break;
+
+          case LEFT:
+            context.fillStyle="black"; //left eyeball
+            context.beginPath();
+            context.arc(x-this.radius/3-this.radius/5, y-this.radius/5, this.radius/6, 0, Math.PI*2, true); //black
+            context.fill();
+
+            context.fillStyle="black"; //right eyeball
+            context.beginPath();
+            context.arc(x+this.radius/3-this.radius/15, y-this.radius/5, this.radius/6, 0, Math.PI*2, true); //black
+            context.fill();
+          break;
+
+          case RIGHT:
+            context.fillStyle="black"; //left eyeball
+            context.beginPath();
+            context.arc(x-this.radius/3+this.radius/15, y-this.radius/5, this.radius/6, 0, Math.PI*2, true); //black
+            context.fill();
+
+            context.fillStyle="black"; //right eyeball
+            context.beginPath();
+            context.arc(x+this.radius/3+this.radius/5, y-this.radius/5, this.radius/6, 0, Math.PI*2, true); //black
+            context.fill();
+          break;
+
+        }
       },
     };
   }
