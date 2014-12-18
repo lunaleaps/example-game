@@ -35,7 +35,7 @@ $( document ).ready(function() {
         var paddleHit;
 
         canvas.addEventListener("touchstart", touchHandler, false);
-        canvas.addEventListener("touchmove", moveHandler, false);
+        canvas.addEventListener("touchmove", touchHandler, false);
         canvas.addEventListener("touchend", touchHandler, false);
 
         $(canvas).on('vmousedown', function(e){
@@ -117,12 +117,28 @@ $( document ).ready(function() {
                         //alert("touch " + touch.pageX + ", " + touch.pageY + " right_arrow " + right_arrow.x + ", " + right_arrow.y + ", " + right_arrow.r + " bar height " + titlebar_height);
                         direction = "right";
                     }
+                } else if (event.type == "touchmove") {
+                    if(touch.pageX > dx && touch.pageX < (dx + down_arrow.width) && touch.pageY > (dy + titlebar_height) && touch.pageY < (dy + titlebar_height + down_arrow.height)){
+                        //alert("touch " + touch.pageX + ", " + touch.pageY + " down_arrow " + down_arrow.x + ", " + down_arrow.y + ", " + down_arrow.r + " bar height " + titlebar_height);
+                        direction = "down";
+                    }
+                    else if(touch.pageX > ux && touch.pageX < (ux + up_arrow.width) && touch.pageY > (uy + titlebar_height) && touch.pageY < (uy + titlebar_height + up_arrow.height)){
+                        //alert("touch " + touch.pageX + ", " + touch.pageY + " up_arrow " + up_arrow.x + ", " + up_arrow.y + ", " + up_arrow.r + " bar height " + titlebar_height);
+                        direction = "up";
+                    }
+                    else if (touch.pageX > lx && touch.pageX < (lx + left_arrow.width) && touch.pageY > (ly + titlebar_height) && touch.pageY < (ly + titlebar_height + left_arrow.height)){
+                        //alert("touch " + touch.pageX + ", " + touch.pageY + " left_arrow " + left_arrow.x + ", " + left_arrow.y + ", " + left_arrow.r + " bar height " + titlebar_height);
+                        direction = "left";
+                    }
+                    else if (touch.pageX > rx && touch.pageX < (rx + right_arrow.width) && touch.pageY > (ry + titlebar_height) && touch.pageY < (ry + titlebar_height + right_arrow.height)){
+                        //alert("touch " + touch.pageX + ", " + touch.pageY + " right_arrow " + right_arrow.x + ", " + right_arrow.y + ", " + right_arrow.r + " bar height " + titlebar_height);
+                        direction = "right";
+                    }
                 }
             }
         }
 
         function moveHandler(event) {
-            alert ("hello");
             if (event.targetTouches.length >= 1) { //one finger touch
                 var touch = event.targetTouches[event.targetTouches.length -1];
                 if (event.type == "touchmove") {
