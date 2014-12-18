@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/asteroids.css"/>
   </head>
   <body>
+    <!--arcade home-->
     <div class="app-page" data-page="home">
       <div class="app-topbar">
         <div class="app-title">KP-Arcade</div>
@@ -19,9 +20,11 @@
       <div class="app-content">
         <div class="app-button pacman">Pacman</div>
         <div class="app-button asteroids">Asteroids</div>
+        <div class="aStartButton">START</div>
       </div>
     </div>
 
+    <!--pacman-->
     <div class="app-page" data-page="pacman">
       <div class="app-topbar">
         <div class="app-button left" data-back>Back</div>
@@ -38,6 +41,8 @@
         </div>
       </div>
     </div>
+    
+    <!--asteroids-->
     <div class="app-page" data-page="asteroids">
       <div class="app-topbar">
         <div class="app-button left" data-back data-autotitle></div>
@@ -47,6 +52,8 @@
         <div id="si-main-div"></div>
       </div>
     </div>
+    
+    <!--scripts-->
     <script src="js/zepto.min.js"></script>
     <script src='js/joystick.js'></script>
     <script src="//cdn.kik.com/app/2.0.1/app.min.js"></script>
