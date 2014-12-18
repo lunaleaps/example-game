@@ -12,6 +12,7 @@
 }
 .si-player {
     background-image: url(../images/spacecraft.png);
+    z-index: 100000000;
 }
 .si-pellet {
     width: 8px;
@@ -45,6 +46,21 @@
 .si-asteroid {
     width: 80px;
     height: 80px;
-    background-color: purple;
+    background-size: cover;
+    /*background-color: purple;*/
+    /*border-radius: 50%;*/
+}
+.si-asteroid-1 {
+    background-image: url(../images/asteroid_real_1.png);
+}
+.si-asteroid-2 {
+    background-image: url(../images/asteroid_real_2.png);
+}
+.si-asteroid-3 {
+    background-image: url(../images/asteroid_real_3.png);
+}
+.si-particle {
+    background-color: white;
     border-radius: 50%;
+    position: absolute;
 }
