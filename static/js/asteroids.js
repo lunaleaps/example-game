@@ -25,6 +25,7 @@ function filterIsNot(obj) {
 }
 function Asteroids(div) {
     var thiz = this;
+    div.attr("isDiv", "yes");
     this.div = div;
     thiz.joystickDiv = createNewJoystickDiv();
     div.append(thiz.joystickDiv);
@@ -39,6 +40,21 @@ function Asteroids(div) {
             thiz.joystickDown = false;
             thiz.player.rotating = 0;
             console.log("done");
+        });
+    $(thiz.div)
+        .on("touchstart", function(evt) {
+            var touch = evt.changedTouches[0];
+            if($(touch.target).attr("isDiv") == "yes") {
+                evt.preventDefault();
+                thiz.firing = true;
+            }
+        })
+        .on("touchend", function(evt) {
+            var touch = evt.changedTouches[0];
+            if($(touch.target).attr("isDiv") == "yes") {
+                evt.preventDefault();
+                thiz.firing = false;
+            }
         });
     this.div.addClass("si-main");
     this.sprites = [];
