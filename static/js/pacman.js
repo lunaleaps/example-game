@@ -22,7 +22,7 @@ var UP = 1,
 
     C_BIGDOT = 0,
     C_SMALLDOT = 1,
-    C_DIE = 2,
+    C_DIE = 8,
     C_WALL = 3,
     C_EAT = 4,
     C_NONE = -1,
@@ -82,17 +82,26 @@ App.controller('pacman', function($page) {
           cell === RIGHT_T;
   }
 
-  function isPath(cell) {
-    return cell == SMALLDOT | cell == BIGDOT;
+  function isPath(cell, ghost) {
+    if (ghost) {
+      return (cell === PATH || cell === SMALLDOT || cell === BIGDOT || cell == DOOR);
+    } else {
+      return (cell === PATH || cell === SMALLDOT || cell === BIGDOT);
+    }
   }
 
+  function getCellCoords(i, j) {
+    var I = Math.floor(i / 3);
+    var J = Math.floor(j / 3);
+    return {I: I, J:J};
+  }
   function Ghost (color, i, j) {
     // i, j are the grid cell size.. 63 of them in one row/col
     this.i =  i;
     this.j = j;
     this.color = color;
     this.direction = UP;
-    this.leave = false;
+    this.leave = true;
     this.chasing = true;
     this.previousCell = PATH;
     this.isMoving =  false;
@@ -108,40 +117,59 @@ App.controller('pacman', function($page) {
 
   Ghost.prototype.chooseDirection = function (grid, pacman) {
     function hash(i, j) {
-      return this.i + ' ' + this.j;
+      return i + ' ' + j;
     }
+
     var stack = new Array(),
         popped,
         neighbors = [],
         neighbor,
-        i = 0,
+        first = true,
+        k = 0, ghostCoords,
         seen = {};
 
-    seen[hash(i, j)] = true;
-    stack.push({i: i+1, j: j, path: [UP]});
-    stack.push({i: i-1, j: j, path: [DOWN]});
-    stack.push({i: i, j: j+1, path: [RIGHT]});
-    stack.push({i: i, j: j-1, path: [LEFT]});
+    pacmanCoords = getCellCoords(pacman.i, pacman.j);
+    ghostCoords = getCellCoords(this.i, this.j);
+
+
+    seen[hash(ghostCoords.I, ghostCoords.J)] = true;
+    stack.push({I: ghostCoords.I, J: ghostCoords.J});
 
     popped = stack.pop();
     while (popped) {
-      if (popped.i == pacman.i && popped.j == pacman.j) {
-        return popped.path;
+      if (popped.I == pacmanCoords.I && popped.J == pacmanCoords.J) {
+        if (first) {
+          return C_DIE;
+        } else {
+          return popped.path;
+        }
       }
-      neighbors = [{i: popped.i-1, j: popped.j, path: popped.path},
-                  {i: popped.i+1, j: popped.j, path: popped.path},
-                  {i: popped.i, j: popped.j + 1, path: popped.path},
-                  {i: popped.i, j: popped.j-1, path: popped.path}];
+      if (first) {
+        neighbors = [{I: popped.I-1, J: popped.J, path: UP},
+                  {I: popped.I+1, J: popped.J, path: DOWN},
+                  {I: popped.I, J: popped.J + 1, path: RIGHT},
+                  {I: popped.I, J: popped.J-1, path: LEFT}];
+        first = false;
+      } else {
+        neighbors = [{I: popped.I-1, J: popped.J, path: popped.path},
+                  {I: popped.I+1, J: popped.J, path: popped.path},
+                  {I: popped.I, J: popped.J + 1, path: popped.path},
+                  {I: popped.I, J: popped.J-1, path: popped.path}];
+      }
 
       for (k = 0; k< 4; k++) {
         neighbor = neighbors[k];
-        if (!!seen[hash(neighbor.j, neighbor.j)] && isPath(grid[neighbor.i][neighbor.j])) {
+        if (neighbor.I < 0 | neighbor.I > 62 | neighbor.J < 0 | neighbor.J > 62) {
+          continue;
+        }
+        if (!seen[hash(neighbor.I, neighbor.J)] && isPath(grid[neighbor.I][neighbor.J], true)) {
           stack.push(neighbor);
         } else {
-          seen[hash(neighbor.i, neighbor.j)] = true;
+          seen[hash(neighbor.I, neighbor.J)] = true;
         }
       }
-      seen[hash(popped.i, popped.j)] = true;
+      seen[hash(popped.I, popped.J)] = true;
+      popped = stack.pop();
     }
   }
 
@@ -149,7 +177,13 @@ App.controller('pacman', function($page) {
     var direction;
     // TODO leave condition
     if (this.leave) {
-      this.direction = this.chooseDirection(grid, pacman);
+      direction = this.chooseDirection(grid, pacman);
+      if (this.direction !== direction ) {
+        //
+      } else {
+
+      }
+      console.log(this.direction);
     } else {
       if (this.i <=  this.ROOM_UP) {
         this.direction = DOWN;
@@ -390,14 +424,14 @@ App.controller('pacman', function($page) {
     } else if (collision === C_SMALLDOT) {
       updateScore(C_SMALLDOT);
       cellCoords = getCellCoords(next_pacman.i, next_pacman.j);
-      copy[cellCoords[0]][cellCoords[1]] = PATH;
+      copy[cellCoords.I][cellCoords.J] = PATH;
     } else if (collision === C_BIGDOT) {
       // TODO handle bigdot eating
       // go through ghosts and update status of each ghost
       console.log('Big dot collected');
       updateScore(C_BIGDOT);
       cellCoords = getCellCoords(next_pacman.i, next_pacman.j);
-      copy[cellCoords[0]][cellCoords[1]] = PATH;
+      copy[cellCoords.I][cellCoords.J] = PATH;
     } else if (collision === C_EAT) {
       updateScore(C_EAT);
     }
@@ -409,15 +443,9 @@ App.controller('pacman', function($page) {
     // go through ghosts and update
     // ghost
 
-    function getCellCoords(i, j) {
-      var I = Math.floor(i / 3);
-      var J = Math.floor(j / 3);
-      return [I, J];
-    }
-
     function getCell(grid, pacman) {
       coords = getCellCoords(pacman.i, pacman.j);
-      return grid[coords[0]][coords[1]];
+      return grid[coords.I][coords.J];
     }
 
     function getCollisionType(grid, pacman) {
