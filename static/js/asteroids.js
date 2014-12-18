@@ -43,6 +43,7 @@ function Asteroids(div) {
         });
     $(thiz.div)
         .on("touchstart", function(evt) {
+            evt = getOriginalEvent(evt);
             var touch = evt.changedTouches[0];
             if($(touch.target).attr("isDiv") == "yes") {
                 evt.preventDefault();
@@ -50,6 +51,7 @@ function Asteroids(div) {
             }
         })
         .on("touchend", function(evt) {
+            evt = getOriginalEvent(evt);
             var touch = evt.changedTouches[0];
             if($(touch.target).attr("isDiv") == "yes") {
                 evt.preventDefault();
@@ -258,7 +260,7 @@ function Asteroids(div) {
         if(edge == 0) {
             coords = [-80, amtAlong];
         } else if(edge == 2) {
-            coords = [window.innerWidth() + 80, amtAlong];
+            coords = [window.innerWidth + 80, amtAlong];
         } else if(edge == 1) {
             coords = [amtAlong, 0];
         } else if(edge == 3) {

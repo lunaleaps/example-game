@@ -38,6 +38,7 @@ var Joystick = function(elm) {
     thiz.currPosX = 0;
     thiz.currPosY = 0;
     thiz.div.on("touchstart", function(evt) {
+        evt = getOriginalEvent(evt);
         evt.preventDefault();
 
         var touch = evt.changedTouches[0];
@@ -53,6 +54,7 @@ var Joystick = function(elm) {
         $(thiz).trigger("start");
     });
     thiz.div.on("touchmove", function(evt) {
+        evt = getOriginalEvent(evt);
         var touch = evt.changedTouches[0];
         if(touch.identifier == thiz.currentTouch) {
             evt.preventDefault();
@@ -63,6 +65,7 @@ var Joystick = function(elm) {
         }
     });
     thiz.div.on("touchend", function(evt) {
+        evt = getOriginalEvent(evt);
         var touch = evt.changedTouches[0];
         if(touch.identifier == thiz.currentTouch) {
             evt.preventDefault();
@@ -89,4 +92,10 @@ function createNewJoystickDiv() {
             .addClass("si-trackpad-container")
             .append($("<div>")
                 .addClass("si-trackpad")));
+}
+function getOriginalEvent(evt) {
+    if(evt["originalEvent"] != undefined) {
+        return getOriginalEvent(evt.originalEvent);
+    }
+    return evt;
 }
