@@ -26,7 +26,9 @@ var UP = 1,
     C_WALL = 3,
     C_EAT = 4,
     C_NONE = -1,
-    MAX_SCORE = 146;
+    MAX_SCORE = 146,
+
+    WEAK = 25; // times to redraw before not weak
 
 App.controller('pacman', function($page) {
   var $game = $page.querySelector('.game'),
@@ -35,11 +37,14 @@ App.controller('pacman', function($page) {
       $scoreElement = $page.querySelector('.scoreText'),
       score = 0,
       pacman,
-      unit = Math.floor(window.innerWidth/63),
+      ghost,
+      unit = Math.floor(window.innerWidth/63), // 21 * 3
       width = unit * 63,
       height = width,
       cellSize = unit * 3,
       new_direction = UP,
+      GHOST_RADIUS = Math.round(cellSize/2),
+
       layout = [ [00, 07, 01, 01, 01, 01, 01, 01, 01, 01, 11, 01, 01, 01, 01, 01, 01, 01, 01, 09, 00],
                  [00, 05, 02, 02, 02, 02, 02, 02, 02, 02, 05, 02, 02, 02, 02, 02, 02, 02, 02, 05, 00],
                  [00, 05, 03, 01, 01, 02, 01, 01, 01, 02, 05, 02, 01, 01, 01, 02, 01, 01, 03, 05, 00],
@@ -64,27 +69,59 @@ App.controller('pacman', function($page) {
 
   initialize(15 * 3 + 1, 10 * 3 + 1);
 
-  function initGhost(imageSrc, leaveCondition, i, j) {
-    var img = new Image();
-    img.src = imageSrc;
-
+  function initGhost(color, i, j) {
     return {
       i: i,
       j: j,
-      image: img,
+      color: color,
       direction: LEFT,
       leave: false,
       chasing: true,
       previousCell: PATH,
-      leaveCondition: leaveCondition,
+      isMoving: false,
+      radius: GHOST_RADIUS,
       draw: function(context) {
-        if (!this.leave) {
-          this.leave = leaveCondition();
-          return;
-        }
-        if (leave) {
+        var x = this.j * unit + unit
+            y = this.i * unit + unit;
+        context.fillStyle = color;
+        context.beginPath();
 
+        context.arc(x, y, GHOST_RADIUS, Math.PI, 0, false);
+        context.moveTo(x-GHOST_RADIUS, y);
+
+        // LEGS
+        if (!this.isMoving){
+          context.lineTo(x-this.radius, y+this.radius);
+          context.lineTo(x-this.radius+this.radius/3, y+this.radius-this.radius/4);
+          context.lineTo(x-this.radius+this.radius/3*2, y+this.radius);
+          context.lineTo(x, y+this.radius-this.radius/4);
+          context.lineTo(x+this.radius/3, y+this.radius);
+          context.lineTo(x+this.radius/3*2, y+this.radius-this.radius/4);
+
+          context.lineTo(x+this.radius, y+this.radius);
+          context.lineTo(x+this.radius, y);
         }
+        else {
+          context.lineTo(x-this.radius, y+this.radius-this.radius/4);
+          context.lineTo(x-this.radius+this.radius/3, y+this.radius);
+          context.lineTo(x-this.radius+this.radius/3*2, y+this.radius-this.radius/4);
+          context.lineTo(x, y+this.radius);
+          context.lineTo(x+this.radius/3, y+this.radius-this.radius/4);
+          context.lineTo(x+this.radius/3*2, y+this.radius);
+          context.lineTo(x+this.radius, y+this.radius-this.radius/4);
+          context.lineTo(x+this.radius, y);
+        }
+        context.fill();
+        //eyes
+        context.fillStyle = "white"; //left eye
+        context.beginPath();
+        context.arc(x-this.radius/2.5, y-this.radius/5, this.radius/3, 0, Math.PI*2, true); // white
+        context.fill();
+
+        context.fillStyle = "white"; //right eye
+        context.beginPath();
+        context.arc(x+this.radius/2.5, y-this.radius/5, this.radius/3, 0, Math.PI*2, true); // white
+        context.fill();
       },
     };
   }
@@ -98,7 +135,7 @@ App.controller('pacman', function($page) {
             mouthPos: -1,
             draw : function(context) {
               var startAngle, endAngle,
-                  radius = Math.round(0.5 * cellSize),
+                  radius = Math.round(0.7 * cellSize),
                   x = this.j * unit + (unit/2),
                   y = this.i * unit + (unit/2);
 
@@ -133,10 +170,11 @@ App.controller('pacman', function($page) {
   }
 
   function initialize(posI, posJ) {
+
     $game.width = width;
     $game.height = height;
     pacman = initPacman(posI, posJ);
-
+    ghost = initGhost('red', 9 * 3, 9 * 3);
     // paint
     setInterval(paint, 75);
 
@@ -202,6 +240,7 @@ App.controller('pacman', function($page) {
       copy[cellCoords[0]][cellCoords[1]] = PATH;
     } else if (collision === C_BIGDOT) {
       // TODO handle bigdot eating
+      // go through ghosts and update status of each ghost
       console.log('Big dot collected');
       updateScore(C_BIGDOT);
       cellCoords = getCellCoords(next_pacman.i, next_pacman.j);
@@ -214,6 +253,10 @@ App.controller('pacman', function($page) {
     pacman.i = next_pacman.i;
     pacman.j = next_pacman.j;
     pacman.direction = next_pacman.direction;
+
+
+    // go through ghosts and update
+    // ghost
 
     function getCellCoords(i, j) {
       var I = Math.floor(i / 3);
@@ -368,6 +411,7 @@ App.controller('pacman', function($page) {
 
     // paint pacman
     pacman.draw(context);
+    ghost.draw(context);
   }
 
   function updateScore(collisionType) {
