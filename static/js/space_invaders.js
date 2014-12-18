@@ -307,7 +307,7 @@ $( document ).ready(function() {
             //  Clear the background.
             ctx.clearRect(0, 0, game.width, game.height);
 
-            ctx.fillStyle = "blue";
+            ctx.fillStyle = "#000080";
             ctx.fillRect(0, H, W, H*2);
 
             ctx.drawImage(game.controller, game.cx, game.cy, W, H);
@@ -341,7 +341,7 @@ $( document ).ready(function() {
             //  Clear the background.
             ctx.clearRect(0, 0, game.width, game.height);
 
-            ctx.fillStyle = "blue";
+            ctx.fillStyle = "#000080";
             ctx.fillRect(0, H, W, H*2);
 
             ctx.drawImage(game.controller, game.cx, game.cy, W, H);
@@ -597,7 +597,7 @@ $( document ).ready(function() {
             //  Clear the background.
             ctx.clearRect(0, 0, game.width, game.height);
 
-            ctx.fillStyle = "blue";
+            ctx.fillStyle = "#000080";
             ctx.fillRect(0, H, W, H*2);
 
             ctx.drawImage(game.controller, game.cx, game.cy, W, H);
@@ -702,7 +702,7 @@ $( document ).ready(function() {
             //  Clear the background.
             ctx.clearRect(0, 0, game.width, game.height);
 
-            ctx.fillStyle = "blue";
+            ctx.fillStyle = "#000080";
             ctx.fillRect(0, H, W, H*2);
 
             ctx.drawImage(game.controller, game.cx, game.cy, W, H);

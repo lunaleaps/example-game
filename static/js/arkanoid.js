@@ -181,7 +181,7 @@ $( document ).ready(function() {
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, W, H);
 
-            ctx.fillStyle = "blue";
+            ctx.fillStyle = "#000080";
             ctx.fillRect(0, H, W, H*2);
         }
 
