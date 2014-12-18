@@ -11,6 +11,10 @@ $(document).ready(function() {
 		}
 	});
 
+	$(".app-topbar").on('tap', function(e) {
+		paid = false;
+	});
+
 	//button.addEventListener("touchstart", touchHandler, false);
 	$(button).on('vmousedown', function(e){
         // Variables for storing mouse position on click

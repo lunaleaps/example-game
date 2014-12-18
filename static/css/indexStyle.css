@@ -78,6 +78,6 @@
 }
 .arcade-button:active {
   box-shadow: 0 2px 0 #b48013;
-  transform: translateY(3px);
+  transform: translateY(5px);
 }
 
