@@ -142,7 +142,7 @@ $( document ).ready(function() {
             this.gameCanvas =  null;
 
             this.controller = new Image();
-            this.controller.src = "../images/controller4.png";
+            this.controller.src = "../images/controller.png";
             this.cx = 0; //W/2 - controller.width/2;
             this.cy = H;
 

@@ -24,7 +24,7 @@ $( document ).ready(function() {
         var restartBtn = {};
 
         var controller = new Image();
-        controller.src = "../images/controller4.png";
+        controller.src = "../images/controller.png";
         var cx = 0; //W/2 - controller.width/2;
         var cy = h;
 
