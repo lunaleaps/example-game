@@ -53,5 +53,8 @@
 .aBottom {
   background-image: url("kp-arcade/static/images/arcadeBottomBG.png");
   background-width: 100%;
+
+.ui-loader {
+  display: none;
 }
 
