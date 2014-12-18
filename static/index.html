@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="css/asteroids.css"/>
     <link rel="stylesheet" href="css/spaceInvaders.css"/>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).bind('mobileinit',function(){
+            $.mobile.loadingMessage = false;
+        })
+    </script>
     <script src="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.js"></script>
   </head>
   <body>
@@ -60,6 +65,7 @@
       </div>
     </div>
   
+    <!--pong-->
     <div class="app-page" data-page="pong-game">
       <div class="app-topbar">
         <div class="app-button left" data-back data-autotitle></div>
@@ -70,6 +76,7 @@
       </div>
     </div>
 
+    <!--snake-->
     <div class="app-page" data-page="snake-game">
       <div class="app-topbar">
         <div class="app-button left" data-back data-autotitle></div>
@@ -80,6 +87,7 @@
       </div>
     </div>
 
+    <!--space invaders-->
     <div class="app-page" data-page="space-invaders-game">
       <div class="app-topbar">
         <div class="app-button left" data-back data-autotitle></div>
@@ -91,6 +99,7 @@
       </div>
     </div>
 
+    <!--arkanoid-->
     <div class="app-page" data-page="arkanoid-game">
       <div class="app-topbar">
         <div class="app-button left" data-back data-autotitle></div>
