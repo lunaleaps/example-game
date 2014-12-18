@@ -5,13 +5,9 @@ $(document).ready(function() {
 
 	var paid = false;
 
-	$(document).on('tap', '.app-button', function() {
+	$(".arcade-button").on('tap', function(e) {
 		if (!paid){
-			$(this).off('touchstart', this);
-	    	$(this).off('touchmove', this);
-		} else {
-			$(this).on('touchstart', this);
-	    	$(this).on('touchmove', this);
+			e.preventDefault();
 		}
 	});
 
