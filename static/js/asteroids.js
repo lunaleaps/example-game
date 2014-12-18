@@ -1,4 +1,17 @@
+/*
+ ==DOCUMENTATION==
+ Create a game with new Asteroids(div), where div is the ZEPTO/JQUERY object for the div you want the game to run in.
+ Note that this div could hypothetically not be in the DOM anywhere (and the game would run just fine), but use cases
+ for this are few and far between.
+
+ game.stop() stops the game.
+ game.start() starts the game; CALLING THE CONSTRUCTOR ISN'T ENOUGH.
+ game.deadHandlers is an array of functions to be called when the player dies (not loses a life, but has 0 lives).
+
+ You MUST attach your own event handlers to game.handleKeydown and game.handleKeyup; it will not add them itself.
+*/
 function contains(a, obj) {
+
     var i = a.length;
     while (i--) {
        if (a[i] === obj) {
@@ -16,6 +29,7 @@ App.controller('asteroids', function(page) {
     $(page).on("appDestroy", function() {
         $(window).off("keypress", asteroids.handleKeydown);
         $(window).off("keyup", asteroids.handleKeydown);
+        asteroids.stop();
     });
 });
 function filterIsNot(obj) {
@@ -25,6 +39,13 @@ function filterIsNot(obj) {
 }
 function Asteroids(div) {
     var thiz = this;
+    thiz.deadHandlers = [
+        function() {
+            console.log("You died.");
+            thiz.stop();
+        }
+    ];
+    thiz.score = 0;
     div.attr("isDiv", "yes");
     this.div = div;
     thiz.joystickDiv = createNewJoystickDiv();
@@ -73,14 +94,36 @@ function Asteroids(div) {
     thiz.viewportHeight = window.innerHeight - 44;
     thiz.score = 0;
     thiz.asteroids = [];
-    //Compute the scale of a square
-    thiz.directionsTrying = [];
+    thiz.particles = [];
+    thiz.pendingParticles = [];
+    thiz.createParticles = function(pos, size, amt, vel, ttl) { //ttl is time to live
+        for(var i = 0; i < amt; i++) {
+            var div = $("<div>")
+                .addClass("si-particle")
+                .css("width", size)
+                .css("height", size)
+                .css("left", pos[0])
+                .css("top", pos[1])
+                .css("transition", ttl + "s left, " + ttl + "s top")
+                .appendTo(thiz.div);
+            var particle = {
+                div: div,
+                ttl: ttl,
+                lived: 0,
+                vel: vel,
+                created: false,
+                waitingTime: 2
+            };
+            thiz.pendingParticles.push(particle);
+        }
+    }
     thiz.createWall = function(pos, scale) {
         thiz.createSprite($("<div>")
             .addClass("si-wall")
             .css("width", scale)
             .css("height", scale), function() {}, pos);
     }
+    thiz.lives = 3;
     thiz.handleKeydown = function(evt) {
         var found = true;
         if(evt.which == 119) {
@@ -157,7 +200,7 @@ function Asteroids(div) {
                     var distX = Math.abs(asteroid.x - sprite.x);
                     var distY = Math.abs(asteroid.y - sprite.y);
                     var dist = Math.sqrt(distX * distX + distY * distY);
-                    if(dist < 13 * asteroid.size && !sprite.inactive) {
+                    if(dist < 20 * asteroid.size && !sprite.inactive) {
                         asteroid.hide();
                         if(asteroid.size > 1) {
                             for(var i = 0; i < 2; i++) {
@@ -167,6 +210,7 @@ function Asteroids(div) {
                         }
                         sprite.inactive = true;
                         sprite.div.hide();
+                        thiz.score++;
                     }
                 }
             }, position, velocity);
@@ -230,20 +274,22 @@ function Asteroids(div) {
     thiz.createAsteroid = function(position, speed, size) {
         //BUG: Collision should be centered on div, not top-left corner
         var sprite = thiz.createVelSprite($("<div>")
-            .addClass("si-asteroid"), function() {
+            .addClass("si-asteroid")
+            .addClass("si-asteroid-" + Math.floor(Math.random() * 3 + 1)), function() {
                 if(!sprite.hidden) {
                     //Are we colliding with the player? If so, game over.
                     var distX = Math.abs(sprite.x - thiz.player.x);
                     var distY = Math.abs(sprite.y - thiz.player.y);
                     var dist = Math.sqrt(distX * distX + distY * distY);
-                    if(dist < 13 * sprite.size) {
+                    if(dist < 20 * sprite.size) {
                         thiz.stop();
-                        App.dialog({
-                            title: "You died",
-                            okButton: "OK"
-                        }, function() {
-
-                        });
+                        thiz.lives--;
+                        thiz.player.setPosition([300, 300]);
+                        if(thiz.lives < 0) {
+                            for(key in thiz.deadHandlers) {
+                                thiz.deadHandlers[key]();
+                            }
+                        }
                     }
                 }
                 if(sprite.x < -1000 || sprite.x > window.innerWidth + 1000 || sprite.y < -1000 ||
@@ -257,8 +303,8 @@ function Asteroids(div) {
             sprite.hidden = true;
         }
         sprite.size = size;
-        sprite.div.css("width", size * 13)
-            .css("height", size * 13);
+        sprite.div.css("width", size * 20)
+            .css("height", size * 20);
         sprite.uuid = Math.random();
         thiz.asteroids.push(sprite);
         return sprite;
@@ -390,5 +436,29 @@ function Asteroids(div) {
             sprite.update(delta);
         }
         thiz.prevPhysicsTime = currentTime;
+        for(key in thiz.pendingParticles) {
+            var particle = thiz.pendingParticles[key];
+            particle.waitingTime--;
+            if(particle.waitingTime > 0) {
+                continue;
+            }
+            var velX = Math.floor((Math.random() * 2 - 1) * particle.vel);
+            var velY = Math.floor((Math.random() * 2 - 1) * particle.vel);
+            particle.x += velX;
+            particle.y += velY;
+            particle.div.css("width", particle.x)
+                .css("height", particle.y);
+            particle.created = true;
+            delete thiz.pendingParticles[key];
+            thiz.particles.push(particle);
+        }
+        for(key in thiz.particles) {
+            var particle = thiz.particles[key];
+            particle.lived += delta;
+            if(particle.lived > particle.ttl) {
+                particle.div.remove();
+                delete thiz.particles[particle];
+            }
+        }
     }
 }
