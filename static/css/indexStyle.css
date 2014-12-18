@@ -50,3 +50,7 @@
   font-style: ArcadeClassic;
 }
 
+.ui-loader{
+  display: none;
+}
+
