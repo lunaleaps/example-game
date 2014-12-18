@@ -3,6 +3,10 @@
   src: url('../fonts/ArcadeClassic.ttf');
 }
 
+.ui-loader {
+  display: none;
+}
+
 .app-content {
   background-color: #000;
 }
@@ -58,8 +62,24 @@
   border: 2px solid red;
 }
 
-.ui-loader {
-  display: none;
+.arcade-button {
+  border: 0;
+  background: #F0B73E;
+  border-radius: 25px;
+  box-shadow: 0 5px 0 #b48013;
+  color: #fff;
+  cursor: pointer;
+  margin: 0;
+  outline: 0;
+  padding: 12px 20px;
+  transition: all .1s linear;
+  width: 20px;
+  font-family: ArcadeClassic;
+  font-size: 30px;
+}
+.arcade-button:active {
+  box-shadow: 0 2px 0 #b48013;
+  transform: translateY(3px);
 }
 
 body {
