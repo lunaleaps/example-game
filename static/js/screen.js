@@ -113,6 +113,9 @@ $(document).ready(function() {
     var verify;
 		points.redeem(id, pointsValue, sku, function spend(transaction, verify){
       //if (transaction.status == "PROCESSED"){
+        $(('.app-button.pacman')).on('click', function() {
+              App.load('pong-game');
+          });
         switch (currentImage) {
             case 0:
                 App.load('pacman');
@@ -121,7 +124,7 @@ $(document).ready(function() {
                   App.load('asteroids');
                 break;
             case 2:
-                  $(".pong-game-button").click();
+                  $(".pong").click();
                 break;
             case 3:
                   $(".snake").click();
