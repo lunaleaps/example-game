@@ -41,13 +41,11 @@ App.controller('pacman', function($page) {
       width = unit * 63,
       height = width,
       cellSize = unit * 3,
+      GHOST_RADIUS = Math.round(cellSize/2),
       new_direction = UP,
       score = 0,
       pacman = new Pacman(15 * 3 + 1, 10 * 3 + 1),
-      ghost = new Ghost('red', 9 * 3 + 1, 9 * 3),
-      GHOST_RADIUS = Math.round(cellSize/2),
-      count = 0;
-      GHOST_COUNT = 4;
+      ghost = new Ghost('red', 7 * 3 + 1,  10 * 3 + 1),
       layout = [ [00, 07, 01, 01, 01, 01, 01, 01, 01, 01, 11, 01, 01, 01, 01, 01, 01, 01, 01, 09, 00],
                  [00, 05, 02, 02, 02, 02, 02, 02, 02, 02, 05, 02, 02, 02, 02, 02, 02, 02, 02, 05, 00],
                  [00, 05, 03, 01, 01, 02, 01, 01, 01, 02, 05, 02, 01, 01, 01, 02, 01, 01, 03, 05, 00],
@@ -56,7 +54,7 @@ App.controller('pacman', function($page) {
                  [00, 05, 02, 02, 02, 02, 05, 02, 02, 02, 05, 02, 02, 02, 05, 02, 02, 02, 02, 05, 00],
                  [00, 06, 01, 01, 09, 02, 13, 01, 01, 00, 05, 00, 01, 01, 12, 02, 07, 01, 01, 08, 00],
                  [00, 00, 00, 00, 05, 02, 05, 00, 00, 00, 00, 00, 00, 00, 05, 02, 05, 00, 00, 00, 00],
-                 [01, 01, 01, 01, 08, 02, 05, 00, 07, 01, 04, 01, 09, 00, 05, 02, 06, 01, 01, 01, 01],
+                 [01, 01, 01, 01, 08, 02, 05, 00, 07, 01, 00, 01, 09, 00, 05, 02, 06, 01, 01, 01, 01],
                  [00, 00, 00, 00, 00, 02, 00, 00, 05, 00, 00, 00, 05, 00, 00, 02, 00, 00, 00, 00, 00],
                  [01, 01, 01, 01, 09, 02, 05, 00, 06, 01, 01, 01, 08, 00, 05, 02, 07, 01, 01, 01, 01],
                  [00, 00, 00, 00, 05, 02, 05, 00, 00, 00, 00, 00, 00, 00, 05, 02, 05, 00, 00, 00, 00],
@@ -98,13 +96,19 @@ App.controller('pacman', function($page) {
     var J = Math.floor(j / 3);
     return {I: I, J:J};
   }
+
   function Ghost (color, i, j) {
     // i, j are the grid cell size.. 63 of them in one row/col
     this.i =  i;
     this.j = j;
+    this.roomSpeed = 4;
+    this.moveSpeed = 0;
+    this.count = 0;
     this.color = color;
+    this.directions = [];
     this.direction = UP;
     this.leave = true;
+    this.stopped = false;
     this.chasing = true;
     this.previousCell = PATH;
     this.isMoving =  false;
@@ -113,13 +117,54 @@ App.controller('pacman', function($page) {
     this.ROOM_DOWN = i;
   }
 
-  Ghost.prototype.chooseDirection = function (grid, pacman) {
+  /*Ghost.prototype.chooseDirection = function (pacman) {*/
+    //// should order the directions in order of preference
+    //var distX = (pacman.j - this.j),
+        //distY = (pacman.i - this.i),
+        //dirX = (distX > 0)? RIGHT: LEFT,
+        //dirY = (distY > 0)? DOWN: UP,
+        //order = [];
+
+    //if (Math.abs(distX) < Math.abs(distY)) {
+      //order[0] = dirX;
+      //order[1] = dirY;
+      //order[2] = dirY * -1;
+      //order[3] = dirX * -1;
+    //} else {
+      //order[0] = dirX;
+      //order[1] = dirY;
+      //order[3] = dirY * -1;
+      //order[2] = dirX * -1;
+    //}
+    //return order
+  /*}*/
+
+  Ghost.prototype.collisionType = function(ghost) {
+    var next = {i: ghost.i, j: ghost.j, direction: ghost.direction},
+        cellPrime,
+        C_TYPE = C_NONE;
+
+    if (pacman.hit(ghost)) {
+      return C_DIE;
+    }
+
+    moveByUnit(next);
+    cellPrime = getCell(next);
+    if (isWall(cellPrime)) {
+      C_TYPE = C_WALL;
+    }
+
+    return C_TYPE;
+  }
+
+  Ghost.prototype.choosePath= function (pacman) {
     function hash(i, j) {
       return i + ' ' + j;
     }
 
     var stack = new Array(),
         popped,
+        directions = [UP, DOWN, RIGHT, LEFT],
         neighbors = [],
         neighbor,
         first = true,
@@ -139,20 +184,20 @@ App.controller('pacman', function($page) {
         if (first) {
           return C_DIE;
         } else {
-          return popped.path;
+          return clean(popped.path);
         }
       }
       if (first) {
-        neighbors = [{I: popped.I-1, J: popped.J, path: UP},
-                  {I: popped.I+1, J: popped.J, path: DOWN},
-                  {I: popped.I, J: popped.J + 1, path: RIGHT},
-                  {I: popped.I, J: popped.J-1, path: LEFT}];
+        neighbors = [{I: popped.I-1, J: popped.J, path: [UP]},
+                  {I: popped.I+1, J: popped.J, path: [ DOWN ]},
+                  {I: popped.I, J: popped.J + 1, path: [ RIGHT ]},
+                  {I: popped.I, J: popped.J-1, path: [ LEFT ]}];
         first = false;
       } else {
-        neighbors = [{I: popped.I-1, J: popped.J, path: popped.path},
-                  {I: popped.I+1, J: popped.J, path: popped.path},
-                  {I: popped.I, J: popped.J + 1, path: popped.path},
-                  {I: popped.I, J: popped.J-1, path: popped.path}];
+        neighbors = [{I: popped.I-1, J: popped.J, path: JSON.parse(JSON.stringify(popped.path))},
+                  {I: popped.I+1, J: popped.J, path: JSON.parse(JSON.stringify(popped.path))},
+                  {I: popped.I, J: popped.J + 1, path: JSON.parse(JSON.stringify(popped.path))},
+                  {I: popped.I, J: popped.J-1, path: JSON.parse(JSON.stringify(popped.path))}];
       }
 
       for (k = 0; k< 4; k++) {
@@ -160,7 +205,8 @@ App.controller('pacman', function($page) {
         if (neighbor.I < 0 | neighbor.I > 62 | neighbor.J < 0 | neighbor.J > 62) {
           continue;
         }
-        if (!seen[hash(neighbor.I, neighbor.J)] && isPath(grid[neighbor.I][neighbor.J], true)) {
+        if (!seen[hash(neighbor.I, neighbor.J)] && isPath(layout[neighbor.I][neighbor.J], true)) {
+          neighbor.path.push(directions[k]);
           stack.push(neighbor);
         } else {
           seen[hash(neighbor.I, neighbor.J)] = true;
@@ -171,45 +217,71 @@ App.controller('pacman', function($page) {
     }
   }
 
-  Ghost.prototype.move = function(grid, pacman) {
-    var direction;
-    // TODO leave condition
-    if (this.leave) {
-      // TODO change direction
-      //direction = this.chooseDirection(grid, pacman);
-      direction = new_direction;
-      var next_ghost = {};
-      next_ghost.i = this.i;
-      next_ghost.j = this.j;
-
-      if (this.direction !== direction && this.i %3 ===1 && this.j %3 === 1) {
-        this.direction = direction;
-      } else {
-
+  function clean(arr) {
+    var i = 0, cleaned = [], curr = arr[0];
+    for( i= 1; i< arr.length; i++) {
+      if (arr[i] !== curr) {
+        cleaned.push(curr);
+        curr = arr[i];
       }
-      console.log(this.direction);
+    }
+    cleaned.push(curr);
+    return cleaned;
+  }
+
+  Ghost.prototype.update = function(pacman) {
+    var d, directions, collision = C_NONE, index = 0;
+    if (this.stopped) {
+      return;
+    }
+
+    // TODO reset count when leaving room
+    if (this.leave) {
+      if (this.count !== this.moveSpeed) {
+        this.count += 1;
+        return;
+      } else {
+        this.count = 0;
+      }
+
+      var next = {};
+      next.i = this.i;
+      next.j = this.j;
+      if (this.directions.length === 0) {
+        this.directions = this.choosePath(pacman);
+        this.direction = this.directions.shift();
+      }
+      next.direction = this.direction;
+
+      moveByUnit(next);
+      collision = this.collisionType(next);
+      if (collision === C_WALL) {
+        next.i = this.i;
+        next.j = this.j;
+        next.direction = this.directions.shift();
+      } else if (collision === C_DIE) {
+        this.stopped = true;
+        pacman.stopped = true;
+        console.log('pacman dies');
+        return;
+      }
+      this.i = next.i;
+      this.j = next.j;
+      this.direction = next.direction;
     } else {
+      if (this.count !== this.roomSpeed) {
+        this.count += 1;
+        return;
+      } else {
+        this.count = 0;
+      }
       if (this.i <=  this.ROOM_UP) {
         this.direction = DOWN;
       } else if (this.i >= this.ROOM_DOWN) {
         this.direction = UP;
       }
+      moveByUnit(this);
     }
-      if (this.direction === UP) {
-        this.i -=1;
-      } else if (this.direction === LEFT) {
-        this.j -= 1;
-      } else if (this.direction === RIGHT) {
-        this.j += 1;
-      } else {
-        this.i += 1;
-      }
-  }
-
-  Ghost.prototype.collision = function(pacman) {
-    // what is the center of the ghost? figure this out
-    // TODO
-    return false;
   }
 
   Ghost.prototype.draw = function(context) {
@@ -317,6 +389,18 @@ App.controller('pacman', function($page) {
     this.stopped = false;
   }
 
+  Pacman.prototype.hit = function(ghost) {
+    var hitY = this.i * unit - unit/2,
+        hitX = this.j * unit - unit/2,
+        hitYPrime = hitY + 2 *unit,
+        hitXPrime = hitX + 2 * unit,
+        ghostX = ghost.j * unit + unit,
+        ghostY = ghost.i * unit + unit;
+
+    return (hitX < ghostX && ghostX < hitXPrime) &&
+      (hitY < ghostY && ghostY < hitYPrime);
+  }
+
   function getCell(pacman) {
     coords = getCellCoords(pacman.i, pacman.j);
     return layout[coords.I][coords.J];
@@ -331,7 +415,7 @@ App.controller('pacman', function($page) {
         C_TYPE = C_NONE;
 
     // Find next cell if we move one more in the current direction
-    moveOneUnit(next);
+    moveByUnit(next);
     cellPrime = getCell(next);
     if (isWall(cellPrime) | cellPrime === DOOR) {
       C_TYPE = C_WALL;
@@ -343,7 +427,7 @@ App.controller('pacman', function($page) {
 
     // check if pacman dies
     // TODO
-    if (ghost.collision(pacman)) {
+    if (this.hit(ghost)){
       return C_DIE;
     }
     /*for (g = 0; g < 4; g++) {*/
@@ -356,21 +440,24 @@ App.controller('pacman', function($page) {
     return C_TYPE;
   }
 
-  function moveOneUnit(sprite) {
+  function moveByUnit(sprite, x) {
+    if (!x) {
+      x = 1;
+    }
     if (sprite.direction === UP) {
-      sprite.i -=1;
+      sprite.i -= x;
     } else if (sprite.direction === LEFT) {
-      sprite.j -= 1;
+      sprite.j -= x;
     } else if (sprite.direction === RIGHT) {
-      sprite.j += 1;
+      sprite.j += x;
     } else {
-      sprite.i += 1;
+      sprite.i += x;
     }
   }
 
   Pacman.prototype.update = function () {
     var cell,
-        collision,
+        collision = C_NONE,
         next = {};
 
     next = {};
@@ -381,7 +468,7 @@ App.controller('pacman', function($page) {
     // see if next_pacman can work in this new direction
     if (this.direction !== new_direction && this.i % 3 == 1 && this.j % 3 == 1) {
       next.direction = new_direction;
-      moveOneUnit(next);
+      moveByUnit(next);
       collision = this.collisionType(next);
       // reset
       if (collision === C_WALL) {
@@ -391,18 +478,18 @@ App.controller('pacman', function($page) {
         new_direction = this.direction;
       }
     } else {
-      moveOneUnit(next);
+      moveByUnit(next);
     }
 
     if (collision === C_WALL) {
-      moveOneUnit(next);
+      moveByUnit(next);
     }
 
     collision = this.collisionType(next);
     if (collision === C_WALL) {
       next.i = this.i;
       next.j = this.j;
-      this.stopped = true; // TODO update this.not to draw when stopped
+      this.stopped = true;
     } else if (collision === C_SMALLDOT) {
       updateScore(C_SMALLDOT);
       cellCoords = getCellCoords(next.i, next.j);
@@ -430,7 +517,7 @@ App.controller('pacman', function($page) {
 
   Pacman.prototype.draw = function(context) {
     var startAngle, endAngle,
-        radius = Math.round(0.7 * cellSize),
+        radius = Math.round(0.6 * cellSize),
         x = this.j * unit + (unit/2),
         y = this.i * unit + (unit/2);
 
@@ -496,17 +583,16 @@ App.controller('pacman', function($page) {
   }
 
   function paint() {
-    count += 1;
     context.fillStyle = 'black';
     context.fillRect(0, 0, width, height);
     paintBackground();
-    if (count == GHOST_COUNT) {
-      count = 0;
-      ghost.move(layout, pacman);
-      ghost.draw(context);
-    }
+
     pacman.update();
     pacman.draw(context);
+    context.fillStyle = 'green';
+    context.fillRect(pacman.hitX, pacman.hitY, unit * 2, unit * 2);
+    ghost.update(pacman);
+    ghost.draw(context);
   }
 
   function paintBackground() {
