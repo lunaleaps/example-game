@@ -484,7 +484,8 @@ function Asteroids(div) {
             var area = window.innerWidth * window.innerHeight;
             //The game was balanced around a screen area of 833,000, so 1 is 833,000
             area /= 833000;
-            thiz.asteroidTime = 3 / thiz.level * area;
+            console.log("Screen area multiplier: " + area)
+            thiz.asteroidTime = (3 / thiz.level) / area;
             thiz.createRandomAsteroid();
         }
         for(key in thiz.sprites) {
