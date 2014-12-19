@@ -105,58 +105,58 @@ $(document).ready(function() {
 
 	function kikPoints(){
 		var id = kik.utils.random.uuid();
-        var pointsValue = 2;
-        var sku = 'com.herokuapp.kp-aracde.play';
-
+		    var pointsValue = 2;
+		    var sku = 'com.herokuapp.kp-aracde.play';
 		points.redeem(id, pointsValue, sku, function spend(transaction){
-			if (transaction.status == "PROCESSED") {
-				paid = true;
-			} else {
-				paid = false;
-			}
+		  if (transaction.status == "PROCESSED") {
+		    paid = true;
+		  } else {
+		    paid = false;
+		  }
+		  $("p").text(paid);
 		});
 	}
 
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
 		var game_button;
-		//kikPoints();
+		kikPoints();
 		switch (currentImage) {
 		    case 0:
-		    	//if (paid){
+		    	if (paid){
 		    		$(".pacman").click();
-		    	//	paid = false;
-		    	//}
+		    		paid = false;
+		    	}
 		        break;
 		    case 1:
-		    	//if (paid){
+		    	if (paid){
 		        	$(".asteroids").click();
-		        //	paid = false;
-		    	//}
+		        	paid = false;
+		    	}
 		        break;
 		    case 2:
-		    	//if (paid){
+		    	if (paid){
 			        $(".pong").click();
-			    //   paid = false;
-			    //}
+			       paid = false;
+			    }
 		        break;
 		    case 3:
-		    	//if (paid){
+		    	if (paid){
 		        	$(".snake").click();
-		        //	paid = false;
-		    	//}
+		        	paid = false;
+		    	}
 		        break;
 		    case 4:
-		    	//if (paid){
+		    	if (paid){
 		        	$(".spaceInvaders").click();
-		        //	paid = false;
-		        //}
+		        	paid = false;
+		        }
 		        break;
 		    case 5:
-		    	//if (paid){
+		    	if (paid){
 		        	$(".arkanoid").click();
-		        //	paid = false;
-		        //}
+		        	paid = false;
+		        }
 		        break;
 		}
 	});
