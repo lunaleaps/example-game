@@ -208,8 +208,8 @@ App.controller('snake', function($page) {
             ctx.strokeStyle = "black";
             ctx.strokeRect(0, 0, w, h);
 
-            ctx.fillStyle = "white";
-            ctx.fillRect(0, 5, w, 10);
+            ctx.fillStyle = "red";
+            ctx.fillRect(0, 0, w, 2);
 
             ctx.drawImage(controller, cx, cy, w, h);
             ctx.drawImage(up_arrow, ux, uy);
