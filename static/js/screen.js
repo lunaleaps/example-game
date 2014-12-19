@@ -123,7 +123,7 @@ $(document).ready(function() {
 		var game_button;
 		kikPoints();
     var str2 = $("#testing").text();
-    if (str == str2){
+    if (str === str2){
       $("#testing").text("FOOD");
       paid = true;
     }
