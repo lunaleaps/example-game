@@ -35,16 +35,15 @@ App.controller('pacman', function($page) {
       $controls = $($page.querySelector('.joystick')),
       context = $game.getContext('2d'),
       $scoreElement = $page.querySelector('.scoreText'),
-      score = 0,
-      pacman,
-      ghost,
       unit = Math.floor(window.innerWidth/63), // 21 * 3
       width = unit * 63,
       height = width,
       cellSize = unit * 3,
       new_direction = UP,
+      score = 0,
+      pacman = new Pacman(15 * 3 + 1, 10 * 3 + 1),
+      ghost = new Ghost('red', 9 * 3 + 1, 9 * 3),
       GHOST_RADIUS = Math.round(cellSize/2),
-
       layout = [ [00, 07, 01, 01, 01, 01, 01, 01, 01, 01, 11, 01, 01, 01, 01, 01, 01, 01, 01, 09, 00],
                  [00, 05, 02, 02, 02, 02, 02, 02, 02, 02, 05, 02, 02, 02, 02, 02, 02, 02, 02, 05, 00],
                  [00, 05, 03, 01, 01, 02, 01, 01, 01, 02, 05, 02, 01, 01, 01, 02, 01, 01, 03, 05, 00],
@@ -67,7 +66,7 @@ App.controller('pacman', function($page) {
                  [00, 05, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 05, 00],
                  [00, 06, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 08, 00]];
 
-  initialize(15 * 3 + 1, 10 * 3 + 1);
+  initialize();
 
   function isWall(cell) {
     return cell === WALL_HORIZONTAL |
@@ -177,9 +176,15 @@ App.controller('pacman', function($page) {
     var direction;
     // TODO leave condition
     if (this.leave) {
-      direction = this.chooseDirection(grid, pacman);
-      if (this.direction !== direction ) {
-        //
+      // TODO change direction
+      //direction = this.chooseDirection(grid, pacman);
+      direction = new_direction;
+      var next_ghost = {};
+      next_ghost.i = this.i;
+      next_ghost.j = this.j;
+
+      if (this.direction !== direction && this.i %3 ===1 && this.j %3 === 1) {
+        this.direction = direction;
       } else {
 
       }
@@ -297,54 +302,56 @@ App.controller('pacman', function($page) {
     }
   }
 
-  function initPacman(i, j) {
-    return {
-            i: i,
-            j: j,
-            direction: UP,
-            mouthOpenValue: 40,
-            mouthPos: -1,
-            clear: function(context) {
-              context.fillStyle = 'black';
-              context.fillRect((this.j-2) *unit, (this.i -2)*unit, cellSize + 2*unit, cellSize+2*unit);
-            },
-            draw : function(context) {
-              var startAngle, endAngle,
-                  radius = Math.round(0.7 * cellSize),
-                  x = this.j * unit + (unit/2),
-                  y = this.i * unit + (unit/2);
+  // i, j are the unit indices for i, j
+  function Pacman(i, j) {
+    this.i = i;
+    this.j = j;
+    this.direction = UP;
+    this.new_direction = this.direction;
+    this.mouthOpenValue = 40;
+    this.mouthPos = -1;
+  }
 
-              // clear background of pacman
-              this.clear(context);
+  Pacman.prototype.clear = function(context) {
+    context.fillStyle = 'black';
+    context.fillRect((this.j-2) *unit, (this.i -2)*unit, cellSize + 2*unit, cellSize+2*unit);
+  }
 
-              if (this.mouthOpenValue <= 0) {
-                this.mouthPosition = 1;
-              } else if (this.mouthOpenValue >= 40) {
-                this.mouthPosition = -1;
-              }
-              this.mouthOpenValue +=  10 * this.mouthPosition;
+  Pacman.prototype.draw = function(context) {
+    var startAngle, endAngle,
+        radius = Math.round(0.7 * cellSize),
+        x = this.j * unit + (unit/2),
+        y = this.i * unit + (unit/2);
 
-              if (this.direction === RIGHT) {
-                startAngle = (Math.PI / 180) * this.mouthOpenValue;
-                endAngle =  (Math.PI / 180) * (360 -this.mouthOpenValue);
-              } else if (this.direction === LEFT) {
-                startAngle = (Math.PI / 180) * (180 + this.mouthOpenValue);
-                endAngle =  (Math.PI / 180) * (179 - this.mouthOpenValue);
-              } else if (this.direction === UP) {
-                startAngle = (Math.PI / 180) * (270 + this.mouthOpenValue);
-                endAngle =  (Math.PI / 180) * (269 - this.mouthOpenValue);
-              } else {
-                startAngle = (Math.PI / 180) * (90 + this.mouthOpenValue);
-                endAngle =  (Math.PI / 180) * (89 - this.mouthOpenValue);
-              }
+    // clear background of pacman
+    this.clear(context);
 
-              context.beginPath();
-              context.arc(x, y, radius, startAngle, endAngle);
-              context.lineTo(x, y);
-              context.fillStyle = '#FF0';
-              context.fill();
-            }
-    };
+    if (this.mouthOpenValue <= 0) {
+      this.mouthPosition = 1;
+    } else if (this.mouthOpenValue >= 40) {
+      this.mouthPosition = -1;
+    }
+    this.mouthOpenValue +=  10 * this.mouthPosition;
+
+    if (this.direction === RIGHT) {
+      startAngle = (Math.PI / 180) * this.mouthOpenValue;
+      endAngle =  (Math.PI / 180) * (360 -this.mouthOpenValue);
+    } else if (this.direction === LEFT) {
+      startAngle = (Math.PI / 180) * (180 + this.mouthOpenValue);
+      endAngle =  (Math.PI / 180) * (179 - this.mouthOpenValue);
+    } else if (this.direction === UP) {
+      startAngle = (Math.PI / 180) * (270 + this.mouthOpenValue);
+      endAngle =  (Math.PI / 180) * (269 - this.mouthOpenValue);
+    } else {
+      startAngle = (Math.PI / 180) * (90 + this.mouthOpenValue);
+      endAngle =  (Math.PI / 180) * (89 - this.mouthOpenValue);
+    }
+
+    context.beginPath();
+    context.arc(x, y, radius, startAngle, endAngle);
+    context.lineTo(x, y);
+    context.fillStyle = '#FF0';
+    context.fill();
   }
 
   function paintGhosts() {
@@ -353,12 +360,11 @@ App.controller('pacman', function($page) {
     ghost.draw(context);
   }
 
-  function initialize(posI, posJ) {
+  function initialize() {
 
-    $game.width = width;
-    $game.height = height;
-    pacman = initPacman(posI, posJ);
-    ghost = new Ghost('red', 9 * 3 + 1, 9 * 3);
+    $game.width = width,
+    $game.height = height,
+
     // paint
     paintBackground();
     setInterval(paint, 75);
