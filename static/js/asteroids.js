@@ -382,11 +382,9 @@ function Asteroids(div) {
                 if(thiz.joystickDown) {
                     var joystickOffset = thiz.joystick.getOffset();
                     if(joystickOffset.x > 0) {
-                        // this.rotating = 1 - 1 / (joystickOffset.x / 10);
-                        this.rotating = joystickOffset.x / 500;
+                        this.rotating = joystickOffset.x / 300;
                     } else if(joystickOffset.x < 0) {
-                        // this.rotating = -(1 - 1 / (joystickOffset.x / 10));
-                        this.rotating = joystickOffset.x / 500;
+                        this.rotating = joystickOffset.x / 300;
                     }
                     if(joystickOffset.y > 0) {
                         this.velY += Math.cos(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * joystickOffset.y / 2000;
@@ -398,7 +396,7 @@ function Asteroids(div) {
                 }
                 if(thiz.firing) {
                     this.firingDelay += deltaTime;
-                    if(this.firingDelay > 0.1) {
+                    if(this.firingDelay > 0.3) {
                         var velX = -Math.sin(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * 500;
                         var velY = -Math.cos(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * 500;
                         thiz.createBullet([this.x + 12, this.y + 12], [velX, velY]);
