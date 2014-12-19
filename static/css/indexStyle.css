@@ -75,13 +75,13 @@
 
 .left {
   float: left;
-  margin-top: 15%;
+  margin-top: 8%;
   margin-left: 10%;
 }
 
 .right {
   float: right;
-  margin-top: 15%;
+  margin-top: 8%;
   margin-right: 10%;
 }
 
@@ -101,4 +101,8 @@
   font-size: 28px; 
   color: #F0B73E;
   text-align: center;
+}
+
+.carousel img {
+
 }
