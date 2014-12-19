@@ -115,22 +115,22 @@ $(document).ready(function() {
       if (transaction.status == "PROCESSED"){
         switch (currentImage) {
             case 0:
-                $(".pacman").click();
+                App.load('pacman');
                 break;
             case 1:
-                  $(".asteroids").click();
+                  App.load('asteroids');
                 break;
             case 2:
-                  $(".pong").click();
+                  App.load('pong-game');
                 break;
             case 3:
-                  $(".snake").click();
+                  App.load('snake-game');
                 break;
             case 4:
-                  $(".spaceInvaders").click();
+                  App.load('space-invaders-game');
                 break;
             case 5:
-                  $(".arkanoid").click();
+                  App.load('arkanoid-game');
                 break;
         }
       }
