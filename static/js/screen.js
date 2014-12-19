@@ -106,17 +106,17 @@ $(document).ready(function() {
   window.onload = init;
 
   function kikPoints(){
-    var id = kik.utils.random.uuid();
-        var pointsValue = 2;
-        var sku = 'com.herokuapp.kp-aracde.play';
+    var id = kik.utils.random.uuid(),
+        pointsValue = 2,
+        sku = 'com.herokuapp.kp-aracde.play';
 
-/*    points.redeem(id, pointsValue, sku, function spend(transaction){*/
-      //if (transaction) {
-        //paid = true;
-      //} else {
-        //paid = false;
-      //}
-    /*});*/
+    points.redeem(id, pointsValue, sku, function spend(transaction){
+      if (transaction) {
+        paid = true;
+      } else {
+        paid = false;
+      }
+    });
     paid = true;
   }
 
