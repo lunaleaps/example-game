@@ -16,6 +16,7 @@ App.controller('asteroids', function(page) {
     $(page).on("appDestroy", function() {
         $(window).off("keypress", asteroids.handleKeydown);
         $(window).off("keyup", asteroids.handleKeydown);
+        asteroids.stop();
     });
 });
 function filterIsNot(obj) {
@@ -25,6 +26,13 @@ function filterIsNot(obj) {
 }
 function Asteroids(div) {
     var thiz = this;
+    thiz.deadHandlers = [
+        function() {
+            console.log("You died.");
+            thiz.stop();
+        }
+    ];
+    thiz.score = 0;
     div.attr("isDiv", "yes");
     this.div = div;
     thiz.joystickDiv = createNewJoystickDiv();
@@ -73,14 +81,13 @@ function Asteroids(div) {
     thiz.viewportHeight = window.innerHeight - 44;
     thiz.score = 0;
     thiz.asteroids = [];
-    //Compute the scale of a square
-    thiz.directionsTrying = [];
     thiz.createWall = function(pos, scale) {
         thiz.createSprite($("<div>")
             .addClass("si-wall")
             .css("width", scale)
             .css("height", scale), function() {}, pos);
     }
+    thiz.lives = 3;
     thiz.handleKeydown = function(evt) {
         var found = true;
         if(evt.which == 119) {
@@ -167,6 +174,7 @@ function Asteroids(div) {
                         }
                         sprite.inactive = true;
                         sprite.div.hide();
+                        thiz.score++;
                     }
                 }
             }, position, velocity);
@@ -239,12 +247,13 @@ function Asteroids(div) {
                     var dist = Math.sqrt(distX * distX + distY * distY);
                     if(dist < 20 * sprite.size) {
                         thiz.stop();
-                        App.dialog({
-                            title: "You died",
-                            okButton: "OK"
-                        }, function() {
-
-                        });
+                        thiz.lives--;
+                        thiz.player.setPosition([300, 300]);
+                        if(thiz.lives < 0) {
+                            for(key in thiz.deadHandlers) {
+                                thiz.deadHandlers[key]();
+                            }
+                        }
                     }
                 }
                 if(sprite.x < -1000 || sprite.x > window.innerWidth + 1000 || sprite.y < -1000 ||
