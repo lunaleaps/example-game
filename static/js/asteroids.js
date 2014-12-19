@@ -82,6 +82,7 @@ function Asteroids(div) {
     this.div.addClass("si-main");
     this.sprites = [];
     this.prevPhysicsTime = new Date();
+    thiz.lives = 3;
     this.stopped = false;
     thiz.directions = {
         left: [-1, 0],
@@ -123,7 +124,6 @@ function Asteroids(div) {
             .css("width", scale)
             .css("height", scale), function() {}, pos);
     }
-    thiz.lives = 3;
     thiz.handleKeydown = function(evt) {
         var found = true;
         if(evt.which == 119) {
@@ -282,10 +282,9 @@ function Asteroids(div) {
                     var distY = Math.abs(sprite.y - thiz.player.y);
                     var dist = Math.sqrt(distX * distX + distY * distY);
                     if(dist < 20 * sprite.size) {
-                        thiz.stop();
                         thiz.lives--;
                         thiz.player.setPosition([300, 300]);
-                        if(thiz.lives < 0) {
+                        if(thiz.lives < 1) {
                             for(key in thiz.deadHandlers) {
                                 thiz.deadHandlers[key]();
                             }
