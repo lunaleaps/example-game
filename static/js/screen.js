@@ -110,7 +110,7 @@ $(document).ready(function() {
       if (transaction.status == "PROCESSED"){
         $("#testing").text("paid");
       } else {
-        $("#testing").text("unpaid");
+        $("#testing").text("");
       }
 		});
 	}
@@ -119,11 +119,11 @@ $(document).ready(function() {
 	$(start_button).on('vmousedown', function(e){
     var paid = false;
     var str = 'paid';
-    $("#testing").text("unpaid");
+    $("#testing").text("");
 		var game_button;
 		kikPoints();
     var str2 = $("#testing").text();
-    if (str === str2){
+    if (str2){
       $("#testing").text("FOOD");
       paid = true;
     }
