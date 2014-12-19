@@ -28,6 +28,9 @@
 
  To get whether or not there is a currently active touch:
  joystick.isTouchActive
+
+ CONFIGURATION OPTIONS
+ joystick.deadzone controls the deadzone (the zone which is considered to be "close enough" to zero)
 */
 var Joystick = function(elm) {
     var thiz = this;
@@ -37,6 +40,8 @@ var Joystick = function(elm) {
     thiz.startPosY = 0;
     thiz.currPosX = 0;
     thiz.currPosY = 0;
+
+    thiz.deadzone = 8;
     thiz.div.on("touchstart", function(evt) {
         evt = getOriginalEvent(evt);
         evt.preventDefault();
@@ -79,9 +84,17 @@ var Joystick = function(elm) {
         }
     })
     thiz.getOffset = function() {
+        var x = thiz.currPosX - thiz.startPosX;
+        var y = thiz.currPosY - thiz.startPosY;
+        if(Math.abs(x) < thiz.deadzone) {
+            x = 0;
+        }
+        if(Math.abs(y) < thiz.deadzone) {
+            y = 0;
+        }
         return {
-            x: thiz.currPosX - thiz.startPosX,
-            y: thiz.currPosY - thiz.startPosY
+            x: x,
+            y: y
         };
     }
 }

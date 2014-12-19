@@ -7,8 +7,23 @@
  game.stop() stops the game.
  game.start() starts the game; CALLING THE CONSTRUCTOR ISN'T ENOUGH.
  game.deadHandlers is an array of functions to be called when the player dies (not loses a life, but has 0 lives).
+ game.score is the score; one per asteroid.
+
+ Whenever the asteroids app-page is loaded, the global variable asteroids is assigned to a new instance of Asteroids.
+ Wherever you see "game" in the documentation, that generally means "asteroids".
 
  You MUST attach your own event handlers to game.handleKeydown and game.handleKeyup; it will not add them itself.
+
+ A quick tutorial on the controls:
+ The joypad in the bottom-center controls movement. Up/down on the joypad are forward and back, respectively.
+ Move left/right to TURN (not translate) left or right.
+ Press anywhere else on the screen to fire.
+
+ A tip: try to stay fairly slow. When you get going fast, it can get very hard to regain control and very easy
+ to crash into an asteroid.
+
+ Note that circle collision is used, not polygon collision. You and the asteroids will collide when your two
+ circles intersect, even if you're not visibly touching.
 */
 function contains(a, obj) {
 
@@ -47,11 +62,21 @@ function Asteroids(div) {
     ];
     thiz.score = 0;
     div.attr("isDiv", "yes");
+    div.css("background-image", "url(images/stars" + Math.floor(Math.random() * 3 + 1) + ".png)");
     this.div = div;
+    thiz.scorecounter = $("<div>")
+        .addClass("si-scorecounter")
+        .appendTo(thiz.div)
+        .html("Score: 0");
+    thiz.levelcounter = $("<div>")
+        .addClass("si-levelcounter")
+        .appendTo(thiz.div)
+        .html("Level: 1");
     thiz.joystickDiv = createNewJoystickDiv();
     div.append(thiz.joystickDiv);
     thiz.joystick = new Joystick(thiz.joystickDiv);
     thiz.joystickDown = false;
+    thiz.level = 1;
     $(thiz.joystick)
         .on("start", function() {
             thiz.joystickDown = true;
@@ -79,9 +104,14 @@ function Asteroids(div) {
                 thiz.firing = false;
             }
         });
+    thiz.wedgeDiv = $("<div>")
+        .html("")
+        .addClass("si-wedge")
+        .appendTo(thiz.div);
     this.div.addClass("si-main");
     this.sprites = [];
     this.prevPhysicsTime = new Date();
+    thiz.lives = 3;
     this.stopped = false;
     thiz.directions = {
         left: [-1, 0],
@@ -96,6 +126,7 @@ function Asteroids(div) {
     thiz.asteroids = [];
     thiz.particles = [];
     thiz.pendingParticles = [];
+    thiz.requiredScoreForPass = 10;
     thiz.createParticles = function(pos, size, amt, vel, ttl) { //ttl is time to live
         for(var i = 0; i < amt; i++) {
             var div = $("<div>")
@@ -112,7 +143,7 @@ function Asteroids(div) {
                 lived: 0,
                 vel: vel,
                 created: false,
-                waitingTime: 2
+                waitingTime: 5
             };
             thiz.pendingParticles.push(particle);
         }
@@ -123,7 +154,6 @@ function Asteroids(div) {
             .css("width", scale)
             .css("height", scale), function() {}, pos);
     }
-    thiz.lives = 3;
     thiz.handleKeydown = function(evt) {
         var found = true;
         if(evt.which == 119) {
@@ -150,6 +180,12 @@ function Asteroids(div) {
             thiz.player.rotating = 0;
         }
     };
+    thiz.createWedge = function(text) {
+        thiz.wedgeDiv.html(text);
+        setTimeout(function() {
+            thiz.wedgeDiv.html("");
+        }, 3000);
+    }
     thiz.createSprite = function(div, update, position) {
         div.addClass("si-sprite");
         div.css("left", position[0])
@@ -192,29 +228,48 @@ function Asteroids(div) {
         sprite.velY = startVel[1];
         return sprite;
     };
+    thiz.updateScore = function() {
+        thiz.scorecounter.html("Score: " + thiz.score * 10);
+    }
+    thiz.updateLevel = function() {
+        thiz.levelcounter.html("Level: " + thiz.level);
+    }
     thiz.createBullet = function(position, velocity) {
         var sprite = thiz.createVelSprite($("<div>")
             .addClass("si-pellet"), function(deltaTime) {
                 for(key in thiz.asteroids) {
                     var asteroid = thiz.asteroids[key];
-                    var distX = Math.abs(asteroid.x - sprite.x);
-                    var distY = Math.abs(asteroid.y - sprite.y);
+                    var distX = Math.abs(asteroid.x - (sprite.x + sprite.widthHeight));
+                    var distY = Math.abs(asteroid.y - (sprite.y + sprite.widthHeight));
                     var dist = Math.sqrt(distX * distX + distY * distY);
-                    if(dist < 20 * asteroid.size && !sprite.inactive) {
+                    if(dist < 20 * asteroid.size && !sprite.inactive && !asteroid.hidden) {
                         asteroid.hide();
                         if(asteroid.size > 1) {
                             for(var i = 0; i < 2; i++) {
                                 var spt = thiz.createAsteroid([asteroid.x, asteroid.y],
-                                    [Math.floor(Math.random() * 40 - 20), Math.floor(Math.random() * 40 - 20)], asteroid.size - 1);
+                                    [Math.floor(Math.random() * 40 - 20) * thiz.level,
+                                        Math.floor(Math.random() * 40 - 20) * thiz.level], asteroid.size - 1);
                             }
                         }
                         sprite.inactive = true;
                         sprite.div.hide();
                         thiz.score++;
+                        thiz.updateScore();
+                        if(thiz.score > thiz.requiredScoreForPass) {
+                            //Advance to the next level
+                            thiz.level++;
+                            thiz.updateLevel();
+                            thiz.requiredScoreForPass += thiz.level * 10;
+                            thiz.createWedge("Level Up!");
+                            setTimeout(function() {
+                                thiz.createWedge("Current level: " + thiz.level);
+                            }, 3001)
+                        }
                     }
                 }
             }, position, velocity);
         sprite.inactive = false;
+        sprite.widthHeight = sprite.div.width();
     }
     thiz.createEnemy = function(position, scale) {
         var sprite = thiz.createSprite($("<div>")
@@ -278,17 +333,27 @@ function Asteroids(div) {
             .addClass("si-asteroid-" + Math.floor(Math.random() * 3 + 1)), function() {
                 if(!sprite.hidden) {
                     //Are we colliding with the player? If so, game over.
-                    var distX = Math.abs(sprite.x - thiz.player.x);
-                    var distY = Math.abs(sprite.y - thiz.player.y);
+                    var distX = Math.abs(sprite.x - (thiz.player.x + sprite.widthHeight / 2));
+                    var distY = Math.abs(sprite.y - (thiz.player.y + sprite.widthHeight / 2));
                     var dist = Math.sqrt(distX * distX + distY * distY);
                     if(dist < 20 * sprite.size) {
-                        thiz.stop();
                         thiz.lives--;
-                        thiz.player.setPosition([300, 300]);
-                        if(thiz.lives < 0) {
+                        thiz.player.respawn();
+                        if(thiz.lives < 1) {
                             for(key in thiz.deadHandlers) {
                                 thiz.deadHandlers[key]();
                             }
+                            thiz.createWedge("Game over.");
+                            for(var i = 0; i < 12; i++) {
+                                setTimeout(function() {
+                                    createWedge("Game over.");
+                                }, i * 12);
+                            }
+                        } else {
+                            thiz.createWedge("You died.");
+                            setTimeout(function() {
+                                thiz.createWedge("Lives left: " + thiz.lives);
+                            }, 3001);
                         }
                     }
                 }
@@ -301,7 +366,9 @@ function Asteroids(div) {
         sprite.hide = function() {
             sprite.div.hide();
             sprite.hidden = true;
+            thiz.removeSprite(sprite);
         }
+        sprite.widthHeight = sprite.div.width();
         sprite.size = size;
         sprite.div.css("width", size * 20)
             .css("height", size * 20);
@@ -319,16 +386,16 @@ function Asteroids(div) {
         var vel;
         if(edge == 0) {
             coords = [-80, amtAlong];
-            vel = [20, 0];
+            vel = [20 * thiz.level, 0];
         } else if(edge == 2) {
             coords = [window.innerWidth + 80, amtAlong];
-            vel = [-20, 0];
+            vel = [-20 * thiz.level, 0];
         } else if(edge == 1) {
             coords = [amtAlong, -80];
-            vel = [0, 20];
+            vel = [0, 20 * thiz.level];
         } else if(edge == 3) {
             coords = [amtAlong, window.innerHeight + 80];
-            vel = [0, -20];
+            vel = [0, -20 * thiz.level];
         } else {
             throw "Basic arithmetic failed...?";
         }
@@ -352,11 +419,9 @@ function Asteroids(div) {
                 if(thiz.joystickDown) {
                     var joystickOffset = thiz.joystick.getOffset();
                     if(joystickOffset.x > 0) {
-                        // this.rotating = 1 - 1 / (joystickOffset.x / 10);
-                        this.rotating = joystickOffset.x / 500;
+                        this.rotating = joystickOffset.x / 300;
                     } else if(joystickOffset.x < 0) {
-                        // this.rotating = -(1 - 1 / (joystickOffset.x / 10));
-                        this.rotating = joystickOffset.x / 500;
+                        this.rotating = joystickOffset.x / 300;
                     }
                     if(joystickOffset.y > 0) {
                         this.velY += Math.cos(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * joystickOffset.y / 2000;
@@ -368,7 +433,7 @@ function Asteroids(div) {
                 }
                 if(thiz.firing) {
                     this.firingDelay += deltaTime;
-                    if(this.firingDelay > 0.1) {
+                    if(this.firingDelay > 0.5) {
                         var velX = -Math.sin(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * 500;
                         var velY = -Math.cos(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * 500;
                         thiz.createBullet([this.x + 12, this.y + 12], [velX, velY]);
@@ -378,7 +443,19 @@ function Asteroids(div) {
                 this.rotate(this.rotating * 200 * deltaTime);
                 this.addX(this.velX);
                 this.addY(this.velY);
-            }, [300, 300]);
+                if(this.x > thiz.div.width()) {
+                    this.x = -this.div.width();
+                }
+                if(this.x < -this.div.width()) {
+                    this.x = thiz.div.width();
+                }
+                if(this.y > thiz.div.height()) {
+                    this.y = -this.div.height();
+                }
+                if(this.y < -this.div.height()) {
+                    this.y = thiz.div.height();
+                }
+            }, [0, 0]);
         sprite.velX = 0;
         sprite.velY = 0;
         sprite.firingDelay = 0;
@@ -408,6 +485,10 @@ function Asteroids(div) {
                 this.velY = 1.5 * thiz.squareScale * direction[1];
             }
         };
+        sprite.respawn = function() {
+            this.setPosition([300, 300]);
+            this.rotation = 0;
+        }
         thiz.player = sprite;
     };
     thiz.start = function() {
@@ -428,7 +509,12 @@ function Asteroids(div) {
         var delta = millis / 1000;
         thiz.asteroidTime -= delta;
         if(thiz.asteroidTime <= 0) {
-            thiz.asteroidTime = 3;
+            //We want the game to be fair across screen sizes, so scale back the amt. of asteroids spawned based on screen area
+            var area = window.innerWidth * window.innerHeight;
+            //The game was balanced around a screen area of 833,000, so 1 is 833,000
+            area /= 833000;
+            console.log("Screen area multiplier: " + area)
+            thiz.asteroidTime = (3 / thiz.level) / area;
             thiz.createRandomAsteroid();
         }
         for(key in thiz.sprites) {
@@ -446,8 +532,8 @@ function Asteroids(div) {
             var velY = Math.floor((Math.random() * 2 - 1) * particle.vel);
             particle.x += velX;
             particle.y += velY;
-            particle.div.css("width", particle.x)
-                .css("height", particle.y);
+            particle.div.css("left", particle.x)
+                .css("top", particle.y);
             particle.created = true;
             delete thiz.pendingParticles[key];
             thiz.particles.push(particle);
