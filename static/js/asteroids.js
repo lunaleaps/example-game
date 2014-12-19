@@ -212,7 +212,7 @@ function Asteroids(div) {
                     var distX = Math.abs(asteroid.x - sprite.x);
                     var distY = Math.abs(asteroid.y - sprite.y);
                     var dist = Math.sqrt(distX * distX + distY * distY);
-                    if(dist < 20 * asteroid.size && !sprite.inactive) {
+                    if(dist < 20 * asteroid.size && !sprite.inactive && !asteroid.hidden) {
                         asteroid.hide();
                         if(asteroid.size > 1) {
                             for(var i = 0; i < 2; i++) {
@@ -322,6 +322,7 @@ function Asteroids(div) {
         sprite.hide = function() {
             sprite.div.hide();
             sprite.hidden = true;
+            thiz.removeSprite(sprite);
         }
         sprite.size = size;
         sprite.div.css("width", size * 20)
