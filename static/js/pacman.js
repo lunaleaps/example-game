@@ -1,3 +1,5 @@
+// Two levels of coordinates.
+// Units and cells (with coords)
 // constants
 var UP = 1,
     DOWN = -1,
@@ -44,6 +46,8 @@ App.controller('pacman', function($page) {
       pacman = new Pacman(15 * 3 + 1, 10 * 3 + 1),
       ghost = new Ghost('red', 9 * 3 + 1, 9 * 3),
       GHOST_RADIUS = Math.round(cellSize/2),
+      count = 0;
+      GHOST_COUNT = 4;
       layout = [ [00, 07, 01, 01, 01, 01, 01, 01, 01, 01, 11, 01, 01, 01, 01, 01, 01, 01, 01, 09, 00],
                  [00, 05, 02, 02, 02, 02, 02, 02, 02, 02, 05, 02, 02, 02, 02, 02, 02, 02, 02, 05, 00],
                  [00, 05, 03, 01, 01, 02, 01, 01, 01, 02, 05, 02, 01, 01, 01, 02, 01, 01, 03, 05, 00],
@@ -107,11 +111,6 @@ App.controller('pacman', function($page) {
     this.radius = GHOST_RADIUS;
     this.ROOM_UP  = i -1;
     this.ROOM_DOWN = i;
-  }
-
-  Ghost.prototype.clear = function(context) {
-    context.fillStyle = 'black';
-    context.fillRect((this.j-1) *unit, (this.i-1)*unit, cellSize+unit, cellSize+unit);
   }
 
   Ghost.prototype.chooseDirection = function (grid, pacman) {
@@ -207,11 +206,16 @@ App.controller('pacman', function($page) {
       }
   }
 
+  Ghost.prototype.collision = function(pacman) {
+    // what is the center of the ghost? figure this out
+    // TODO
+    return false;
+  }
+
   Ghost.prototype.draw = function(context) {
     var x = this.j * unit + unit
         y = this.i * unit + unit;
 
-    this.clear(context);
     context.fillStyle = this.color;
     context.beginPath();
 
@@ -310,11 +314,118 @@ App.controller('pacman', function($page) {
     this.new_direction = this.direction;
     this.mouthOpenValue = 40;
     this.mouthPos = -1;
+    this.stopped = false;
   }
 
-  Pacman.prototype.clear = function(context) {
-    context.fillStyle = 'black';
-    context.fillRect((this.j-2) *unit, (this.i -2)*unit, cellSize + 2*unit, cellSize+2*unit);
+  function getCell(pacman) {
+    coords = getCellCoords(pacman.i, pacman.j);
+    return layout[coords.I][coords.J];
+  }
+
+  Pacman.prototype.collisionType = function (pacman) {
+    var next = {i: pacman.i, j: pacman.j, direction: pacman.direction},
+        cell = getCell(pacman),
+        cellPrime,
+        g = 0,
+        //ghost,
+        C_TYPE = C_NONE;
+
+    // Find next cell if we move one more in the current direction
+    moveOneUnit(next);
+    cellPrime = getCell(next);
+    if (isWall(cellPrime) | cellPrime === DOOR) {
+      C_TYPE = C_WALL;
+    } else if (cell === SMALLDOT && (pacman.i % 3) == 1 && (pacman.j % 3) == 1) {
+      C_TYPE = C_SMALLDOT;
+    } else if (cell === BIGDOT && (pacman.i % 3) == 1 && (pacman.j % 3) == 1) {
+      C_TYPE = C_BIGDOT;
+    }
+
+    // check if pacman dies
+    // TODO
+    if (ghost.collision(pacman)) {
+      return C_DIE;
+    }
+    /*for (g = 0; g < 4; g++) {*/
+      //ghost = ghosts[g];
+      //if (ghost.collision(pacman)) {
+        //return C_DIE;
+      //}
+    /*}*/
+
+    return C_TYPE;
+  }
+
+  function moveOneUnit(sprite) {
+    if (sprite.direction === UP) {
+      sprite.i -=1;
+    } else if (sprite.direction === LEFT) {
+      sprite.j -= 1;
+    } else if (sprite.direction === RIGHT) {
+      sprite.j += 1;
+    } else {
+      sprite.i += 1;
+    }
+  }
+
+  Pacman.prototype.update = function () {
+    var cell,
+        collision,
+        next = {};
+
+    next = {};
+    next.i = this.i;
+    next.j = this.j;
+    next.direction = this.direction;
+
+    // see if next_pacman can work in this new direction
+    if (this.direction !== new_direction && this.i % 3 == 1 && this.j % 3 == 1) {
+      next.direction = new_direction;
+      moveOneUnit(next);
+      collision = this.collisionType(next);
+      // reset
+      if (collision === C_WALL) {
+        next.i = this.i;
+        next.j = this.j;
+        next.direction = this.direction;
+        new_direction = this.direction;
+      }
+    } else {
+      moveOneUnit(next);
+    }
+
+    if (collision === C_WALL) {
+      moveOneUnit(next);
+    }
+
+    collision = this.collisionType(next);
+    if (collision === C_WALL) {
+      next.i = this.i;
+      next.j = this.j;
+      this.stopped = true; // TODO update this.not to draw when stopped
+    } else if (collision === C_SMALLDOT) {
+      updateScore(C_SMALLDOT);
+      cellCoords = getCellCoords(next.i, next.j);
+      layout[cellCoords.I][cellCoords.J] = PATH;
+    } else if (collision === C_BIGDOT) {
+      // TODO handle bigdot eating
+      // go through ghosts and update status of each ghost
+      console.log('Big dot collected');
+      updateScore(C_BIGDOT);
+      cellCoords = getCellCoords(next.i, next.j);
+      layout[cellCoords.I][cellCoords.J] = PATH;
+    } else if (collision === C_EAT) {
+      console.log('Eaten by ghost');
+      updateScore(C_EAT);
+    }
+
+    if (collision !== C_WALL) {
+      this.stopped = false;
+    }
+
+    this.i = next.i;
+    this.j = next.j;
+    this.direction = next.direction;
   }
 
   Pacman.prototype.draw = function(context) {
@@ -323,15 +434,18 @@ App.controller('pacman', function($page) {
         x = this.j * unit + (unit/2),
         y = this.i * unit + (unit/2);
 
-    // clear background of pacman
-    this.clear(context);
-
-    if (this.mouthOpenValue <= 0) {
-      this.mouthPosition = 1;
-    } else if (this.mouthOpenValue >= 40) {
-      this.mouthPosition = -1;
+    // don't animate mouth if stopped
+    if (this.stopped) {
+      this.mouthOpenValue = 40;
+    } else {
+      // animate mouth
+      if (this.mouthOpenValue <= 0) {
+        this.mouthPosition = 1;
+      } else if (this.mouthOpenValue >= 40) {
+        this.mouthPosition = -1;
+      }
+      this.mouthOpenValue +=  10 * this.mouthPosition;
     }
-    this.mouthOpenValue +=  10 * this.mouthPosition;
 
     if (this.direction === RIGHT) {
       startAngle = (Math.PI / 180) * this.mouthOpenValue;
@@ -347,17 +461,11 @@ App.controller('pacman', function($page) {
       endAngle =  (Math.PI / 180) * (89 - this.mouthOpenValue);
     }
 
+    context.fillStyle = '#FF0';
     context.beginPath();
     context.arc(x, y, radius, startAngle, endAngle);
     context.lineTo(x, y);
-    context.fillStyle = '#FF0';
     context.fill();
-  }
-
-  function paintGhosts() {
-    ghost.clear(context);
-    ghost.move(layout, pacman);
-    ghost.draw(context);
   }
 
   function initialize() {
@@ -366,9 +474,7 @@ App.controller('pacman', function($page) {
     $game.height = height,
 
     // paint
-    paintBackground();
     setInterval(paint, 75);
-    setInterval(paintGhosts, 300);
 
     var joystick = new Joystick($controls);
     $(joystick)
@@ -389,109 +495,17 @@ App.controller('pacman', function($page) {
       });
   }
 
-  function update() {
-    var copy = $.extend(true, [], layout),
-        cell,
-        changeDirection = false,
-    // need list of characters that are moving -- ghosts, pacman
-    // updated both -- need to track
-    // update pacman
-    // how to handle cases where ghost is passing through?
-    // TODO ghost needs to save previous background
-    next_pacman = {};
-    next_pacman.i = pacman.i;
-    next_pacman.j = pacman.j;
-    next_pacman.direction = pacman.direction;
-
-
-    if (pacman.direction !== new_direction && pacman.i % 3 == 1 && pacman.j % 3 == 1) {
-      // see if next_pacman can work in this new direction
-      move(next_pacman, new_direction);
-      if (getCollisionType(copy, next_pacman) === C_WALL) {
-        changeDirection = false;
-        // reset the values
-        new_direction = pacman.direction; // should we do this?
-        next_pacman.direction = pacman.direction;
-        next_pacman.i = pacman.i;
-        next_pacman.j = pacman.j;
-      } else {
-        changeDirection = true;
-      }
-    }
-
-    if (!changeDirection) {
-      move(next_pacman, pacman.direction);
-    }
-
-    var collision = getCollisionType(copy, next_pacman);
-    if (collision === C_WALL) {
-      next_pacman.i = pacman.i;
-      next_pacman.j = pacman.j;
-    } else if (collision === C_SMALLDOT) {
-      updateScore(C_SMALLDOT);
-      cellCoords = getCellCoords(next_pacman.i, next_pacman.j);
-      copy[cellCoords.I][cellCoords.J] = PATH;
-    } else if (collision === C_BIGDOT) {
-      // TODO handle bigdot eating
-      // go through ghosts and update status of each ghost
-      console.log('Big dot collected');
-      updateScore(C_BIGDOT);
-      cellCoords = getCellCoords(next_pacman.i, next_pacman.j);
-      copy[cellCoords.I][cellCoords.J] = PATH;
-    } else if (collision === C_EAT) {
-      updateScore(C_EAT);
-    }
-
-    layout = copy;
-    pacman.i = next_pacman.i;
-    pacman.j = next_pacman.j;
-    pacman.direction = next_pacman.direction;
-    // go through ghosts and update
-    // ghost
-
-    function getCell(grid, pacman) {
-      coords = getCellCoords(pacman.i, pacman.j);
-      return grid[coords.I][coords.J];
-    }
-
-    function getCollisionType(grid, pacman) {
-      var fake = JSON.parse(JSON.stringify(pacman)),
-          cell = getCell(grid, pacman),
-          C_TYPE = C_NONE;
-
-      move(fake, pacman.direction);
-      var cellPrime = getCell(grid, fake);
-      if (isWall(cellPrime) | cellPrime === DOOR) {
-        C_TYPE = C_WALL;
-      } else if (cell === SMALLDOT && (pacman.i % 3) == 1 && (pacman.j % 3) == 1) {
-        C_TYPE = C_SMALLDOT;
-      } else if (cell === BIGDOT && (pacman.i % 3) == 1 && (pacman.j % 3) == 1) {
-        C_TYPE = C_BIGDOT;
-      }
-      return C_TYPE;
-    }
-
-    function move(pacman, direction) {
-      pacman.direction = direction;
-      if (direction === UP) {
-        pacman.i -=1;
-      } else if (direction === LEFT) {
-        pacman.j -= 1;
-      } else if (direction === RIGHT) {
-        pacman.j += 1;
-      } else {
-        pacman.i += 1;
-      }
-    }
-  }
-
   function paint() {
-    pacman.clear(context);
-    // updates layout
-    collision = update();
-    // clear bg of pacman
-
-    // paint pacman
+    count += 1;
+    context.fillStyle = 'black';
+    context.fillRect(0, 0, width, height);
+    paintBackground();
+    if (count == GHOST_COUNT) {
+      count = 0;
+      ghost.move(layout, pacman);
+      ghost.draw(context);
+    }
+    pacman.update();
     pacman.draw(context);
   }
 
@@ -505,9 +519,6 @@ App.controller('pacman', function($page) {
         largeRadius = Math.round(0.30*cellSize),
         smallRadius = Math.round(0.10*cellSize);
 
-    //clear everytime
-    /*context.fillStyle = 'black';*/
-    /*context.fillRect(0, 0, width, height);*/
     for (I=0; I<21; I++) {
       topLeftX = 0;
       for (J=0; J<21; J++){
