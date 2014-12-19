@@ -49,6 +49,10 @@ function Asteroids(div) {
     thiz.score = 0;
     div.attr("isDiv", "yes");
     this.div = div;
+    thiz.scorecounter = $("<div>")
+        .addClass("si-scorecounter")
+        .appendTo(thiz.div)
+        .html("Score: 0");
     thiz.joystickDiv = createNewJoystickDiv();
     div.append(thiz.joystickDiv);
     thiz.joystick = new Joystick(thiz.joystickDiv);
@@ -205,6 +209,9 @@ function Asteroids(div) {
         sprite.velY = startVel[1];
         return sprite;
     };
+    thiz.updateScore = function() {
+        thiz.scorecounter.html("Score: " + thiz.score * 10);
+    }
     thiz.createBullet = function(position, velocity) {
         var sprite = thiz.createVelSprite($("<div>")
             .addClass("si-pellet"), function(deltaTime) {
@@ -225,6 +232,7 @@ function Asteroids(div) {
                         sprite.inactive = true;
                         sprite.div.hide();
                         thiz.score++;
+                        thiz.updateScore();
                         if(thiz.score > thiz.requiredScoreForPass) {
                             //Advance to the next level
                             thiz.level++;
@@ -396,7 +404,7 @@ function Asteroids(div) {
                 }
                 if(thiz.firing) {
                     this.firingDelay += deltaTime;
-                    if(this.firingDelay > 0.3) {
+                    if(this.firingDelay > 0.5) {
                         var velX = -Math.sin(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * 500;
                         var velY = -Math.cos(Math.abs(360 - this.rotation) / 360 * 3.14159265 * 2) * 500;
                         thiz.createBullet([this.x + 12, this.y + 12], [velX, velY]);
@@ -472,7 +480,11 @@ function Asteroids(div) {
         var delta = millis / 1000;
         thiz.asteroidTime -= delta;
         if(thiz.asteroidTime <= 0) {
-            thiz.asteroidTime = 3 / thiz.level;
+            //We want the game to be fair across screen sizes, so scale back the amt. of asteroids spawned based on screen area
+            var area = window.innerWidth * window.innerHeight;
+            //The game was balanced around a screen area of 833,000, so 1 is 833,000
+            area /= 833000;
+            thiz.asteroidTime = 3 / thiz.level * area;
             thiz.createRandomAsteroid();
         }
         for(key in thiz.sprites) {

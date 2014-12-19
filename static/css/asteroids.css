@@ -73,3 +73,18 @@
     color: white;
     font-size: 16px;
 }
+.si-scorecounter {
+    position: absolute;
+    font-family: "ArcadeClassic", Arial, serif;
+    right: 10px;
+    top: 10px;
+    color: white;
+    z-index: 1000000;
+}
+.si-levelcounter {
+    position: absolute;
+    font-family: "ArcadeClassic", Arial, serif;
+    left: 10px;
+    top: 10px;
+    color: white;
+}
