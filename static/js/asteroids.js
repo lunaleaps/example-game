@@ -1,4 +1,17 @@
+/*
+ ==DOCUMENTATION==
+ Create a game with new Asteroids(div), where div is the ZEPTO/JQUERY object for the div you want the game to run in.
+ Note that this div could hypothetically not be in the DOM anywhere (and the game would run just fine), but use cases
+ for this are few and far between.
+
+ game.stop() stops the game.
+ game.start() starts the game; CALLING THE CONSTRUCTOR ISN'T ENOUGH.
+ game.deadHandlers is an array of functions to be called when the player dies (not loses a life, but has 0 lives).
+
+ You MUST attach your own event handlers to game.handleKeydown and game.handleKeyup; it will not add them itself.
+*/
 function contains(a, obj) {
+
     var i = a.length;
     while (i--) {
        if (a[i] === obj) {
