@@ -121,7 +121,7 @@ $(document).ready(function() {
                   App.load('asteroids');
                 break;
             case 2:
-                  $(".pong").click();
+                  $(".pong-game-button").click();
                 break;
             case 3:
                   $(".snake").click();
