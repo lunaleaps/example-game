@@ -43,6 +43,7 @@
           </div>
           <ul id="pager">
           </ul>
+          <p id="testing">Test</p>
         </div>
         <div id="next-button" class="arcade-button right">></div>
         <div id="previous-button" class="arcade-button left"><</div>
@@ -145,6 +146,8 @@
             var sku = 'com.herokuapp.kp-aracde.play';
 
         points.redeem(id, pointsValue, sku, function spend(transaction){
+          var testing = document.getElementById("testing");
+          testing.text(transaction.status);
           if (transaction.status == "PROCESSED") {
             paid = true;
           } else {
