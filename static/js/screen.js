@@ -1,13 +1,13 @@
 var paid;
 
 $(document).ready(function() {
-  var ul;
-  var liItems;
-  var imageNumber;
-  var imageWidth;
-  var prev, next;
-  var currentPostion = 0;
-  var currentImage = 0;
+	var ul;
+	var liItems;
+	var imageNumber;
+	var imageWidth;
+	var prev, next;
+	var currentPostion = 0;
+	var currentImage = 0;
   paid = false;
 
 
@@ -133,8 +133,15 @@ $(document).ready(function() {
                   App.load('arkanoid');
                 break;
         }
+      }
+		});
+	}
 
+	var start_button = document.getElementById("play-button");
+	$(start_button).on('vmousedown', function(e){
+    paid = true;
+    kikPoints();
     paid = false;
-  });
-
+	});
+	
 });
