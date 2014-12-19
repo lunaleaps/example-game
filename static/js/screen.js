@@ -10,8 +10,6 @@ $(document).ready(function() {
 	var currentImage = 0;
   paid = false;
 
-  points.debug = true;
-
 
   function init(){
     paid = false;

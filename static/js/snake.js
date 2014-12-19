@@ -1,5 +1,4 @@
-$(document).on('pageinit', function() {
-    $("#snake-game-button").click(function(event){
+App.controller('snake-game', function($page) {
         //Canvas
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
@@ -311,5 +310,4 @@ $(document).on('pageinit', function() {
             }
             return false;
         }
-        });
 });
