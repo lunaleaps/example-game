@@ -58,7 +58,7 @@ $(document).on('pageinit', function() {
                     ball.y = H/2;
                     points = 0;
                     ball.vx = 0;
-                    ball.vy = 8;
+                    ball.vy = 6;
                     direction = "";
 
                     for(var i = 1; i < paddles.length; i++) {
@@ -178,7 +178,7 @@ $(document).on('pageinit', function() {
             r: 5,
             c: "white",
             vx: 0,
-            vy: 8,
+            vy: 6,
             
             // Function for drawing ball on canvas
             draw: function() {
@@ -290,10 +290,10 @@ $(document).on('pageinit', function() {
             for(var i = 1; i < paddles.length; i++) {
                 p = paddles[i];
                 if (direction == "left"){
-                    p.vx = -6;
+                    p.vx = -4;
                 }
                 else if (direction == "right"){
-                    p.vx = 6;
+                    p.vx = 4;
                 } 
                 else {
                     p.vx = 0;

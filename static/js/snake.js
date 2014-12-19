@@ -148,7 +148,7 @@ $(document).on('pageinit', function() {
                 //move the snake using a timer which will trigger the paint function
                 //every 60ms
                 if(typeof game_loop != "undefined") clearInterval(game_loop);
-                game_loop = setInterval(paint, 60);
+                game_loop = setInterval(paint, 100);
             }
         }
 

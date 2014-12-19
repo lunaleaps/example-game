@@ -423,9 +423,9 @@ $(document).on('pageinit', function() {
         PlayState.prototype.update = function(game, dt) {
 
             if (game.direction == "left"){
-                this.ship.vx = -3;
+                this.ship.vx = -2;
             } else if (game.direction == "right"){
-                this.ship.vx = 3;
+                this.ship.vx = 2;
             } else {
                 this.ship.vx = 0;
             }
