@@ -1,5 +1,4 @@
-$(document).on('pageinit', function() {
-    $("#arkanoid-game-button").click(function(event){
+App.controller('arkanoid', function($page) {
         // RequestAnimFrame: a browser API for getting smooth animations
         window.requestAnimFrame = (function(){
             return  window.requestAnimationFrame       || 
@@ -22,7 +21,7 @@ $(document).on('pageinit', function() {
         } )();
 
         // Initialize canvas and required variables
-        var canvas = document.getElementById("canvas");
+        var canvas = $page.querySelector(".canvas");
         var ctx = canvas.getContext("2d"); // Create canvas context
         var ball = {}; // Ball object
         var paddle; // paddle
@@ -108,7 +107,7 @@ $(document).on('pageinit', function() {
         });*/
 
         // Initialise the collision sound
-        collision = document.getElementById("collide");
+        collision = $page.querySelector("#collide");
 
         //var ratio = window.devicePixelRatio || 1;
         //var w = screen.width * ratio;
@@ -541,5 +540,4 @@ $(document).on('pageinit', function() {
 
         // Show the start screen
         startScreen();
-    });
 });

@@ -1,4 +1,4 @@
-App.controller('snake-game', function($page) {
+App.controller('snake', function($page) {
         //Canvas
         var canvas = $page.querySelector(".canvas");
         var ctx = canvas.getContext("2d");

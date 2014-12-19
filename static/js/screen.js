@@ -121,16 +121,16 @@ $(document).ready(function() {
                   App.load('asteroids');
                 break;
             case 2:
-                  App.load('pong-game');
+                  App.load('pong');
                 break;
             case 3:
-                  App.load('snake-game');
+                  App.load('snake');
                 break;
             case 4:
-                  App.load('space-invaders-game');
+                  App.load('space-invaders');
                 break;
             case 5:
-                  App.load('arkanoid-game');
+                  App.load('arkanoid');
                 break;
         }
       }
