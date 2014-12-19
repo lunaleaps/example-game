@@ -137,9 +137,9 @@
     <script src='js/snake.js'></script>
     <script src='js/screen.js'></script>
     <script>
-      //kik.browser.setOrientationLock('portrait');
 
       App.controller('home', function (page) {
+        kik.browser.setOrientationLock('portrait');
         var $page = $(page),
             pacman= $page.find('.app-button.pacman'),
             asteroids= $page.find('.app-button.asteroids');

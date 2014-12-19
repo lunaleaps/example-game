@@ -120,6 +120,7 @@ $(document).ready(function() {
     var paid = false;
 		var game_button;
 		kikPoints();
+    alert($("#testing").text().trim());
     if ($("#testing").text().trim() == "paid"){
       paid = true;
     }
