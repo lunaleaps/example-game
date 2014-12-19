@@ -111,7 +111,6 @@ $(document).ready(function() {
     var pointsValue = 1;
     var sku = 'com.herokuapp.kp-aracde.play';
     var verify;
-    paid = true;
 		points.redeem(id, pointsValue, sku, function spend(transaction, verify){
       if (transaction.status == "PROCESSED"){
         switch (currentImage) {
@@ -140,6 +139,7 @@ $(document).ready(function() {
 
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
+    paid = true;
     kikPoints();
 	});
 	
