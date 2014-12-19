@@ -1,3 +1,5 @@
+var paid;
+
 $(document).ready(function() {
 	var ul;
 	var liItems;
@@ -6,7 +8,7 @@ $(document).ready(function() {
 	var prev, next;
 	var currentPostion = 0;
 	var currentImage = 0;
-  var paid = false;
+  paid = false;
 
   points.debug = true;
 
@@ -112,7 +114,7 @@ $(document).ready(function() {
     var sku = 'com.herokuapp.kp-aracde.play';
     var verify;
 		points.redeem(id, pointsValue, sku, function spend(transaction, verify){
-      //if (transaction.status == "PROCESSED"){
+      if (transaction.status == "PROCESSED"){
         switch (currentImage) {
             case 0:
                 App.load('pacman');
@@ -121,8 +123,7 @@ $(document).ready(function() {
                   App.load('asteroids');
                 break;
             case 2:
-                  $("#pong-game-button").click();
-                  //$(".pong").click();
+                  $(".pong").click();
                 break;
             case 3:
                   $(".snake").click();
@@ -134,7 +135,7 @@ $(document).ready(function() {
                   $(".arkanoid").click();
                 break;
         }
-      //}
+      }
 		});
 	}
 
