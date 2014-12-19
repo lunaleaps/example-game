@@ -1,5 +1,4 @@
 $(document).ready(function() {
-	var paid = false;
 	var ul;
 	var liItems;
 	var imageNumber;
@@ -10,7 +9,6 @@ $(document).ready(function() {
 
 
   function init(){
-    paid = false;
     ul = document.getElementById('image_slider');
     liItems = ul.children;
     imageNumber = liItems.length;
@@ -105,6 +103,7 @@ $(document).ready(function() {
 	window.onload = init;
 
 	function kikPoints(){
+    var paid;
 		var id = kik.utils.random.uuid();
 		    var pointsValue = 1;
 		    var sku = 'com.herokuapp.kp-aracde.play';
@@ -115,13 +114,13 @@ $(document).ready(function() {
 		    paid = false;
 		  }
 		});
+    return paid;
 	}
 
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
-    paid = false;
 		var game_button;
-		kikPoints();
+		var paid = kikPoints();
 		$("p").text(paid);
 		switch (currentImage) {
 		    case 0:
