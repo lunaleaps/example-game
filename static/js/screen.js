@@ -8,6 +8,8 @@ $(document).ready(function() {
 	var currentImage = 0;
   var paid = false;
 
+  points.debug = true;
+
 
   function init(){
     paid = false;
@@ -119,16 +121,16 @@ $(document).ready(function() {
                   App.load('asteroids');
                 break;
             case 2:
-                  App.load('pong-game');
+                  $(".pong").click();
                 break;
             case 3:
-                  App.load('snake-game');
+                  $(".snake").click();
                 break;
             case 4:
-                  App.load('space-invaders-game');
+                  $(".spaceInvaders").click();
                 break;
             case 5:
-                  App.load('arkanoid-game');
+                  $(".arkanoid").click();
                 break;
         }
       }
