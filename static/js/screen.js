@@ -117,10 +117,11 @@ $(document).ready(function() {
     $("#testing").text("" + paid);
 		var game_button;
 		kikPoints();
-    if ($("#testing").text() == "true"){
+    $("#testing").text($("#testing").text() + "FOOD");
+    /*if ($("#testing").text() == "true"){
       $("#testing").text("FOOD");
       paid = true;
-    }
+    }*/
 		switch (currentImage) {
 		    case 0:
 		    	if (paid){
