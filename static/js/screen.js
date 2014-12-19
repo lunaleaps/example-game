@@ -118,7 +118,6 @@ $(document).ready(function() {
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
     var paid = false;
-    $("#testing").text("unpaid");
 		var game_button;
 		kikPoints();
     if (!$("#testing").text()){
