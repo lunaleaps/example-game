@@ -24,13 +24,13 @@ var UP = 1,
 
     C_BIGDOT = 0,
     C_SMALLDOT = 1,
-    C_DIE = 8,
+    C_HIT = 8,
     C_WALL = 3,
-    C_EAT = 4,
     C_NONE = -1,
     MAX_SCORE = 146,
 
-    WEAK = 25; // times to redraw before not weak
+    WAIT_TO_LEAVE = 25;
+    SCARED_TIME = 100;
 
 App.controller('pacman', function($page) {
   var $game = $page.querySelector('.game'),
@@ -38,12 +38,14 @@ App.controller('pacman', function($page) {
       context = $game.getContext('2d'),
       $scoreElement = $page.querySelector('.scoreText'),
       unit = Math.floor(window.innerWidth/63), // 21 * 3
+      painting,
       width = unit * 63,
       height = width,
       cellSize = unit * 3,
       GHOST_RADIUS = Math.round(cellSize/2),
       new_direction = UP,
       score = 0,
+      scaredMode = 0,
       pacman = new Pacman(15 * 3 + 1, 10 * 3 + 1),
       ghost = new Ghost('red', 7 * 3 + 1,  10 * 3 + 1),
       layout = [ [00, 07, 01, 01, 01, 01, 01, 01, 01, 01, 11, 01, 01, 01, 01, 01, 01, 01, 01, 09, 00],
@@ -99,6 +101,9 @@ App.controller('pacman', function($page) {
 
   function Ghost (color, i, j) {
     // i, j are the grid cell size.. 63 of them in one row/col
+    this.starti = i,
+    this.startj = j,
+    this.scared = false,
     this.i =  i;
     this.j = j;
     this.roomSpeed = 4;
@@ -107,7 +112,7 @@ App.controller('pacman', function($page) {
     this.color = color;
     this.directions = [];
     this.direction = UP;
-    this.leave = true;
+    this.leave = WAIT_TO_LEAVE;
     this.stopped = false;
     this.chasing = true;
     this.previousCell = PATH;
@@ -117,27 +122,27 @@ App.controller('pacman', function($page) {
     this.ROOM_DOWN = i;
   }
 
-  /*Ghost.prototype.chooseDirection = function (pacman) {*/
-    //// should order the directions in order of preference
-    //var distX = (pacman.j - this.j),
-        //distY = (pacman.i - this.i),
-        //dirX = (distX > 0)? RIGHT: LEFT,
-        //dirY = (distY > 0)? DOWN: UP,
-        //order = [];
+  Ghost.prototype.chooseDirection = function (pacman) {
+    // should order the directions in order of preference
+    var distX = (pacman.j - this.j),
+        distY = (pacman.i - this.i),
+        dirX = (distX > 0)? RIGHT: LEFT,
+        dirY = (distY > 0)? DOWN: UP,
+        order = [];
 
-    //if (Math.abs(distX) < Math.abs(distY)) {
-      //order[0] = dirX;
-      //order[1] = dirY;
-      //order[2] = dirY * -1;
-      //order[3] = dirX * -1;
-    //} else {
-      //order[0] = dirX;
-      //order[1] = dirY;
-      //order[3] = dirY * -1;
-      //order[2] = dirX * -1;
-    //}
-    //return order
-  /*}*/
+    if (Math.abs(distX) < Math.abs(distY)) {
+      order[0] = dirX;
+      order[1] = dirY;
+      order[2] = dirY * -1;
+      order[3] = dirX * -1;
+    } else {
+      order[0] = dirX;
+      order[1] = dirY;
+      order[3] = dirY * -1;
+      order[2] = dirX * -1;
+    }
+    return order;
+  }
 
   Ghost.prototype.collisionType = function(ghost) {
     var next = {i: ghost.i, j: ghost.j, direction: ghost.direction},
@@ -145,7 +150,7 @@ App.controller('pacman', function($page) {
         C_TYPE = C_NONE;
 
     if (pacman.hit(ghost)) {
-      return C_DIE;
+      return C_HIT;
     }
 
     moveByUnit(next);
@@ -182,9 +187,9 @@ App.controller('pacman', function($page) {
     while (popped) {
       if (popped.I == pacmanCoords.I && popped.J == pacmanCoords.J) {
         if (first) {
-          return C_DIE;
+          return C_HIT;
         } else {
-          return clean(popped.path);
+          return popped.path;
         }
       }
       if (first) {
@@ -229,14 +234,27 @@ App.controller('pacman', function($page) {
     return cleaned;
   }
 
+  Ghost.prototype.sendBackToRoom = function() {
+    this.i = this.starti;
+    this.j = this.startj;
+    this.scared = false;
+    this.leave = WAIT_TO_LEAVE;
+  }
+
   Ghost.prototype.update = function(pacman) {
     var d, directions, collision = C_NONE, index = 0;
     if (this.stopped) {
       return;
     }
 
+    if (this.scared > 0) {
+      this.moveSpeed = 1;
+    } else {
+      this.moveSpeed = 0;
+    }
+
     // TODO reset count when leaving room
-    if (this.leave) {
+    if (this.leave === 0) {
       if (this.count !== this.moveSpeed) {
         this.count += 1;
         return;
@@ -259,7 +277,12 @@ App.controller('pacman', function($page) {
         next.i = this.i;
         next.j = this.j;
         next.direction = this.directions.shift();
-      } else if (collision === C_DIE) {
+      } else if (collision === C_HIT) {
+        if (this.scared) {
+          updateScore(C_HIT);
+          this.sendBackToRoom();
+          return;
+        }
         this.stopped = true;
         pacman.stopped = true;
         console.log('pacman dies');
@@ -269,6 +292,7 @@ App.controller('pacman', function($page) {
       this.j = next.j;
       this.direction = next.direction;
     } else {
+      this.leave -= 1;
       if (this.count !== this.roomSpeed) {
         this.count += 1;
         return;
@@ -288,7 +312,11 @@ App.controller('pacman', function($page) {
     var x = this.j * unit + unit
         y = this.i * unit + unit;
 
-    context.fillStyle = this.color;
+    if (this.scared > 0) {
+      context.fillStyle = 'blue';
+    } else {
+      context.fillStyle = this.color;
+    }
     context.beginPath();
 
     context.arc(x, y, GHOST_RADIUS, Math.PI, 0, false);
@@ -425,17 +453,9 @@ App.controller('pacman', function($page) {
       C_TYPE = C_BIGDOT;
     }
 
-    // check if pacman dies
-    // TODO
     if (this.hit(ghost)){
-      return C_DIE;
+      return C_HIT;
     }
-    /*for (g = 0; g < 4; g++) {*/
-      //ghost = ghosts[g];
-      //if (ghost.collision(pacman)) {
-        //return C_DIE;
-      //}
-    /*}*/
 
     return C_TYPE;
   }
@@ -498,12 +518,19 @@ App.controller('pacman', function($page) {
       // TODO handle bigdot eating
       // go through ghosts and update status of each ghost
       console.log('Big dot collected');
+      scaredModeOn();
       updateScore(C_BIGDOT);
       cellCoords = getCellCoords(next.i, next.j);
       layout[cellCoords.I][cellCoords.J] = PATH;
-    } else if (collision === C_EAT) {
-      console.log('Eaten by ghost');
-      updateScore(C_EAT);
+    } else if (collision === C_HIT) {
+      if (scaredMode) {
+        ghost.sendBackToRoom();
+        updateScore(C_HIT);
+      } else {
+        console.log('pacman has died');
+        pacman.dead = true;
+        gameOverAnimation();
+      }
     }
 
     if (collision !== C_WALL) {
@@ -515,6 +542,22 @@ App.controller('pacman', function($page) {
     this.direction = next.direction;
   }
 
+  function scaredModeOn() {
+    scaredMode = SCARED_TIME;
+    ghost.scared = true;
+  }
+
+  function gameOverAnimation() {
+      // TODO pacman dying animation
+      clearInterval(painting);
+      context.fillStyle = 'black';
+      context.fillRect(0, 0, width, height);
+
+      context.fillStyle = 'blue';
+      context.font="40px ArcadeClassic";
+      context.fillText("You Died!",width/3, height/3);
+  }
+
   Pacman.prototype.draw = function(context) {
     var startAngle, endAngle,
         radius = Math.round(0.6 * cellSize),
@@ -522,6 +565,12 @@ App.controller('pacman', function($page) {
         y = this.i * unit + (unit/2);
 
     // don't animate mouth if stopped
+    if (this.dead) {
+      console.log('this dead');
+      this.stopped;
+      gameOverAnimation();
+      return;
+    }
     if (this.stopped) {
       this.mouthOpenValue = 40;
     } else {
@@ -561,7 +610,7 @@ App.controller('pacman', function($page) {
     $game.height = height,
 
     // paint
-    setInterval(paint, 75);
+    painting = setInterval(paint, 75);
 
     var joystick = new Joystick($controls);
     $(joystick)
@@ -583,14 +632,18 @@ App.controller('pacman', function($page) {
   }
 
   function paint() {
+    if (scaredMode > 0) {
+      scaredMode -= 1;
+      if (scaredMode === 0) {
+        ghost.scared = false;
+      }
+    }
     context.fillStyle = 'black';
     context.fillRect(0, 0, width, height);
     paintBackground();
 
     pacman.update();
     pacman.draw(context);
-    context.fillStyle = 'green';
-    context.fillRect(pacman.hitX, pacman.hitY, unit * 2, unit * 2);
     ghost.update(pacman);
     ghost.draw(context);
   }
@@ -690,7 +743,7 @@ App.controller('pacman', function($page) {
     } else if (collisionType === C_BIGDOT) {
       score += 100;
       $scoreElement.textContent = score;
-    } else if (collisionType === C_EAT) {
+    } else if (collisionType === C_HIT) {
       score += 200;
       $scoreElement.textContent = score;
     }
