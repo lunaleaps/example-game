@@ -114,7 +114,7 @@ $(document).ready(function() {
 		    return false;
 		  }
 		});
-    $("p").text(paid);
+    $("p").text("FOOD");
     return paid;
 	}
 
