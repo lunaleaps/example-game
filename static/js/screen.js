@@ -107,14 +107,14 @@ $(document).ready(function() {
     var pointsValue = 1;
     var sku = 'com.herokuapp.kp-aracde.play';
 		points.redeem(id, pointsValue, sku, function spend(transaction){
-      $("p").text((transaction.status == "PROCESSED"));
+      $("p").text("" + (transaction.status == "PROCESSED"));
 		});
 	}
 
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
     var paid = false;
-    $("p").text(paid);
+    $("p").text("" + paid);
 		var game_button;
 		kikPoints();
     if ($("p").text() == "true"){
