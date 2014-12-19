@@ -140,7 +140,6 @@ $(document).ready(function() {
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
     paid = true;
-    if (transaction.status == "PROCESSED"){
         switch (currentImage) {
             case 0:
                 App.load('pacman');
@@ -161,7 +160,6 @@ $(document).ready(function() {
                   App.load('arkanoid');
                 break;
         }
-      }
     paid = false;
 	});
 	
