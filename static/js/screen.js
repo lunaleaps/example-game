@@ -120,48 +120,43 @@ $(document).ready(function() {
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
 		var game_button;
+		//kikPoints();
 		switch (currentImage) {
 		    case 0:
-		    	kikPoints();
-		    	if (paid){
+		    	//if (paid){
 		    		$(".pacman").click();
-		    		paid = false;
-		    	}
+		    	//	paid = false;
+		    	//}
 		        break;
 		    case 1:
-		    	kikPoints();
-		    	if (paid){
+		    	//if (paid){
 		        	$(".asteroids").click();
-		        	paid = false;
-		    	}
+		        //	paid = false;
+		    	//}
 		        break;
 		    case 2:
-		    	kikPoints();
-		    	if (paid){
+		    	//if (paid){
 			        $(".pong").click();
-			        paid = false;
-			    }
+			    //   paid = false;
+			    //}
 		        break;
 		    case 3:
-		    	kikPoints();
-		    	if (paid){
+		    	//if (paid){
 		        	$(".snake").click();
-		        	paid = false;
-		    	}
+		        //	paid = false;
+		    	//}
 		        break;
 		    case 4:
-		    	kikPoints();
-		    	if (paid){
+		    	//if (paid){
 		        	$(".spaceInvaders").click();
-		        	paid = false;
-		        }
+		        //	paid = false;
+		        //}
 		        break;
 		    case 5:
-		    	kikPoints();
-		    	if (paid){
+		    	//if (paid){
 		        	$(".arkanoid").click();
-		        	paid = false;
-		        }
+		        //	paid = false;
+		        //}
 		        break;
 		}
 	});

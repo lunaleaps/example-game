@@ -138,6 +138,21 @@
     <script src='js/screen.js'></script>
     <script>
       //kik.browser.setOrientationLock('portrait');
+
+      function kikPoints(){
+        var id = kik.utils.random.uuid();
+            var pointsValue = 2;
+            var sku = 'com.herokuapp.kp-aracde.play';
+
+        points.redeem(id, pointsValue, sku, function spend(transaction){
+          if (transaction) {
+            paid = true;
+          } else {
+            paid = false;
+          }
+        });
+      }
+
       App.controller('home', function (page) {
         var $page = $(page),
             pacman= $page.find('.app-button.pacman'),
@@ -146,23 +161,48 @@
             snake= $page.find('.app-button.snake');
             spaceInvaders= $page.find('.app-button.spaceInvaders');
             arkanoid= $page.find('.app-button.arkanoid');
+
         pacman.on('click', function() {
-          App.load('pacman');
+          kikPoints();
+          if (paid){
+            App.load('pacman');
+            paid = false;
+          }
         });
         asteroids.on('click', function() {
-          App.load('asteroids');
+          kikPoints();
+          if (paid){
+            App.load('asteroids');
+            paid = false;
+          }
         });
         pong.on('click', function() {
-          App.load('pong-game');
+          kikPoints();
+          if (paid){
+            App.load('pong-game');
+            paid = false;
+          }
         });
         snake.on('click', function() {
-          App.load('snake-game');
+          kikPoints();
+          if (paid){
+            App.load('snake-game');
+            paid = false;
+          }
         });
         spaceInvaders.on('click', function() {
-          App.load('space-invaders-game');
+          kikPoints();
+          if (paid){
+            App.load('space-invaders-game');
+            paid = false;
+          }
         });
         arkanoid.on('click', function() {
-          App.load('arkanoid-game');
+          kikPoints();
+          if (paid){
+            App.load('arkanoid-game');
+            paid = false;
+          }
         });
       });
       App.load('home');
