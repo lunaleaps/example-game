@@ -210,8 +210,8 @@ function Asteroids(div) {
             .addClass("si-pellet"), function(deltaTime) {
                 for(key in thiz.asteroids) {
                     var asteroid = thiz.asteroids[key];
-                    var distX = Math.abs(asteroid.x - sprite.x);
-                    var distY = Math.abs(asteroid.y - sprite.y);
+                    var distX = Math.abs(asteroid.x - (sprite.x + sprite.widthHeight));
+                    var distY = Math.abs(asteroid.y - (sprite.y + sprite.widthHeight));
                     var dist = Math.sqrt(distX * distX + distY * distY);
                     if(dist < 20 * asteroid.size && !sprite.inactive && !asteroid.hidden) {
                         asteroid.hide();
@@ -239,6 +239,7 @@ function Asteroids(div) {
                 }
             }, position, velocity);
         sprite.inactive = false;
+        sprite.widthHeight = sprite.div.width();
     }
     thiz.createEnemy = function(position, scale) {
         var sprite = thiz.createSprite($("<div>")
@@ -302,8 +303,8 @@ function Asteroids(div) {
             .addClass("si-asteroid-" + Math.floor(Math.random() * 3 + 1)), function() {
                 if(!sprite.hidden) {
                     //Are we colliding with the player? If so, game over.
-                    var distX = Math.abs(sprite.x - thiz.player.x);
-                    var distY = Math.abs(sprite.y - thiz.player.y);
+                    var distX = Math.abs(sprite.x - thiz.player.x + sprite.widthHeight / 2);
+                    var distY = Math.abs(sprite.y - thiz.player.y + sprite.widthHeight / 2);
                     var dist = Math.sqrt(distX * distX + distY * distY);
                     if(dist < 20 * sprite.size) {
                         thiz.lives--;
@@ -331,6 +332,7 @@ function Asteroids(div) {
             sprite.hidden = true;
             thiz.removeSprite(sprite);
         }
+        sprite.widthHeight = sprite.div.width();
         sprite.size = size;
         sprite.div.css("width", size * 20)
             .css("height", size * 20);
