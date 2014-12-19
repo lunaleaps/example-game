@@ -141,6 +141,7 @@ $(document).ready(function() {
 	$(start_button).on('vmousedown', function(e){
     paid = true;
     kikPoints();
+    paid = false;
 	});
 	
 });
