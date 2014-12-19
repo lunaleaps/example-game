@@ -198,6 +198,9 @@ App.controller('snake', function($page) {
         {
             //To avoid the snake trail we need to paint the BG on every frame
             //paint the canvas
+            ctx.strokeStyle = "white";
+            ctx.strokeRect(0, 0, w, 5);
+
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, w, h);
 
