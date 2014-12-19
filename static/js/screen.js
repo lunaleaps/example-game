@@ -111,37 +111,24 @@ $(document).ready(function() {
     var verify;
 		points.redeem(id, pointsValue, sku, function spend(transaction, verify){
       if (transaction.status == "PROCESSED"){
-        $("#testing").text(currentImage);
         switch (currentImage) {
             case 0:
-              if (paid){
                 $(".pacman").click();
-              }
                 break;
             case 1:
-              if (paid){
                   $(".asteroids").click();
-              }
                 break;
             case 2:
-              if (paid){
                   $(".pong").click();
-              }
                 break;
             case 3:
-              if (paid){
                   $(".snake").click();
-              }
                 break;
             case 4:
-              if (paid){
                   $(".spaceInvaders").click();
-                }
                 break;
             case 5:
-              if (paid){
                   $(".arkanoid").click();
-                }
                 break;
         }
       }
@@ -150,52 +137,7 @@ $(document).ready(function() {
 
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
-    paid = false;
-		var game_button;
-    var test;
-    //$("#testing").text("paid");
-    //var str = $("#testing").text().trim();
     kikPoints();
-    $("#testing").text(test);
-    //if ($("#testing").text().trim() == str){
-    //  paid = true;
-    //}
-    /*if ($("#testing").text().trim() == "paid"){
-      paid = true;
-    }*/
-		/*switch (currentImage) {
-		    case 0:
-		    	if (paid){
-		    		$(".pacman").click();
-		    	}
-		        break;
-		    case 1:
-		    	if (paid){
-		        	$(".asteroids").click();
-		    	}
-		        break;
-		    case 2:
-		    	if (paid){
-			        $(".pong").click();
-			    }
-		        break;
-		    case 3:
-		    	if (paid){
-		        	$(".snake").click();
-		    	}
-		        break;
-		    case 4:
-		    	if (paid){
-		        	$(".spaceInvaders").click();
-		        }
-		        break;
-		    case 5:
-		    	if (paid){
-		        	$(".arkanoid").click();
-		        }
-		        break;
-		}*/
-    paid = false;
 	});
 	
 });
