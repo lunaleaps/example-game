@@ -119,44 +119,39 @@ $(document).ready(function() {
 
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
+    var paid = false;
 		var game_button;
-		var paid = kikPoints();
+		paid = kikPoints();
 		$("p").text(paid);
 		switch (currentImage) {
 		    case 0:
 		    	if (paid){
 		    		$(".pacman").click();
-		    		paid = false;
 		    	}
 		        break;
 		    case 1:
 		    	if (paid){
 		        	$(".asteroids").click();
-		        	paid = false;
 		    	}
 		        break;
 		    case 2:
 		    	if (paid){
 			        $(".pong").click();
-			       paid = false;
 			    }
 		        break;
 		    case 3:
 		    	if (paid){
 		        	$(".snake").click();
-		        	paid = false;
 		    	}
 		        break;
 		    case 4:
 		    	if (paid){
 		        	$(".spaceInvaders").click();
-		        	paid = false;
 		        }
 		        break;
 		    case 5:
 		    	if (paid){
 		        	$(".arkanoid").click();
-		        	paid = false;
 		        }
 		        break;
 		}
