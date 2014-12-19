@@ -218,7 +218,8 @@ function Asteroids(div) {
                         if(asteroid.size > 1) {
                             for(var i = 0; i < 2; i++) {
                                 var spt = thiz.createAsteroid([asteroid.x, asteroid.y],
-                                    [Math.floor(Math.random() * 40 - 20), Math.floor(Math.random() * 40 - 20)], asteroid.size - 1);
+                                    [Math.floor(Math.random() * 40 - 20) * thiz.level,
+                                        Math.floor(Math.random() * 40 - 20) * thiz.level], asteroid.size - 1);
                             }
                         }
                         sprite.inactive = true;
@@ -311,6 +312,11 @@ function Asteroids(div) {
                             for(key in thiz.deadHandlers) {
                                 thiz.deadHandlers[key]();
                             }
+                        } else {
+                            thiz.createWedge("You died.");
+                            setTimeout(function() {
+                                thiz.createWedge("Lives left: " + thiz.lives);
+                            }, 3001);
                         }
                     }
                 }
@@ -342,16 +348,16 @@ function Asteroids(div) {
         var vel;
         if(edge == 0) {
             coords = [-80, amtAlong];
-            vel = [20, 0];
+            vel = [20 * thiz.level, 0];
         } else if(edge == 2) {
             coords = [window.innerWidth + 80, amtAlong];
-            vel = [-20, 0];
+            vel = [-20 * thiz.level, 0];
         } else if(edge == 1) {
             coords = [amtAlong, -80];
-            vel = [0, 20];
+            vel = [0, 20 * thiz.level];
         } else if(edge == 3) {
             coords = [amtAlong, window.innerHeight + 80];
-            vel = [0, -20];
+            vel = [0, -20 * thiz.level];
         } else {
             throw "Basic arithmetic failed...?";
         }
