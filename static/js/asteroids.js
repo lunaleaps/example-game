@@ -52,6 +52,7 @@ function Asteroids(div) {
     div.append(thiz.joystickDiv);
     thiz.joystick = new Joystick(thiz.joystickDiv);
     thiz.joystickDown = false;
+    thiz.level = 1;
     $(thiz.joystick)
         .on("start", function() {
             thiz.joystickDown = true;
@@ -79,6 +80,10 @@ function Asteroids(div) {
                 thiz.firing = false;
             }
         });
+    thiz.wedgeDiv = $("<div>")
+        .html("")
+        .addClass("si-wedge")
+        .appendTo(thiz.div);
     this.div.addClass("si-main");
     this.sprites = [];
     this.prevPhysicsTime = new Date();
@@ -97,6 +102,7 @@ function Asteroids(div) {
     thiz.asteroids = [];
     thiz.particles = [];
     thiz.pendingParticles = [];
+    thiz.requiredScoreForPass = 10;
     thiz.createParticles = function(pos, size, amt, vel, ttl) { //ttl is time to live
         for(var i = 0; i < amt; i++) {
             var div = $("<div>")
@@ -150,6 +156,12 @@ function Asteroids(div) {
             thiz.player.rotating = 0;
         }
     };
+    thiz.createWedge = function(text) {
+        thiz.wedgeDiv.html(text);
+        setTimeout(function() {
+            thiz.wedgeDiv.html("");
+        }, 3000);
+    }
     thiz.createSprite = function(div, update, position) {
         div.addClass("si-sprite");
         div.css("left", position[0])
@@ -211,6 +223,16 @@ function Asteroids(div) {
                         sprite.inactive = true;
                         sprite.div.hide();
                         thiz.score++;
+                        if(thiz.score > thiz.requiredScoreForPass) {
+                            //Advance to the next level
+                            thiz.player.respawn();
+                            thiz.level++;
+                            thiz.requiredScoreForPass += thiz.level * 10;
+                            thiz.createWedge("Level Up!");
+                            setTimeout(function() {
+                                thiz.createWedge("Current level: " + thiz.level);
+                            }, 3001)
+                        }
                     }
                 }
             }, position, velocity);
@@ -283,7 +305,7 @@ function Asteroids(div) {
                     var dist = Math.sqrt(distX * distX + distY * distY);
                     if(dist < 20 * sprite.size) {
                         thiz.lives--;
-                        thiz.player.setPosition([300, 300]);
+                        thiz.player.respawn();
                         if(thiz.lives < 1) {
                             for(key in thiz.deadHandlers) {
                                 thiz.deadHandlers[key]();
@@ -407,6 +429,10 @@ function Asteroids(div) {
                 this.velY = 1.5 * thiz.squareScale * direction[1];
             }
         };
+        sprite.respawn = function() {
+            this.setPosition([300, 300]);
+            this.rotation = 0;
+        }
         thiz.player = sprite;
     };
     thiz.start = function() {

@@ -64,3 +64,12 @@
     border-radius: 50%;
     position: absolute;
 }
+.si-wedge {
+    position: absolute;
+    font-family: "ArcadeClassic", Arial, serif;
+    width: 100%;
+    top: 100px;
+    text-align: center;
+    color: white;
+    font-size: 16px;
+}
