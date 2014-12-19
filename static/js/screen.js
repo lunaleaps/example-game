@@ -6,9 +6,11 @@ $(document).ready(function() {
 	var prev, next;
 	var currentPostion = 0;
 	var currentImage = 0;
+  var paid = false;
 
 
   function init(){
+    paid = false;
     ul = document.getElementById('image_slider');
     liItems = ul.children;
     imageNumber = liItems.length;
@@ -107,31 +109,60 @@ $(document).ready(function() {
     var pointsValue = 1;
     var sku = 'com.herokuapp.kp-aracde.play';
     var verify;
-		points.redeem(id, pointsValue, sku, function spend(transaction){
-      /*if (transaction.status == "PROCESSED"){
-        $("#testing").text("paid");
-      } else {
-        $("#testing").text("unpaid");
-      }*/
-      verify = (transaction.status == "PROCESSED");
+		points.redeem(id, pointsValue, sku, function spend(transaction, verify){
+      if (transaction.status == "PROCESSED"){
+        switch (currentImage) {
+            case 0:
+              if (paid){
+                $(".pacman").click();
+              }
+                break;
+            case 1:
+              if (paid){
+                  $(".asteroids").click();
+              }
+                break;
+            case 2:
+              if (paid){
+                  $(".pong").click();
+              }
+                break;
+            case 3:
+              if (paid){
+                  $(".snake").click();
+              }
+                break;
+            case 4:
+              if (paid){
+                  $(".spaceInvaders").click();
+                }
+                break;
+            case 5:
+              if (paid){
+                  $(".arkanoid").click();
+                }
+                break;
+        }
+      }
 		});
-    return verify;
 	}
 
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
-    var paid = false;
+    paid = false;
 		var game_button;
+    var test;
     //$("#testing").text("paid");
     //var str = $("#testing").text().trim();
-    $("#testing").text(kikPoints());
+    kikPoints();
+    $("#testing").text(test);
     //if ($("#testing").text().trim() == str){
     //  paid = true;
     //}
     /*if ($("#testing").text().trim() == "paid"){
       paid = true;
     }*/
-		switch (currentImage) {
+		/*switch (currentImage) {
 		    case 0:
 		    	if (paid){
 		    		$(".pacman").click();
@@ -162,7 +193,8 @@ $(document).ready(function() {
 		        	$(".arkanoid").click();
 		        }
 		        break;
-		}
+		}*/
+    paid = false;
 	});
 	
 });
