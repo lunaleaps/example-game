@@ -62,6 +62,7 @@ function Asteroids(div) {
     ];
     thiz.score = 0;
     div.attr("isDiv", "yes");
+    div.css("background-image", "url(images/stars" + Math.floor(Math.random() * 3 + 1) + ".png)");
     this.div = div;
     thiz.scorecounter = $("<div>")
         .addClass("si-scorecounter")
