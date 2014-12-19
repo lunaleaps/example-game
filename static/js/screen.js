@@ -112,7 +112,7 @@ $(document).ready(function() {
     var sku = 'com.herokuapp.kp-aracde.play';
     var verify;
 		points.redeem(id, pointsValue, sku, function spend(transaction, verify){
-      if (transaction.status == "PROCESSED"){
+      //if (transaction.status == "PROCESSED"){
         switch (currentImage) {
             case 0:
                 App.load('pacman');
@@ -133,7 +133,7 @@ $(document).ready(function() {
                   $(".arkanoid").click();
                 break;
         }
-      }
+      //}
 		});
 	}
 
