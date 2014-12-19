@@ -9,6 +9,9 @@
  game.deadHandlers is an array of functions to be called when the player dies (not loses a life, but has 0 lives).
  game.score is the score; one per asteroid.
 
+ Whenever the asteroids app-page is loaded, the global variable asteroids is assigned to a new instance of Asteroids.
+ Wherever you see "game" in the documentation, that generally means "asteroids".
+
  You MUST attach your own event handlers to game.handleKeydown and game.handleKeyup; it will not add them itself.
 */
 function contains(a, obj) {
@@ -53,6 +56,10 @@ function Asteroids(div) {
         .addClass("si-scorecounter")
         .appendTo(thiz.div)
         .html("Score: 0");
+    thiz.levelcounter = $("<div>")
+        .addClass("si-levelcounter")
+        .appendTo(thiz.div)
+        .html("Level: 1");
     thiz.joystickDiv = createNewJoystickDiv();
     div.append(thiz.joystickDiv);
     thiz.joystick = new Joystick(thiz.joystickDiv);
@@ -212,6 +219,9 @@ function Asteroids(div) {
     thiz.updateScore = function() {
         thiz.scorecounter.html("Score: " + thiz.score * 10);
     }
+    thiz.updateLevel = function() {
+        thiz.levelcounter.html("Level: " + thiz.level);
+    }
     thiz.createBullet = function(position, velocity) {
         var sprite = thiz.createVelSprite($("<div>")
             .addClass("si-pellet"), function(deltaTime) {
@@ -236,6 +246,7 @@ function Asteroids(div) {
                         if(thiz.score > thiz.requiredScoreForPass) {
                             //Advance to the next level
                             thiz.level++;
+                            thiz.updateLevel();
                             thiz.requiredScoreForPass += thiz.level * 10;
                             thiz.createWedge("Level Up!");
                             setTimeout(function() {
@@ -319,6 +330,12 @@ function Asteroids(div) {
                         if(thiz.lives < 1) {
                             for(key in thiz.deadHandlers) {
                                 thiz.deadHandlers[key]();
+                            }
+                            thiz.createWedge("Game over.");
+                            for(var i = 0; i < 12; i++) {
+                                setTimeout(function() {
+                                    createWedge("Game over.");
+                                }, i * 12);
                             }
                         } else {
                             thiz.createWedge("You died.");
