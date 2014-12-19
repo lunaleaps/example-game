@@ -157,7 +157,7 @@ function Asteroids(div) {
                     var distX = Math.abs(asteroid.x - sprite.x);
                     var distY = Math.abs(asteroid.y - sprite.y);
                     var dist = Math.sqrt(distX * distX + distY * distY);
-                    if(dist < 13 * asteroid.size && !sprite.inactive) {
+                    if(dist < 20 * asteroid.size && !sprite.inactive) {
                         asteroid.hide();
                         if(asteroid.size > 1) {
                             for(var i = 0; i < 2; i++) {
@@ -230,13 +230,14 @@ function Asteroids(div) {
     thiz.createAsteroid = function(position, speed, size) {
         //BUG: Collision should be centered on div, not top-left corner
         var sprite = thiz.createVelSprite($("<div>")
-            .addClass("si-asteroid"), function() {
+            .addClass("si-asteroid")
+            .addClass("si-asteroid-" + Math.floor(Math.random() * 3)), function() {
                 if(!sprite.hidden) {
                     //Are we colliding with the player? If so, game over.
                     var distX = Math.abs(sprite.x - thiz.player.x);
                     var distY = Math.abs(sprite.y - thiz.player.y);
                     var dist = Math.sqrt(distX * distX + distY * distY);
-                    if(dist < 13 * sprite.size) {
+                    if(dist < 20 * sprite.size) {
                         thiz.stop();
                         App.dialog({
                             title: "You died",
@@ -257,8 +258,8 @@ function Asteroids(div) {
             sprite.hidden = true;
         }
         sprite.size = size;
-        sprite.div.css("width", size * 13)
-            .css("height", size * 13);
+        sprite.div.css("width", size * 20)
+            .css("height", size * 20);
         sprite.uuid = Math.random();
         thiz.asteroids.push(sprite);
         return sprite;
