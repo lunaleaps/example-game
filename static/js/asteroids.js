@@ -227,7 +227,6 @@ function Asteroids(div) {
                         thiz.score++;
                         if(thiz.score > thiz.requiredScoreForPass) {
                             //Advance to the next level
-                            thiz.player.respawn();
                             thiz.level++;
                             thiz.requiredScoreForPass += thiz.level * 10;
                             thiz.createWedge("Level Up!");
@@ -475,7 +474,7 @@ function Asteroids(div) {
         var delta = millis / 1000;
         thiz.asteroidTime -= delta;
         if(thiz.asteroidTime <= 0) {
-            thiz.asteroidTime = 3;
+            thiz.asteroidTime = 3 / thiz.level;
             thiz.createRandomAsteroid();
         }
         for(key in thiz.sprites) {
