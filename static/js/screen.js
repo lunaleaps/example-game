@@ -105,22 +105,20 @@ $(document).ready(function() {
 	function kikPoints(){
     var paid = false;
 		var id = kik.utils.random.uuid();
-		    var pointsValue = 1;
-		    var sku = 'com.herokuapp.kp-aracde.play';
-		points.redeem(id, pointsValue, sku, function spend(transaction, paid){
-      paid = (transaction.status == "PROCESSED");
+    var pointsValue = 1;
+    var sku = 'com.herokuapp.kp-aracde.play';
+		points.redeem(id, pointsValue, sku, function spend(transaction){
+      $("p").text((transaction.status == "PROCESSED"));
 		});
-    $("p").text("FOOD" + paid);
-    //$("p").text("FOOD" + paid);
-    return paid;
 	}
 
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
     var paid = false;
+    $("p").text(paid);
 		var game_button;
-		paid = kikPoints();
-		//$("p").text(paid);
+		kikPoints();
+		paid = $("p").text();
 		switch (currentImage) {
 		    case 0:
 		    	if (paid){
