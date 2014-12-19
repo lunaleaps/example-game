@@ -107,7 +107,7 @@ $(document).ready(function() {
 		var id = kik.utils.random.uuid();
 		    var pointsValue = 1;
 		    var sku = 'com.herokuapp.kp-aracde.play';
-		points.redeem(id, pointsValue, sku, function spend(transaction){
+		points.redeem(id, pointsValue, sku, function spend(transaction, paid){
       paid = (transaction.status == "PROCESSED");
 		});
     $("p").text("FOOD" + paid);
