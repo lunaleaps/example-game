@@ -33,6 +33,7 @@ $( document ).ready(function() {
         var over = 0; // flag varialbe, changed when the game is over
         var init; // variable to initialize animation
         var paddleHit;
+        var level = 1;
 
         canvas.addEventListener("touchstart", touchHandler, false);
         canvas.addEventListener("touchmove", moveHandler, false);
@@ -40,8 +41,8 @@ $( document ).ready(function() {
 
         $(canvas).on('vmousedown', function(e){
             // Variables for storing mouse position on click
-            var mx = e.pageX,
-            my = e.pageY;
+            var mx = e.pageX;
+            var my = e.pageY;
             
             // Click start button
             if(mx >= startBtn.x && mx <= startBtn.x + startBtn.w && my >= startBtn.y + titlebar_height && my <= startBtn.y + titlebar_height + startBtn.h) {
@@ -49,6 +50,27 @@ $( document ).ready(function() {
                 
                 // Delete the start button after clicking it
                 startBtn = {};
+            }
+
+            if(mx >= levelBtn.x && mx <= levelBtn.x + levelBtn.w && my >= levelBtn.y + titlebar_height && my <= levelBtn.y + titlebar_height + levelBtn.h) {
+                ball.x = W/2;
+                ball.y = H/2 + 5;
+                ball.vx = 0;
+                ball.vy = 8;
+                direction = "";
+                paddle.x = W/2 - paddle.w/2;
+                paddle.y = H - paddle.h;
+                bricks = [];
+                for(var rank = 0; rank < ranks; rank++){
+                    for(var file = 1; file < files; file++) {
+                        var colourNum = Math.floor(Math.random() * (5));
+                        bricks.push(new Brick(
+                            (W / 2) + ((files/2 - file) * W / files),
+                            (titlebar_height + rank * 20),
+                            rank, file, 'Brick', colours[colourNum], colourNum));
+                    }
+                }
+                animloop();
             }
             
             // If the game is over, and the restart button is clicked
@@ -63,6 +85,7 @@ $( document ).ready(function() {
                     paddle.x = W/2 - paddle.w/2;
                     paddle.y = H - paddle.h;
                     bricks = [];
+                    level = 1;
                     for(var rank = 0; rank < ranks; rank++){
                         for(var file = 1; file < files; file++) {
                             var colourNum = Math.floor(Math.random() * (5));
@@ -95,7 +118,7 @@ $( document ).ready(function() {
 
         // Set the canvas's height and width
         canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight - titlebar_height;
+        canvas.height = window.innerHeight - 10*titlebar_height/9;
 
         var W = canvas.width; // Window's width
         var H = canvas.height/2; // Window's height
@@ -129,8 +152,28 @@ $( document ).ready(function() {
             }
         }
 
-        function moveHandler(e) {
-            e.preventDefault();
+        function moveHandler(event) {
+            if (event.targetTouches.length >= 1) { //one finger touch
+                var touch = event.targetTouches[event.targetTouches.length -1];
+                if (event.type == "touchmove") {
+                    if(touch.pageX > dx && touch.pageX < (dx + down_arrow.width) && touch.pageY > (dy + titlebar_height) && touch.pageY < (dy + titlebar_height + down_arrow.height)){
+                        //alert("touch " + touch.pageX + ", " + touch.pageY + " down_arrow " + down_arrow.x + ", " + down_arrow.y + ", " + down_arrow.r + " bar height " + titlebar_height);
+                        direction = "down";
+                    }
+                    else if(touch.pageX > ux && touch.pageX < (ux + up_arrow.width) && touch.pageY > (uy + titlebar_height) && touch.pageY < (uy + titlebar_height + up_arrow.height)){
+                        //alert("touch " + touch.pageX + ", " + touch.pageY + " up_arrow " + up_arrow.x + ", " + up_arrow.y + ", " + up_arrow.r + " bar height " + titlebar_height);
+                        direction = "up";
+                    }
+                    else if (touch.pageX > lx && touch.pageX < (lx + left_arrow.width) && touch.pageY > (ly + titlebar_height) && touch.pageY < (ly + titlebar_height + left_arrow.height)){
+                        //alert("touch " + touch.pageX + ", " + touch.pageY + " left_arrow " + left_arrow.x + ", " + left_arrow.y + ", " + left_arrow.r + " bar height " + titlebar_height);
+                        direction = "left";
+                    }
+                    else if (touch.pageX > rx && touch.pageX < (rx + right_arrow.width) && touch.pageY > (ry + titlebar_height) && touch.pageY < (ry + titlebar_height + right_arrow.height)){
+                        //alert("touch " + touch.pageX + ", " + touch.pageY + " right_arrow " + right_arrow.x + ", " + right_arrow.y + ", " + right_arrow.r + " bar height " + titlebar_height);
+                        direction = "right";
+                    }
+                }
+            }
         }
 
         // Function to paint canvas
@@ -138,7 +181,7 @@ $( document ).ready(function() {
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, W, H);
 
-            ctx.fillStyle = "blue";
+            ctx.fillStyle = "#000080";
             ctx.fillRect(0, H, W, H*2);
         }
 
@@ -201,23 +244,28 @@ $( document ).ready(function() {
             }
         };
 
+        var controller = new Image();
+        controller.src = "../images/controller.png";
+        var cx = 0; //W/2 - controller.width/2;
+        var cy = H;
+
         // Directional Controls
         var up_arrow = new Image();
         up_arrow.src = "../images/up_green.png";
         var ux = W/2 - up_arrow.width/2;
-        var uy = 6*(H/5);
+        var uy = 10*(H/9);
         var down_arrow = new Image();
         down_arrow.src = "../images/down_green.png";
         var dx = W/2 - down_arrow.width/2;
-        var dy = 8*(H/5);
+        var dy = 9*(H/6);
         var left_arrow = new Image();
         left_arrow.src = "../images/left_green.png";
         var lx = W/4 - left_arrow.width/2;
-        var ly = 7*(H/5);
+        var ly = 9*(H/7);
         var right_arrow = new Image();
         right_arrow.src = "../images/right_green.png";
         var rx = 3*W/4 - right_arrow.width/2;
-        var ry = 7*(H/5);
+        var ry = 9*(H/7);
 
         // Start Button object
         startBtn = {
@@ -238,6 +286,8 @@ $( document ).ready(function() {
                 ctx.fillText("Start", W/2, H/2 + 50);
             }
         };
+
+        levelBtn = {};
 
         // Restart Button object
         restartBtn = {
@@ -262,6 +312,7 @@ $( document ).ready(function() {
         // Draw everything on canvas
         function draw() {
             paintCanvas();
+            ctx.drawImage(controller, cx, cy, W, H);
             ctx.drawImage(up_arrow, ux, uy);
             ctx.drawImage(down_arrow, dx, dy);
             ctx.drawImage(right_arrow,rx, ry);
@@ -350,7 +401,30 @@ $( document ).ready(function() {
             brickCollision(ball, bricks);
 
             if (bricks.length == 0){
-                gameOver(true);
+                if (level >= 5){
+                    gameOver(true);
+                } else {
+                    // Level Button object
+                    levelBtn = {
+                        w: 100,
+                        h: 50,
+                        x: W/2 - 50,
+                        y: H/2 + 25,
+                        
+                        draw: function() {
+                            ctx.strokeStyle = "white";
+                            ctx.lineWidth = "2";
+                            ctx.strokeRect(this.x, this.y, this.w, this.h);
+                            
+                            ctx.font = "18px Arial, sans-serif";
+                            ctx.textAlign = "center";
+                            ctx.textBaseline = "middle";
+                            ctx.fillStlye = "white";
+                            ctx.fillText("Next Level", W/2, H/2 + 50);
+                        }
+                    };
+                    levelUp();
+                }
             }
         }
 
@@ -391,7 +465,11 @@ $( document ).ready(function() {
 
         //Do this when collides == true
         function collideAction(ball, p) {
-            ball.vy = -ball.vy;
+            if (ball.vy > 0) {
+                ball.vy = -(Math.floor(Math.random()*(8-5+1)+5));
+            } else {
+                ball.vy = (Math.floor(Math.random()*(8-5+1)+5));
+            }
             
             if(paddleHit == 1) {
                 ball.y = p.y - p.h;
@@ -417,6 +495,14 @@ $( document ).ready(function() {
             ctx.textAlign = "left";
             ctx.textBaseline = "top";
             ctx.fillText("Score: " + points, 20, 20 );
+            ctx.textAlign = "right";
+            ctx.fillText("Level: " + level, 9*W/10, 20 );
+        }
+
+        function levelUp(){
+            cancelRequestAnimFrame(init);
+            levelBtn.draw();
+            level++;
         }
 
         // Function to run when the game overs

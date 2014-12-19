@@ -15,6 +15,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.js"></script>
   </head>
   <body>
+    <!--arcade home-->
     <div class="app-page" data-page="home">
       <div class="app-topbar">
         <div class="app-title">KP-Arcade</div>
@@ -26,9 +27,11 @@
         <div id="snake-game-button" class="app-button" data-target="snake-game">Play Snake</div>
         <div id="space-invaders-game-button" class="app-button" data-target="space-invaders-game">Play Space Invaders</div>
         <div id="arkanoid-game-button" class="app-button" data-target="arkanoid-game">Play Arkanoid</div>
+        <div class="aStartButton">START</div>
       </div>
     </div>
 
+    <!--pacman-->
     <div class="app-page" data-page="pacman">
       <div class="app-topbar">
         <div class="app-button left" data-back>Back</div>
@@ -46,7 +49,8 @@
       </div>
     </div>
 
-     <div class="app-page" data-page="asteroids">
+    <!--asteroids-->
+    <div class="app-page" data-page="asteroids">
       <div class="app-topbar">
         <div class="app-button left" data-back data-autotitle></div>
         <div class="app-title">Asteroids</div>
@@ -55,7 +59,8 @@
         <div id="si-main-div"></div>
       </div>
     </div>
-
+  
+    <!--pong-->
     <div class="app-page" data-page="pong-game">
       <div class="app-topbar">
         <div class="app-button left" data-back data-autotitle></div>
@@ -66,6 +71,7 @@
       </div>
     </div>
 
+    <!--snake-->
     <div class="app-page" data-page="snake-game">
       <div class="app-topbar">
         <div class="app-button left" data-back data-autotitle></div>
@@ -76,6 +82,7 @@
       </div>
     </div>
 
+    <!--space invaders-->
     <div class="app-page" data-page="space-invaders-game">
       <div class="app-topbar">
         <div class="app-button left" data-back data-autotitle></div>
@@ -87,6 +94,7 @@
       </div>
     </div>
 
+    <!--arkanoid-->
     <div class="app-page" data-page="arkanoid-game">
       <div class="app-topbar">
         <div class="app-button left" data-back data-autotitle></div>
@@ -96,7 +104,7 @@
         <canvas id="canvas"></canvas>
       </div>
     </div>
-
+    
     <script src="js/zepto.min.js"></script>
     <script src='js/joystick.js'></script>
     <script src="//cdn.kik.com/app/2.0.1/app.min.js"></script>

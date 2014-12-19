@@ -89,7 +89,7 @@ $( document ).ready(function() {
 
         // Set the canvas's height and width
         canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight - titlebar_height;
+        canvas.height = window.innerHeight - 10*titlebar_height/9;
 
         var W = canvas.width; // Window's width
         var H = canvas.height/2; // Window's height
@@ -121,8 +121,28 @@ $( document ).ready(function() {
             }
         }
 
-        function moveHandler(e) {
-            e.preventDefault();
+        function moveHandler(event) {
+            if (event.targetTouches.length >= 1) { //one finger touch
+                var touch = event.targetTouches[event.targetTouches.length -1];
+                if (event.type == "touchmove") {
+                    if(touch.pageX > dx && touch.pageX < (dx + down_arrow.width) && touch.pageY > (dy + titlebar_height) && touch.pageY < (dy + titlebar_height + down_arrow.height)){
+                        //alert("touch " + touch.pageX + ", " + touch.pageY + " down_arrow " + down_arrow.x + ", " + down_arrow.y + ", " + down_arrow.r + " bar height " + titlebar_height);
+                        direction = "down";
+                    }
+                    else if(touch.pageX > ux && touch.pageX < (ux + up_arrow.width) && touch.pageY > (uy + titlebar_height) && touch.pageY < (uy + titlebar_height + up_arrow.height)){
+                        //alert("touch " + touch.pageX + ", " + touch.pageY + " up_arrow " + up_arrow.x + ", " + up_arrow.y + ", " + up_arrow.r + " bar height " + titlebar_height);
+                        direction = "up";
+                    }
+                    else if (touch.pageX > lx && touch.pageX < (lx + left_arrow.width) && touch.pageY > (ly + titlebar_height) && touch.pageY < (ly + titlebar_height + left_arrow.height)){
+                        //alert("touch " + touch.pageX + ", " + touch.pageY + " left_arrow " + left_arrow.x + ", " + left_arrow.y + ", " + left_arrow.r + " bar height " + titlebar_height);
+                        direction = "left";
+                    }
+                    else if (touch.pageX > rx && touch.pageX < (rx + right_arrow.width) && touch.pageY > (ry + titlebar_height) && touch.pageY < (ry + titlebar_height + right_arrow.height)){
+                        //alert("touch " + touch.pageX + ", " + touch.pageY + " right_arrow " + right_arrow.x + ", " + right_arrow.y + ", " + right_arrow.r + " bar height " + titlebar_height);
+                        direction = "right";
+                    }
+                }
+            }
         }
 
         // Function to paint canvas
@@ -130,7 +150,7 @@ $( document ).ready(function() {
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, W, H);
 
-            ctx.fillStyle = "blue";
+            ctx.fillStyle = "#000080";
             ctx.fillRect(0, H, W, H*2);
         }
 
@@ -169,22 +189,27 @@ $( document ).ready(function() {
             }
         };
 
+        var controller = new Image();
+        controller.src = "../images/controller.png";
+        var cx = 0; //W/2 - controller.width/2;
+        var cy = H;
+
         var up_arrow = new Image();
         up_arrow.src = "../images/up_green.png";
         var ux = W/2 - up_arrow.width/2;
-        var uy = 6*(H/5);
+        var uy = 10*(H/9);
         var down_arrow = new Image();
         down_arrow.src = "../images/down_green.png";
         var dx = W/2 - down_arrow.width/2;
-        var dy = 8*(H/5);
+        var dy = 9*(H/6);
         var left_arrow = new Image();
         left_arrow.src = "../images/left_green.png";
         var lx = W/4 - left_arrow.width/2;
-        var ly = 7*(H/5);
+        var ly = 9*(H/7);
         var right_arrow = new Image();
         right_arrow.src = "../images/right_green.png";
         var rx = 3*W/4 - right_arrow.width/2;
-        var ry = 7*(H/5);
+        var ry = 9*(H/7);
 
         // Start Button object
         startBtn = {
@@ -229,6 +254,7 @@ $( document ).ready(function() {
         // Draw everything on canvas
         function draw() {
             paintCanvas();
+            ctx.drawImage(controller, cx, cy, W, H);
             ctx.drawImage(up_arrow, ux, uy);
             ctx.drawImage(down_arrow, dx, dy);
             ctx.drawImage(right_arrow,rx, ry);

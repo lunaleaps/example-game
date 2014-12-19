@@ -3,11 +3,23 @@ var UP = 1,
     DOWN = -1,
     LEFT = -2,
     RIGHT = 2,
+
     PATH = 0,
-    WALL = 1,
+    WALL_HORIZONTAL = 1,
+    WALL_VERTICAL = 5,
+    CORNER_RIGHT_UP = 6,
+    CORNER_RIGHT_DOWN = 7,
+    CORNER_LEFT_UP = 8,
+    CORNER_LEFT_DOWN = 9,
+    UP_T = 10,
+    DOWN_T = 11,
+    LEFT_T = 12,
+    RIGHT_T = 13,
+
     SMALLDOT = 2,
     BIGDOT = 3,
     DOOR = 4,
+
     C_BIGDOT = 0,
     C_SMALLDOT = 1,
     C_DIE = 2,
@@ -28,29 +40,54 @@ App.controller('pacman', function($page) {
       height = width,
       cellSize = unit * 3,
       new_direction = UP,
-      layout = [ [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                 [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
-                 [0, 1, 3, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 3, 1, 0],
-                 [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
-                 [0, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 0],
-                 [0, 1, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 1, 0],
-                 [0, 1, 1, 1, 1, 2, 1, 1, 1, 0, 1, 0, 1, 1, 1, 2, 1, 1, 1, 1, 0],
-                 [0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0],
-                 [1, 1, 1, 1, 1, 2, 1, 0, 1, 1, 4, 1, 1, 0, 1, 2, 1, 1, 1, 1, 1],
-                 [0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0],
-                 [1, 1, 1, 1, 1, 2, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 1, 1, 1],
-                 [0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0],
-                 [0, 1, 1, 1, 1, 2, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 1, 1, 0],
-                 [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
-                 [0, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 0],
-                 [0, 1, 3, 2, 1, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 1, 2, 3, 1, 0],
-                 [0, 1, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 1, 1, 0],
-                 [0, 1, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 1, 0],
-                 [0, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 0],
-                 [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
-                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]];
+      layout = [ [00, 07, 01, 01, 01, 01, 01, 01, 01, 01, 11, 01, 01, 01, 01, 01, 01, 01, 01, 09, 00],
+                 [00, 05, 02, 02, 02, 02, 02, 02, 02, 02, 05, 02, 02, 02, 02, 02, 02, 02, 02, 05, 00],
+                 [00, 05, 03, 01, 01, 02, 01, 01, 01, 02, 05, 02, 01, 01, 01, 02, 01, 01, 03, 05, 00],
+                 [00, 05, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 05, 00],
+                 [00, 05, 02, 01, 01, 02, 05, 02, 01, 01, 11, 01, 01, 02, 05, 02, 01, 01, 02, 05, 00],
+                 [00, 05, 02, 02, 02, 02, 05, 02, 02, 02, 05, 02, 02, 02, 05, 02, 02, 02, 02, 05, 00],
+                 [00, 06, 01, 01, 09, 02, 13, 01, 01, 00, 05, 00, 01, 01, 12, 02, 07, 01, 01, 08, 00],
+                 [00, 00, 00, 00, 05, 02, 05, 00, 00, 00, 00, 00, 00, 00, 05, 02, 05, 00, 00, 00, 00],
+                 [01, 01, 01, 01, 08, 02, 05, 00, 07, 01, 04, 01, 09, 00, 05, 02, 06, 01, 01, 01, 01],
+                 [00, 00, 00, 00, 00, 02, 00, 00, 05, 00, 00, 00, 05, 00, 00, 02, 00, 00, 00, 00, 00],
+                 [01, 01, 01, 01, 09, 02, 05, 00, 06, 01, 01, 01, 08, 00, 05, 02, 07, 01, 01, 01, 01],
+                 [00, 00, 00, 00, 05, 02, 05, 00, 00, 00, 00, 00, 00, 00, 05, 02, 05, 00, 00, 00, 00],
+                 [00, 07, 01, 01, 08, 02, 05, 00, 01, 01, 11, 01, 01, 00, 05, 02, 06, 01, 01, 09, 00],
+                 [00, 05, 02, 02, 02, 02, 02, 02, 02, 02, 05, 02, 02, 02, 02, 02, 02, 02, 02, 05, 00],
+                 [00, 05, 02, 01, 09, 02, 01, 01, 01, 02, 05, 02, 01, 01, 01, 02, 07, 01, 02, 05, 00],
+                 [00, 05, 03, 02, 05, 02, 02, 02, 02, 02, 00, 02, 02, 02, 02, 02, 05, 02, 03, 05, 00],
+                 [00, 13, 01, 02, 05, 02, 05, 02, 01, 01, 11, 01, 01, 02, 05, 02, 05, 02, 01, 12, 00],
+                 [00, 05, 02, 02, 02, 02, 05, 02, 02, 02, 05, 02, 02, 02, 05, 02, 02, 02, 02, 05, 00],
+                 [00, 05, 02, 01, 01, 01, 10, 01, 01, 02, 05, 02, 01, 01, 10, 01, 01, 01, 02, 05, 00],
+                 [00, 05, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 02, 05, 00],
+                 [00, 06, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 08, 00]];
 
   initialize(15 * 3 + 1, 10 * 3 + 1);
+
+  function initGhost(imageSrc, leaveCondition, i, j) {
+    var img = new Image();
+    img.src = imageSrc;
+
+    return {
+      i: i,
+      j: j,
+      image: img,
+      direction: LEFT,
+      leave: false,
+      chasing: true,
+      previousCell: PATH,
+      leaveCondition: leaveCondition,
+      draw: function(context) {
+        if (!this.leave) {
+          this.leave = leaveCondition();
+          return;
+        }
+        if (leave) {
+
+        }
+      },
+    };
+  }
 
   function initPacman(i, j) {
     return {
@@ -196,7 +233,17 @@ App.controller('pacman', function($page) {
 
       move(fake, pacman.direction);
       var cellPrime = getCell(grid, fake);
-      if (cellPrime === WALL || cellPrime === DOOR) {
+      if (cellPrime === WALL_HORIZONTAL |
+          cellPrime === WALL_VERTICAL |
+          cellPrime === CORNER_RIGHT_UP |
+          cellPrime === CORNER_RIGHT_DOWN |
+          cellPrime === CORNER_LEFT_UP |
+          cellPrime === CORNER_LEFT_DOWN |
+          cellPrime === UP_T |
+          cellPrime === DOWN_T |
+          cellPrime === LEFT_T |
+          cellPrime === RIGHT_T |
+          cellPrime === DOOR) {
         C_TYPE = C_WALL;
       } else if (cell === SMALLDOT && (pacman.i % 3) == 1 && (pacman.j % 3) == 1) {
         C_TYPE = C_SMALLDOT;
@@ -221,13 +268,18 @@ App.controller('pacman', function($page) {
   }
 
   function paint() {
-    var I = 0;
-    var J = 0;
-    var topLeftX = 0;
-    var topLeftY = 0;
-    var cell, collision;
-    var largeRadius = Math.round(0.30*cellSize);
-    var smallRadius = Math.round(0.10*cellSize);
+    var I = 0,
+        J = 0,
+        topLeftX = 0,
+        topLeftY = 0,
+        x = 0,
+        y = 0,
+        xPrime = 0,
+        yPrime = 0,
+        prev, next,
+        cell, collision,
+        largeRadius = Math.round(0.30*cellSize),
+        smallRadius = Math.round(0.10*cellSize);
 
     // updates layout
     collision = update();
@@ -241,7 +293,6 @@ App.controller('pacman', function($page) {
       topLeftX = 0;
       for (J=0; J<21; J++){
         cell = layout[I][J];
-
         if (cell === SMALLDOT) {
           context.beginPath();
           context.arc(topLeftX + Math.round(cellSize/2), topLeftY + Math.round(cellSize/2), smallRadius, 0, 2*Math.PI);
@@ -252,13 +303,63 @@ App.controller('pacman', function($page) {
           context.arc(topLeftX + Math.round(cellSize/2), topLeftY + Math.round(cellSize/2), largeRadius, 0, 2*Math.PI);
           context.fillStyle = "white";
           context.fill();
-        } else if (cell === WALL | cell === DOOR) {
-          if (cell === WALL) {
-            context.fillStyle = 'blue';
-          } else if (cell === DOOR){
-            context.fillStyle = "grey";
+        } else if (cell === WALL_HORIZONTAL ) {
+          context.fillStyle = 'blue';
+          prev = layout[I][J - 1];
+          next = layout[I][J + 1];
+          if (prev === PATH | prev === SMALLDOT | prev === BIGDOT) {
+            context.fillRect(topLeftX+unit, topLeftY + unit, cellSize, unit);
+          } else if (next === PATH | next === SMALLDOT | next === BIGDOT) {
+            context.fillRect(topLeftX, topLeftY + unit, 2*unit, unit);
+          } else {
+            context.fillRect(topLeftX, topLeftY + unit, cellSize, unit);
           }
-          context.fillRect(topLeftX, topLeftY, cellSize, cellSize);
+        } else if (cell === WALL_VERTICAL) {
+          context.fillStyle = 'blue';
+          prev = layout[I-1][J];
+          next = layout[I+1][J];
+          if (prev === PATH | prev === SMALLDOT | prev === BIGDOT) {
+            context.fillRect(topLeftX+unit, topLeftY + unit, unit, 2*unit);
+          } else if (next === PATH | next === SMALLDOT | next === BIGDOT) {
+            context.fillRect(topLeftX+unit, topLeftY, unit, 2*unit);
+          } else {
+            context.fillRect(topLeftX + unit, topLeftY, unit, cellSize);
+          }
+        } else if (cell === CORNER_RIGHT_UP) {
+          context.fillStyle = 'blue';
+          context.fillRect(topLeftX + unit, topLeftY, unit, unit);
+          context.fillRect(topLeftX + unit, topLeftY + unit, unit * 2, unit);
+        } else if (cell === CORNER_LEFT_UP) {
+          context.fillStyle = 'blue';
+          context.fillRect(topLeftX + unit, topLeftY, unit, unit);
+          context.fillRect(topLeftX, topLeftY + unit, unit * 2, unit);
+        } else if (cell === CORNER_RIGHT_DOWN) {
+          context.fillStyle = 'blue';
+          context.fillRect(topLeftX + unit, topLeftY+unit, unit * 2, unit);
+          context.fillRect(topLeftX + unit, topLeftY + 2*unit, unit, unit);
+        } else if (cell === CORNER_LEFT_DOWN) {
+          context.fillStyle = 'blue';
+          context.fillRect(topLeftX, topLeftY+unit, unit * 2, unit);
+          context.fillRect(topLeftX + unit, topLeftY + 2*unit, unit, unit);
+        } else if (cell === UP_T) {
+          context.fillStyle = 'blue';
+          context.fillRect(topLeftX+unit, topLeftY, unit, unit);
+          context.fillRect(topLeftX, topLeftY + unit, cellSize, unit);
+        } else if (cell === DOWN_T) {
+          context.fillStyle = 'blue';
+          context.fillRect(topLeftX, topLeftY+unit, cellSize, unit);
+          context.fillRect(topLeftX +unit , topLeftY + 2*unit, unit, unit);
+        } else if (cell === RIGHT_T) {
+          context.fillStyle = 'blue';
+          context.fillRect(topLeftX+ 2*unit, topLeftY+unit, unit, unit);
+          context.fillRect(topLeftX +unit , topLeftY, unit, cellSize);
+        } else if (cell === LEFT_T) {
+          context.fillStyle = 'blue';
+          context.fillRect(topLeftX, topLeftY+unit, unit, unit);
+          context.fillRect(topLeftX +unit , topLeftY, unit, cellSize);
+        } else if (cell === DOOR) {
+          context.fillStyle = 'grey';
+          context.fillRect(topLeftX, topLeftY+unit, unit, unit);
         }
         topLeftX += cellSize;
       }
@@ -267,7 +368,6 @@ App.controller('pacman', function($page) {
 
     // paint pacman
     pacman.draw(context);
-    //context.drawImage(pacman.image, topLeftX, topLeftY, cellSize, cellSize);
   }
 
   function updateScore(collisionType) {
