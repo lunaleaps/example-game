@@ -106,25 +106,28 @@ $(document).ready(function() {
 		var id = kik.utils.random.uuid();
     var pointsValue = 1;
     var sku = 'com.herokuapp.kp-aracde.play';
+    var verify;
 		points.redeem(id, pointsValue, sku, function spend(transaction){
-      if (transaction.status == "PROCESSED"){
+      /*if (transaction.status == "PROCESSED"){
         $("#testing").text("paid");
       } else {
         $("#testing").text("unpaid");
-      }
+      }*/
+      verify = (transaction.status == "PROCESSED");
 		});
+    return verify;
 	}
 
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
     var paid = false;
 		var game_button;
-    $("#testing").text("paid");
-    var str = $("#testing").text().trim();
-		kikPoints();
-    if ($("#testing").text().trim() == str){
-      paid = true;
-    }
+    //$("#testing").text("paid");
+    //var str = $("#testing").text().trim();
+    $("#testing").text(kikPoints());
+    //if ($("#testing").text().trim() == str){
+    //  paid = true;
+    //}
     /*if ($("#testing").text().trim() == "paid"){
       paid = true;
     }*/
