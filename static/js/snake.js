@@ -1,6 +1,6 @@
 App.controller('snake-game', function($page) {
         //Canvas
-        var canvas = document.getElementById("canvas");
+        var canvas = $page.querySelector("#canvas");
         var ctx = canvas.getContext("2d");
         //var w = $("#canvas").width();
         //var h = $("#canvas").height();
