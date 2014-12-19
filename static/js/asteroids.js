@@ -413,7 +413,7 @@ function Asteroids(div) {
                 if(this.y < -this.div.height()) {
                     this.y = thiz.div.height();
                 }
-            }, [100, 100]);
+            }, [0, 0]);
         sprite.velX = 0;
         sprite.velY = 0;
         sprite.firingDelay = 0;
