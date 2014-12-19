@@ -1,5 +1,3 @@
-var paid;
-
 $(document).ready(function() {
 	var ul;
 	var liItems;
@@ -8,7 +6,7 @@ $(document).ready(function() {
 	var prev, next;
 	var currentPostion = 0;
 	var currentImage = 0;
-  paid = false;
+  var paid = false;
 
 
   function init(){
