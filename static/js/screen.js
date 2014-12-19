@@ -121,7 +121,7 @@ $(document).ready(function() {
     $("#testing").text("unpaid");
 		var game_button;
 		kikPoints();
-    if ($("#testing").text() == "paid"){
+    if ($("#testing").text() == 'paid'){
       $("#testing").text("FOOD");
       paid = true;
     }
