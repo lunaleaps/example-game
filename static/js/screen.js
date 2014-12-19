@@ -122,7 +122,7 @@ $(document).ready(function() {
     $("#testing").text("paid");
     var str = $("#testing").text().trim();
 		kikPoints();
-    if ($("#testing").text().trim() == $("#testing").text().trim()){
+    if ($("#testing").text().trim() == str){
       paid = true;
     }
     /*if ($("#testing").text().trim() == "paid"){
