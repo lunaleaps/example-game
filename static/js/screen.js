@@ -80,7 +80,7 @@ $(document).ready(function() {
 		}		
 	}
 
-	function generatePager(imageNumber){	
+	function generatePager(imageNumber){
 		var pageNumber;
 		var pagerDiv = document.getElementById('pager');
 		for (i = 0; i < imageNumber; i++){
@@ -94,7 +94,7 @@ $(document).ready(function() {
 					slideTo(i);
 				}
 			}(i);
-		}	
+		}
 		var computedStyle = document.defaultView.getComputedStyle(li, null);
 		//border width 1px; offsetWidth = 22
 		var liWidth = parseInt(li.offsetWidth);

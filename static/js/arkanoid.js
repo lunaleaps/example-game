@@ -56,7 +56,7 @@ $(document).on('pageinit', function() {
                 ball.x = W/2;
                 ball.y = H/2 + 5;
                 ball.vx = 0;
-                ball.vy = 8;
+                ball.vy = 6;
                 direction = "";
                 paddle.x = W/2 - paddle.w/2;
                 paddle.y = H - paddle.h;
@@ -80,7 +80,7 @@ $(document).on('pageinit', function() {
                     ball.y = H/2 + 5;
                     points = 0;
                     ball.vx = 0;
-                    ball.vy = 8;
+                    ball.vy = 6;
                     direction = "";
                     paddle.x = W/2 - paddle.w/2;
                     paddle.y = H - paddle.h;
@@ -233,7 +233,7 @@ $(document).on('pageinit', function() {
             r: 5,
             c: "white",
             vx: 0,
-            vy: 8,
+            vy: 6,
             
             // Function for drawing ball on canvas
             draw: function() {
