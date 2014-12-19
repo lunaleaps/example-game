@@ -113,7 +113,7 @@ App.controller('arkanoid', function($page) {
         //var w = screen.width * ratio;
         //var h = screen.height * ratio;
 
-        var titlebar_height = $( "div.app-title" ).height();
+        var titlebar_height = 44;
 
         // Set the canvas's height and width
         canvas.width = window.innerWidth;

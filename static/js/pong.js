@@ -1,5 +1,4 @@
-$(document).on('pageinit', function() {
-    $("#pong-game-button").click(function(event){
+App.controller('pong', function($page) {
         // RequestAnimFrame: a browser API for getting smooth animations
         window.requestAnimFrame = (function(){
             return  window.requestAnimationFrame       || 
@@ -22,7 +21,7 @@ $(document).on('pageinit', function() {
         } )();
 
         // Initialize canvas and required variables
-        var canvas = document.getElementById("canvas");
+        var canvas = $page.querySelector(".canvas");
         var ctx = canvas.getContext("2d"); // Create canvas context
         var ball = {}; // Ball object
         var paddles = [2]; // Array containing two paddles
@@ -85,7 +84,7 @@ $(document).on('pageinit', function() {
         //var w = screen.width * ratio;
         //var h = screen.height * ratio;
 
-        var titlebar_height = $( "div.app-title" ).height();
+        var titlebar_height = 44;
 
         // Set the canvas's height and width
         canvas.width = window.innerWidth;
@@ -446,6 +445,4 @@ $(document).on('pageinit', function() {
 
         // Show the start screen
         startScreen();
-
-    });
 });

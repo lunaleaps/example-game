@@ -31,13 +31,13 @@
 
               <li><img id="asteroids-game-button" class="app-button asteroids" src="./images/asteroidImage.png"></li>
 
-              <li><img id="pong-game-button" class="app-button pong" src="./images/pongImage.png"></li>
+              <li><img id="pong-game-button" class="app-button pong" data-target="pong" src="./images/pongImage.png"></li>
 
-              <li><img id="snake-game-button" class="app-button snake" data-target="snake-game" src="./images/snakeImage.png"></li>
+              <li><img id="snake-game-button" class="app-button snake" data-target="snake" src="./images/snakeImage.png"></li>
 
-              <li><img id="space-invaders-game-button" class="app-button spaceInvaders" data-target="space-invaders-game" src="./images/spaceinvadersImage.png"></li>
+              <li><img id="space-invaders-game-button" class="app-button spaceInvaders" data-target="space-invaders" src="./images/spaceinvadersImage.png"></li>
               
-              <li><img id="arkanoid-game-button" class="app-button arkanoid" data-target="arkanoid-game" src="./images/arkanoidImage.png"></li>
+              <li><img id="arkanoid-game-button" class="app-button arkanoid" data-target="arkanoid" src="./images/arkanoidImage.png"></li>
             </ul>
           </div>
           <ul id="pager">
@@ -85,7 +85,7 @@
         <div class="app-title">Pong</div>
       </div>
       <div class="app-content">
-        <canvas id="canvas"></canvas>
+        <canvas class="canvas"></canvas>
       </div>
     </div>
 
@@ -108,7 +108,7 @@
       </div>
       <div class="app-content">
         <div id="starfield"></div>
-        <canvas id="canvas"></canvas>
+        <canvas class="canvas"></canvas>
       </div>
     </div>
 
@@ -138,7 +138,6 @@
     <script>
 
       App.controller('home', function (page) {
-        //kik.browser.setOrientationLock('portrait');
         var $page = $(page),
             pacman= $page.find('.app-button.pacman'),
             asteroids= $page.find('.app-button.asteroids');
@@ -146,25 +145,6 @@
             snake= $page.find('.app-button.snake');
             spaceInvaders= $page.find('.app-button.spaceInvaders');
             arkanoid= $page.find('.app-button.arkanoid');
-
-          /*pacman.on('click', function() {
-              App.load('pacman');
-          });
-          asteroids.on('click', function() {
-              App.load('asteroids');
-          });
-          pong.on('click', function() {
-                App.load('pong-game');
-          });
-          snake.on('click', function() {
-              App.load('snake-game');
-          });
-          spaceInvaders.on('click', function() {
-              App.load('space-invaders-game');
-          });
-          arkanoid.on('click', function() {
-              App.load('arkanoid-game');
-          });*/
       });
       App.load('home');
     </script>

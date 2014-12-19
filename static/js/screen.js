@@ -108,7 +108,7 @@ $(document).ready(function() {
 
 	function kikPoints(){
 		var id = kik.utils.random.uuid();
-    var pointsValue = 1;
+    var pointsValue = 25;
     var sku = 'com.herokuapp.kp-aracde.play';
     var verify;
 		points.redeem(id, pointsValue, sku, function spend(transaction, verify){
@@ -140,27 +140,7 @@ $(document).ready(function() {
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
     paid = true;
-    //kikPoints();
-    switch (currentImage) {
-            case 0:
-                App.load('pacman');
-                break;
-            case 1:
-                  App.load('asteroids');
-                break;
-            case 2:
-                  App.load('pong');
-                break;
-            case 3:
-                  App.load('snake');
-                break;
-            case 4:
-                  App.load('space-invaders');
-                break;
-            case 5:
-                  App.load('arkanoid');
-                break;
-        }
+    kikPoints();
     paid = false;
 	});
 	

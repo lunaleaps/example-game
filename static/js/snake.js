@@ -5,7 +5,7 @@ App.controller('snake', function($page) {
         //var w = $("#canvas").width();
         //var h = $("#canvas").height();
 
-        var titlebar_height = $( "div.app-title" ).height();
+        var titlebar_height = 44;
 
         // Set the canvas's height and width
         canvas.width = window.innerWidth;

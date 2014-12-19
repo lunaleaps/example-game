@@ -1,5 +1,4 @@
-$(document).on('pageinit', function() {
-    $("#space-invaders-game-button").click(function(event){
+App.controller('space-invaders', function($page) {
         // STARFIELD ============================================================================================
         //  Define the starfield class.
         function Starfield() {
@@ -799,17 +798,17 @@ $(document).on('pageinit', function() {
         }
 
         // START ============================================================================================
-        var titlebar_height = $( "div.app-title" ).height();
+        var titlebar_height = 44;
 
         //  Setup the canvas.
-        var canvas = document.getElementById("canvas");
+        var canvas = $page.querySelector(".canvas");
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight - 10*titlebar_height/9;
 
         var W = canvas.width; // Window's width
         var H = canvas.height/2; // Window's height
 
-        var container = document.getElementById('starfield');
+        var container = $page.querySelector("#starfield");
         var starfield = new Starfield();
         starfield.initialise(container);
         starfield.start();
@@ -900,5 +899,4 @@ $(document).on('pageinit', function() {
          
         //  Start the game.
         game.start();
-    });
 });
