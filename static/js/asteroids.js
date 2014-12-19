@@ -275,7 +275,7 @@ function Asteroids(div) {
         //BUG: Collision should be centered on div, not top-left corner
         var sprite = thiz.createVelSprite($("<div>")
             .addClass("si-asteroid")
-            .addClass("si-asteroid-" + Math.floor(Math.random() * 3)), function() {
+            .addClass("si-asteroid-" + Math.floor(Math.random() * 3 + 1)), function() {
                 if(!sprite.hidden) {
                     //Are we colliding with the player? If so, game over.
                     var distX = Math.abs(sprite.x - thiz.player.x);
