@@ -59,3 +59,8 @@
 .si-asteroid-3 {
     background-image: url(../images/asteroid_real_3.png);
 }
+.si-particle {
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+}

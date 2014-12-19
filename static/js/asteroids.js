@@ -94,6 +94,29 @@ function Asteroids(div) {
     thiz.viewportHeight = window.innerHeight - 44;
     thiz.score = 0;
     thiz.asteroids = [];
+    thiz.particles = [];
+    thiz.pendingParticles = [];
+    thiz.createParticles = function(pos, size, amt, vel, ttl) { //ttl is time to live
+        for(var i = 0; i < amt; i++) {
+            var div = $("<div>")
+                .addClass("si-particle")
+                .css("width", size)
+                .css("height", size)
+                .css("left", pos[0])
+                .css("top", pos[1])
+                .css("transition", ttl + "s left, " + ttl + "s top")
+                .appendTo(thiz.div);
+            var particle = {
+                div: div,
+                ttl: ttl,
+                lived: 0,
+                vel: vel,
+                created: false,
+                waitingTime: 2
+            };
+            thiz.pendingParticles.push(particle);
+        }
+    }
     thiz.createWall = function(pos, scale) {
         thiz.createSprite($("<div>")
             .addClass("si-wall")
@@ -413,5 +436,29 @@ function Asteroids(div) {
             sprite.update(delta);
         }
         thiz.prevPhysicsTime = currentTime;
+        for(key in thiz.pendingParticles) {
+            var particle = thiz.pendingParticles[key];
+            particle.waitingTime--;
+            if(particle.waitingTime > 0) {
+                continue;
+            }
+            var velX = Math.floor((Math.random() * 2 - 1) * particle.vel);
+            var velY = Math.floor((Math.random() * 2 - 1) * particle.vel);
+            particle.x += velX;
+            particle.y += velY;
+            particle.div.css("width", particle.x)
+                .css("height", particle.y);
+            particle.created = true;
+            delete thiz.pendingParticles[key];
+            thiz.particles.push(particle);
+        }
+        for(key in thiz.particles) {
+            var particle = thiz.particles[key];
+            particle.lived += delta;
+            if(particle.lived > particle.ttl) {
+                particle.div.remove();
+                delete thiz.particles[particle];
+            }
+        }
     }
 }
