@@ -52,8 +52,8 @@
   padding-top: 8px;
   text-align: center;
   font-family: ArcadeClassic;
-  font-size: 30px; 
-  margin-top: 50%; 
+  font-size: 30px;
+  margin-top: 50%;
 }
 
 .arcade-button {
@@ -75,13 +75,13 @@
 
 .left {
   float: left;
-  margin-top: 15%;
+  margin-top: 8%;
   margin-left: 10%;
 }
 
 .right {
   float: right;
-  margin-top: 15%;
+  margin-top: 8%;
   margin-right: 10%;
 }
 
@@ -97,8 +97,12 @@
 }
 
 .aTitle {
-  font-family: ArcadeClassic; 
-  font-size: 28px; 
+  font-family: ArcadeClassic;
+  font-size: 28px;
   color: #F0B73E;
   text-align: center;
+}
+
+.carousel img {
+
 }
