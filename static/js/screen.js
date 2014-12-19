@@ -108,13 +108,9 @@ $(document).ready(function() {
 		    var pointsValue = 1;
 		    var sku = 'com.herokuapp.kp-aracde.play';
 		points.redeem(id, pointsValue, sku, function spend(transaction){
-      $("p").text("FOOD" + (transaction.status == "PROCESSED"));
-		  if (transaction.status == "PROCESSED") {
-		    paid = true;
-		  } else {
-		    paid = false;
-		  }
+      paid = (transaction.status == "PROCESSED");
 		});
+    $("p").text("FOOD" + paid);
     //$("p").text("FOOD" + paid);
     return paid;
 	}
