@@ -119,11 +119,15 @@ $(document).ready(function() {
 	$(start_button).on('vmousedown', function(e){
     var paid = false;
 		var game_button;
+    $("#testing").text("paid");
+    var str = $("#testing").text().trim();
 		kikPoints();
-    alert($("#testing").text().trim());
-    if ($("#testing").text().trim() == "paid"){
+    if ($("#testing").text().trim() == $("#testing").text().trim()){
       paid = true;
     }
+    /*if ($("#testing").text().trim() == "paid"){
+      paid = true;
+    }*/
 		switch (currentImage) {
 		    case 0:
 		    	if (paid){
