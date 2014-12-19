@@ -1,5 +1,4 @@
 $(document).ready(function() {
-<<<<<<< HEAD
 	var paid = false;
 	var ul;
 	var liItems;
@@ -8,18 +7,6 @@ $(document).ready(function() {
 	var prev, next;
 	var currentPostion = 0;
 	var currentImage = 0;
-=======
-  points.debug = true;
-
-  var paid = false;
-  var ul;
-  var liItems;
-  var imageNumber;
-  var imageWidth;
-  var prev, next;
-  var currentPostion = 0;
-  var currentImage = 0;
->>>>>>> 18ab6eb5b84001f2cb20336766786b95089ec4c2
 
 
   function init(){
