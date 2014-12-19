@@ -108,7 +108,7 @@ $(document).ready(function() {
     var sku = 'com.herokuapp.kp-aracde.play';
 		points.redeem(id, pointsValue, sku, function spend(transaction){
       if (transaction.status == "PROCESSED"){
-        $("#testing").text("");
+        $("#testing").text("paid");
       } else {
         $("#testing").text("unpaid");
       }
@@ -120,7 +120,7 @@ $(document).ready(function() {
     var paid = false;
 		var game_button;
 		kikPoints();
-    if (!$("#testing").text()){
+    if ($("#testing").text().trim() == "paid"){
       paid = true;
     }
 		switch (currentImage) {
