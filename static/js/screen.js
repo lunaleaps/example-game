@@ -103,7 +103,7 @@ $(document).ready(function() {
 	window.onload = init;
 
 	function kikPoints(){
-    var paid;
+    var paid = false;
 		var id = kik.utils.random.uuid();
 		    var pointsValue = 1;
 		    var sku = 'com.herokuapp.kp-aracde.play';
@@ -114,6 +114,7 @@ $(document).ready(function() {
 		    return false;
 		  }
 		});
+    $("p").text(paid);
     return paid;
 	}
 
@@ -122,7 +123,7 @@ $(document).ready(function() {
     var paid = false;
 		var game_button;
 		paid = kikPoints();
-		$("p").text(paid);
+		//$("p").text(paid);
 		switch (currentImage) {
 		    case 0:
 		    	if (paid){
