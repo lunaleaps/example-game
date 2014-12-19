@@ -10,6 +10,7 @@ $(document).ready(function() {
 
 
   function init(){
+    paid = false;
     ul = document.getElementById('image_slider');
     liItems = ul.children;
     imageNumber = liItems.length;
@@ -118,6 +119,7 @@ $(document).ready(function() {
 
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
+    paid = false;
 		var game_button;
 		kikPoints();
 		$("p").text(paid);
