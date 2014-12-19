@@ -139,15 +139,13 @@
     <script src='js/screen.js'></script>
     <script>
       //kik.browser.setOrientationLock('portrait');
-
       function kikPoints(){
         var id = kik.utils.random.uuid();
             var pointsValue = 2;
             var sku = 'com.herokuapp.kp-aracde.play';
 
         points.redeem(id, pointsValue, sku, function spend(transaction){
-          var testing = document.getElementById("testing");
-          testing.text(transaction.status);
+          $("p").text(transaction.status);
           if (transaction.status == "PROCESSED") {
             paid = true;
           } else {
