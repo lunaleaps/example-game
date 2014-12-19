@@ -147,24 +147,26 @@
             spaceInvaders= $page.find('.app-button.spaceInvaders');
             arkanoid= $page.find('.app-button.arkanoid');
 
-        pacman.on('click', function() {
-            App.load('pacman');
-        });
-        asteroids.on('click', function() {
-            App.load('asteroids');
-        });
-        pong.on('click', function() {
-            App.load('pong-game');
-        });
-        snake.on('click', function() {
-            App.load('snake-game');
-        });
-        spaceInvaders.on('click', function() {
-            App.load('space-invaders-game');
-        });
-        arkanoid.on('click', function() {
-            App.load('arkanoid-game');
-        });
+        if (paid){
+          pacman.on('click', function() {
+              App.load('pacman');
+          });
+          asteroids.on('click', function() {
+              App.load('asteroids');
+          });
+          pong.on('click', function() {
+              App.load('pong-game');
+          });
+          snake.on('click', function() {
+              App.load('snake-game');
+          });
+          spaceInvaders.on('click', function() {
+              App.load('space-invaders-game');
+          });
+          arkanoid.on('click', function() {
+              App.load('arkanoid-game');
+          });
+        }
       });
       App.load('home');
     </script>

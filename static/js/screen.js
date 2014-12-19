@@ -109,6 +109,7 @@ $(document).ready(function() {
     var pointsValue = 1;
     var sku = 'com.herokuapp.kp-aracde.play';
     var verify;
+    paid = true;
 		points.redeem(id, pointsValue, sku, function spend(transaction, verify){
       if (transaction.status == "PROCESSED"){
         switch (currentImage) {
