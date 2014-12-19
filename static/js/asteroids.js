@@ -7,6 +7,7 @@
  game.stop() stops the game.
  game.start() starts the game; CALLING THE CONSTRUCTOR ISN'T ENOUGH.
  game.deadHandlers is an array of functions to be called when the player dies (not loses a life, but has 0 lives).
+ game.score is the score; one per asteroid.
 
  You MUST attach your own event handlers to game.handleKeydown and game.handleKeyup; it will not add them itself.
 */
@@ -400,7 +401,19 @@ function Asteroids(div) {
                 this.rotate(this.rotating * 200 * deltaTime);
                 this.addX(this.velX);
                 this.addY(this.velY);
-            }, [300, 300]);
+                if(this.x > thiz.div.width()) {
+                    this.x = -this.div.width();
+                }
+                if(this.x < -this.div.width()) {
+                    this.x = thiz.div.width();
+                }
+                if(this.y > thiz.div.height()) {
+                    this.y = -this.div.height();
+                }
+                if(this.y < -this.div.height()) {
+                    this.y = thiz.div.height();
+                }
+            }, [100, 100]);
         sprite.velX = 0;
         sprite.velY = 0;
         sprite.firingDelay = 0;
