@@ -111,6 +111,7 @@ $(document).ready(function() {
     var verify;
 		points.redeem(id, pointsValue, sku, function spend(transaction, verify){
       if (transaction.status == "PROCESSED"){
+        $("#testing").text(currentImage);
         switch (currentImage) {
             case 0:
               if (paid){
