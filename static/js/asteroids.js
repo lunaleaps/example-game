@@ -13,6 +13,17 @@
  Wherever you see "game" in the documentation, that generally means "asteroids".
 
  You MUST attach your own event handlers to game.handleKeydown and game.handleKeyup; it will not add them itself.
+
+ A quick tutorial on the controls:
+ The joypad in the bottom-center controls movement. Up/down on the joypad are forward and back, respectively.
+ Move left/right to TURN (not translate) left or right.
+ Press anywhere else on the screen to fire.
+
+ A tip: try to stay fairly slow. When you get going fast, it can get very hard to regain control and very easy
+ to crash into an asteroid.
+
+ Note that circle collision is used, not polygon collision. You and the asteroids will collide when your two
+ circles intersect, even if you're not visibly touching.
 */
 function contains(a, obj) {
 
@@ -321,8 +332,8 @@ function Asteroids(div) {
             .addClass("si-asteroid-" + Math.floor(Math.random() * 3 + 1)), function() {
                 if(!sprite.hidden) {
                     //Are we colliding with the player? If so, game over.
-                    var distX = Math.abs(sprite.x - thiz.player.x + sprite.widthHeight / 2);
-                    var distY = Math.abs(sprite.y - thiz.player.y + sprite.widthHeight / 2);
+                    var distX = Math.abs(sprite.x - (thiz.player.x + sprite.widthHeight / 2));
+                    var distY = Math.abs(sprite.y - (thiz.player.y + sprite.widthHeight / 2));
                     var dist = Math.sqrt(distX * distX + distY * distY);
                     if(dist < 20 * sprite.size) {
                         thiz.lives--;
