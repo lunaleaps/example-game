@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/indexStyle.css"/>
     <link rel="stylesheet" href="css/asteroids.css"/>
     <link rel="stylesheet" href="css/spaceInvaders.css"/>
+    <link rel="stylesheet" href="css/screen.css"/>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.js"></script>
   </head>
@@ -19,20 +20,32 @@
     <!--arcade home-->
     <div class="app-page" data-page="home">
       <div class="app-topbar">
-        <div class="app-title">KP-Arcade</div>
+        <div class="app-title, aTitle" style="font-family: ArcadeClassic; font-size: 28px; color: #F0B73E;">KP-Arcade</div>
       </div>
-      <div class="app-content">
-        <div class="app-button pacman">Pacman</div>
-        <div class="app-button asteroids">Asteroids</div>
-        <div id="pong-game-button" class="app-button" data-target="pong-game">Play Pong</div>
-        <div id="snake-game-button" class="app-button" data-target="snake-game">Play Snake</div>
-        <div id="space-invaders-game-button" class="app-button" data-target="space-invaders-game">Play Space Invaders</div>
-        <div id="arkanoid-game-button" class="app-button" data-target="arkanoid-game">Play Arkanoid</div>
-        <div class="aBottom">
-          <div id="play-button" class="aStartButton">START</div>
-          <div id="next-button" class="arcade-button">></div>
-          <div id="previous-button" class="arcade-button"><</div>
+
+      <div class="app-content arcade">
+        <div class="carousel">
+          <div class="slider_wrapper">
+            <ul id="image_slider">
+              <li><img id="pacman-game-button" class="app-button pacman" src="./images/pacmanImage.png"></li>
+
+              <li><img id="asteroids-game-button" class="app-button asteroids" src="./images/asteroidImage.png"></li>
+
+              <li><img id="pong-game-button" class="app-button pong" src="./images/pongImage.png"></li>
+
+              <li><img id="snake-game-button" class="app-button snake" data-target="snake-game" src="./images/snakeImage.png"></li>
+
+              <li><img id="space-invaders-game-button" class="app-button spaceInvaders" data-target="space-invaders-game" src="./images/spaceinvadersImage.png"></li>
+              
+              <li><img id="arkanoid-game-button" class="app-button arkanoid" data-target="arkanoid-game" src="./images/arkanoidImage.png"></li>
+            </ul>
+          </div>
+          <ul id="pager">
+          </ul>
         </div>
+        <div id="next-button" class="arcade-button right">></div>
+        <div id="previous-button" class="arcade-button left"><</div>
+        <div id="play-button" class="aStartButton">START GAME</div>
       </div>
     </div>
 
@@ -121,20 +134,33 @@
     <script src='js/arkanoid.js'></script>
     <script src='js/space_invaders.js'></script>
     <script src='js/snake.js'></script>
-    <script src='js/kikPoints.js'></script>
+    <script src='js/screen.js'></script>
     <script>
       App.controller('home', function (page) {
-
         var $page = $(page),
             pacman= $page.find('.app-button.pacman'),
             asteroids= $page.find('.app-button.asteroids');
-            kikPoints = $page.find('.app-button.kikPoints'); 
-
+            pong= $page.find('.app-button.pong');
+            snake= $page.find('.app-button.snake');
+            spaceInvaders= $page.find('.app-button.spaceInvaders');
+            arkanoid= $page.find('.app-button.arkanoid');
         pacman.on('click', function() {
           App.load('pacman');
         });
         asteroids.on('click', function() {
           App.load('asteroids');
+        });
+        pong.on('click', function() {
+          App.load('pong-game');
+        });
+        snake.on('click', function() {
+          App.load('snake-game');
+        });
+        spaceInvaders.on('click', function() {
+          App.load('space-invaders-game');
+        });
+        arkanoid.on('click', function() {
+          App.load('arkanoid-game');
         });
       });
       App.load('home');
