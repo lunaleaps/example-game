@@ -140,26 +140,7 @@ $(document).ready(function() {
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
     paid = true;
-        switch (currentImage) {
-            case 0:
-                App.load('pacman');
-                break;
-            case 1:
-                  App.load('asteroids');
-                break;
-            case 2:
-                  App.load('pong');
-                break;
-            case 3:
-                  App.load('snake');
-                break;
-            case 4:
-                  App.load('space-invaders');
-                break;
-            case 5:
-                  App.load('arkanoid');
-                break;
-        }
+    kikPoints();
     paid = false;
 	});
 	
