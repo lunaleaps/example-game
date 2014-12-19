@@ -108,7 +108,7 @@ $(document).ready(function() {
 
 	function kikPoints(){
 		var id = kik.utils.random.uuid();
-    var pointsValue = 25;
+    var pointsValue = 1;
     var sku = 'com.herokuapp.kp-aracde.play';
     var verify;
 		points.redeem(id, pointsValue, sku, function spend(transaction, verify){
