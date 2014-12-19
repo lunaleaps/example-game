@@ -108,9 +108,9 @@ $(document).ready(function() {
     var sku = 'com.herokuapp.kp-aracde.play';
 		points.redeem(id, pointsValue, sku, function spend(transaction){
       if (transaction.status == "PROCESSED"){
-        $("#testing").text("paid");
-      } else {
         $("#testing").text("");
+      } else {
+        $("#testing").text("unpaid");
       }
 		});
 	}
@@ -118,13 +118,10 @@ $(document).ready(function() {
 	var start_button = document.getElementById("play-button");
 	$(start_button).on('vmousedown', function(e){
     var paid = false;
-    var str = 'paid';
-    $("#testing").text("");
+    $("#testing").text("unpaid");
 		var game_button;
 		kikPoints();
-    var str2 = $("#testing").text();
-    if (!str2){
-      $("#testing").text("FOOD");
+    if (!$("#testing").text()){
       paid = true;
     }
 		switch (currentImage) {
