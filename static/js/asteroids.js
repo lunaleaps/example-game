@@ -143,7 +143,7 @@ function Asteroids(div) {
                 lived: 0,
                 vel: vel,
                 created: false,
-                waitingTime: 2
+                waitingTime: 5
             };
             thiz.pendingParticles.push(particle);
         }
@@ -532,8 +532,8 @@ function Asteroids(div) {
             var velY = Math.floor((Math.random() * 2 - 1) * particle.vel);
             particle.x += velX;
             particle.y += velY;
-            particle.div.css("width", particle.x)
-                .css("height", particle.y);
+            particle.div.css("left", particle.x)
+                .css("top", particle.y);
             particle.created = true;
             delete thiz.pendingParticles[key];
             thiz.particles.push(particle);
